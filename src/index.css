@@ -1,0 +1,10 @@
+*{
+  /* background-color: gainsboro; */
+  color: black;
+  padding: 0;
+  margin: 0;
+  font-family: Inter;
+}
+body{
+  background: gainsboro;
+}

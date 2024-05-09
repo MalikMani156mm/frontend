@@ -1,0 +1,264 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    margin: 10px;
+}
+
+.header{
+    background-color: blue;
+    width: parent;
+    height: 40px;
+    font-size: large;
+    padding-left: 20px ;
+    padding-top: 8px;
+}
+
+.header b{
+    color: aliceblue;
+}
+.container{
+    width: 90%;
+    border: 2px solid blue;
+    border-radius: 10px;
+    height: auto;
+    margin-bottom: 5px;
+    
+    
+}
+
+.content{
+    padding: 20px 30px;
+    display: flex;
+    flex-direction: column;
+    
+}
+ .alignment{
+display: flex;
+flex-direction: row;
+padding-bottom: 10px;
+}
+
+.alignment1{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+
+.addDiv{
+  flex: 0 0 calc(33.333% - 10px);
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.radio{
+display: flex;
+flex-direction: row;
+
+}
+.alter{
+  display: none;
+}
+
+.formControl {
+    display: block;
+    width: 63.5vw;
+    height: 13vh;
+    padding: 0.375rem 0.75rem;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  
+  .formControl:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .CancelButton {
+    background-color: red;
+    color: aliceblue;
+    border: none;
+    outline: none;
+    width: 10%; 
+    border-radius: 10px;
+    padding: 15px 30px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 20px 0; 
+}
+
+.CancelButton:hover {
+    background-color: skyblue;
+    color: black;
+}
+
+.excelButton,.addButton{
+    background-color: green;
+    color: aliceblue;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+   font-size: 15px; 
+   width: 160px;
+   height: 40px;
+   margin-left: 20px;
+   
+  }
+  
+  .addButton{
+    background-color: blue;
+  }
+
+  .excelButton:hover,.addButton:hover{
+    background-color: skyblue;
+    color: black;
+    width: 162px;
+   height: 42px;
+  }
+
+.Links{
+    text-decoration: none;
+    color: aliceblue;
+}
+
+.SubmitButton{
+    background-color: blue;
+    color: aliceblue;
+    border: none;
+    outline: none;
+    width: 10%; 
+    border-radius: 10px;
+    padding: 15px 30px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 20px 0; 
+    margin-left: 10px;
+}
+
+.SubmitButton:hover{
+    background-color: skyblue;
+    color: black;
+}
+
+.buttonsalignment{
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    
+}
+
+
+.fileControl {
+    border: 1px solid #ced4da; /* Border color */
+    border-radius: 0.5rem; /* Border radius */
+    background:white;
+    width: 335px;
+    align-items: center;
+  }
+.fileControl::-webkit-file-upload-button {
+    visibility: hidden;
+    display: none;
+  }
+  
+  .fileControl::before {
+    content: 'Choose file';
+    display: inline-block;
+    background: #ffffffb3; /* Background color */
+    color: #212529; /* Text color */
+    border: 1px solid #ced4da; /* Border color */
+    border-radius: 0.3rem; /* Border radius */
+    padding: 6px 12px; /* Padding */
+    outline: none;
+    white-space: nowrap;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 1rem;
+  }
+  
+  .fileControl:hover::before {
+    background: #e4e7eb; /* Hover background color */
+    border-color: #e4e7eb; /* Hover border color */
+  }
+  
+  .fileControl:active::before {
+    background: #e4e7eb; /* Active background color */
+    border-color: #e4e7eb; /* Active border color */
+  }
+  
+  .gap{
+margin-left: 295px;
+  }
+
+  .gaps{
+    margin-left: 15px;
+      } 
+
+      
+      @media screen and (max-width: 1460px) {
+        .buttonsalignment{
+          justify-content: center;
+        }
+        .SubmitButton,.CancelButton{
+          width: auto;
+        }
+        .addDiv,.addButton {
+          display: none;
+        }
+        .formControl{
+          width: 62vw;
+        }
+        .alter{
+          display: block;
+        }
+        .gaps{
+          display: none;
+        }
+
+      }   
+    
+      @media screen and (max-width: 890px) {
+        .alignment{
+          display: flex;
+          flex-direction: column;
+        }
+        .excelButton,.addButton{
+      margin-left: 0;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .formControl{
+      width: 100%;
+    }
+        }
+        @media screen and (max-width: 574px) {
+          .addDiv,.addButton {
+            display: block;
+          }
+          .gap{
+            margin-left: 0;
+          }
+          .fileControl{
+            width: 100%;
+          }
+        }  
+ 
+    
+    
+    
+  

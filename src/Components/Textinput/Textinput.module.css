@@ -1,0 +1,38 @@
+.TextInputWrapper{
+    display: flex;
+    flex-direction: column;
+    width: inherit;
+    align-items: center;
+}
+.TextInputWrapper input{
+    padding: 18px 30px;
+    margin: 15px;
+    outline: none;
+    width: 400px;
+    border: 1px solid white;
+    border-radius: 10px;
+    font-size: 20px;
+}
+.errormessage{
+    color: red;
+    text-align: left;
+    width: 80%;
+}
+@media screen and (max-width: 530px) {
+    .TextInputWrapper input{
+        width: 300px;
+    }
+    
+}
+@media screen and (max-width: 400px) {
+    .TextInputWrapper input{
+        width: 250px;
+    }
+    
+}
+@media screen and (max-width: 325px) {
+    .TextInputWrapper input{
+        width: 200px;
+    }
+    
+}
