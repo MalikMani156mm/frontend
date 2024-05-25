@@ -9,12 +9,16 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
 import { faHandshake } from "@fortawesome/free-solid-svg-icons";
 import { faRightLeft } from "@fortawesome/free-solid-svg-icons";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import {useGetAllFIRsQuery} from "../../Redux/Features/FIR/FIRApi";
 
 function formatNumberWithCommas(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function MyApplications() {
+
+ const {isLoading, data, error} = useGetAllFIRsQuery();
+
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
   const [count3, setCount3] = useState(0);
@@ -541,13 +545,13 @@ function MyApplications() {
         <div className={styles.row}>
           <div className={styles.label}>From</div>
           <div className={styles.align2}>
-            <input type="date" name="FromDate" class={styles.formControl1} />
+            <input type="date" name="FromDate" className={styles.formControl1} />
           </div>
           <div className={styles.label}>
             <p className={styles.align}>To</p>
           </div>
           <div>
-            <input type="date" name="ToDate" class={styles.formControl1} />
+            <input type="date" name="ToDate" className={styles.formControl1} />
           </div>
           <div className={styles.label}>Category & Offence</div>
           <div>

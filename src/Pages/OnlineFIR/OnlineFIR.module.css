@@ -6,6 +6,10 @@
     margin: 10px;
 }
 
+.size{
+  width: 90%;
+}
+
 .header{
     background-color: blue;
     width: parent;
@@ -19,7 +23,7 @@
     color: aliceblue;
 }
 .container{
-    width: 90%;
+    width: 100%;
     border: 2px solid blue;
     border-radius: 10px;
     height: auto;
@@ -156,7 +160,7 @@ flex-direction: row;
 }
 
 .buttonsalignment{
-    width: 90%;
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -202,12 +206,10 @@ flex-direction: row;
   }
   
   .gap{
-margin-left: 295px;
+  margin-left: 295px;
   }
 
-  .gaps{
-    margin-left: 15px;
-      } 
+  
 
       
       @media screen and (max-width: 1460px) {
@@ -217,17 +219,15 @@ margin-left: 295px;
         .SubmitButton,.CancelButton{
           width: auto;
         }
-        .addDiv,.addButton {
-          display: none;
-        }
+        
         .formControl{
-          width: 62vw;
+          width: 62.5vw;
         }
-        .alter{
-          display: block;
+        .fileControl{
+          width: 265px;
         }
-        .gaps{
-          display: none;
+        .gap{
+          margin-left: 220px;
         }
 
       }   
@@ -238,23 +238,25 @@ margin-left: 295px;
           flex-direction: column;
         }
         .excelButton,.addButton{
-      margin-left: 0;
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-    .formControl{
-      width: 100%;
-    }
+          margin-left: 0;
+          margin-top: 10px;
+          margin-bottom: 10px;
+        }
+        .formControl{
+          width: 100%;
+        }
+        .gap{
+          margin-left: 0;
+        }
         }
         @media screen and (max-width: 574px) {
-          .addDiv,.addButton {
-            display: block;
-          }
-          .gap{
-            margin-left: 0;
-          }
+          
+          
           .fileControl{
             width: 100%;
+          }
+          .alignment1{
+            align-items: center;
           }
         }  
  

@@ -1,37 +1,140 @@
 import styles from "./OnlineFIR.module.css";
 import { Link } from "react-router-dom";
-import React, { useState  } from "react";
+import React, { useState } from "react";
+import { useFormik } from "formik";
+import { useAddNewFIRMutation } from '../../Redux/Features/FIR/FIRApi';
+import * as yup from 'yup';
+
 
 function OnlineFIR() {
+
+  //eslint-disable-next-line
+  const [addFIR, { isLoading }] = useAddNewFIRMutation();
+
   const [fileInputs, setFileInputs] = useState([{ id: 1 }]);
 
   const addMoreFile = () => {
     const newId = fileInputs[fileInputs.length - 1].id + 1;
     setFileInputs([...fileInputs, { id: newId }]);
   };
-  
+
+  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValue2, setSelectedValue2] = useState(null);
+
+
+  const handleRadioClick = (value) => {
+    if (selectedValue === value) {
+      setSelectedValue(null);  
+      
+    } else {
+      setSelectedValue(value);
+      setFieldValue('relation', values.relation === value ? '' : value);
+    }
+  };
+
+  const handleRadioClick2 = (value) => {
+    if (selectedValue2 === value) {
+      setSelectedValue2(null);  
+      
+    } else {
+      setSelectedValue2(value);
+      setFieldValue('FIRRegistered', values.FIRRegistered === value ? '' : value);
+    }
+  };
+
+  const getCurrentDateTimeLocal = () => {
+    const current = new Date();
+    return current.toISOString().slice(0, 16);
+  };
+
+  // eslint-disable-next-line
+  const { values, touched, handleBlur, handleChange, handleSubmit, errors ,setFieldValue} = useFormik({
+    initialValues: {
+      EntryDate: getCurrentDateTimeLocal(),
+      SourceOfComplaint: 'Online',
+      District: '',
+      Division: '',
+      Circle: '',
+      PoliceStation: '',
+      BeatMoza: '',
+      CNIC: '',
+      email: '',
+      Name: '',
+      relation: '',
+      GuardianName: '',
+      Gender: '',
+      ContactNumber: '',
+      PermanentAddress: '',
+      placeOfOccurance: '',
+      IncidentDate: '',
+      Category: '',
+      Offence: '',
+      OffenceSubcategory: '',
+      AssignedTo: '',
+      OfficerName: '',
+      OfficerContact: '',
+      IncidentDetails: '',
+      FIRRegistered: '',
+      FIRNo: '',
+      IOName: '',
+      file: '',
+    },
+    validationSchema: yup.object().shape({
+      EntryDate: yup.date().required('Required'),
+      // District: yup.string().required('Required'),
+      // Division: yup.string().required('Required'),
+      // Circle: yup.string().required('Required'),
+      // PoliceStation: yup.string().required('Required'),
+      // BeatMoza: yup.string(),
+      // CNIC: yup.number().min(1111111111111,"Must be atleast 13 digit").max(9999999999999,"Invalid CNIC").required('Required'),
+      // email: yup.string().email('enter a valid email').required('Required'),
+      // Name: yup.string().min(5).max(30).required('Required'),
+      // GuardianName: yup.string().min(5).max(30).required('Required'),
+      // Gender: yup.string().required('Required'),
+      // ContactNumber: yup.number().min(1111111111,"Must be atleast 11 digit").max(999999999999,"Invalid Number").required('Required'),
+      // PermanentAddress: yup.string().max(200).required('Required'),
+      // placeOfOccurance: yup.string().required('Required'),
+      // IncidentDate: yup.date().required('Required'),
+      // Category: yup.string().required('Required'),
+      // Offence: yup.string().required('Required'),
+      // IncidentDetails: yup.string().max(1000).required('Required'),
+      file:yup.string(),
+    }),
+    onSubmit: async (values) => {
+      console.log(values);
+      await addFIR(values);
+    }
+  });
+
+
   return (
     <div className={styles.body}>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <b>Basic Information</b>
-        </div>
-        <form action="" method="post">
+      <form name="addFIR" method="post" onSubmit={handleSubmit} className={styles.size}>
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <b>Basic Information</b>
+          </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div class="col-lg-3 col-md-3 col-sm-3 ">Entry Date</div>
-              <div class="col-lg-3 col-md-3 col-sm-3 ">
+              <div className="col-lg-3 col-md-3 col-sm-3 ">Entry Date</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 ">
                 <input
                   type="datetime-local"
                   id="datetime"
+                  name="EntryDate"
                   className="form-control"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+                <p className="help-block text-danger">{errors.EntryDate && touched.EntryDate ? errors.EntryDate : null}</p>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
                 Source of Compliant
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 ">
-                <select name="SourceOfComplaint" class="form-control">
+              <div className="col-lg-3 col-md-3 col-sm-3 ">
+                <select name="SourceOfComplaint" className="form-control"
+                  onChange={handleChange}
+                  onBlur={handleBlur}>
                   <option value="16">Online</option>
                   <option value="16">1715</option>
                   <option value="21">1815</option>
@@ -56,26 +159,38 @@ function OnlineFIR() {
                   <option value="11">SSP (Ops) Offices</option>
                   <option value="7">Telephone </option>
                 </select>
+                <p className="help-block text-danger">{errors.EntryDate && touched.EntryDate ? errors.EntryDate : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">District</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="District_ID">
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="District"
+                  onChange={handleChange}
+                  onBlur={handleBlur}>
+                  <option value="0">Select</option>
                   <option value="1">Islamabad</option>
                 </select>
+                <p className="help-block text-danger">{errors.District && touched.District ? errors.District : null}</p>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 mx-2">Division</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="Division_Id">
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Division</div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="Division"
+                  onChange={handleChange}
+                  onBlur={handleBlur}>
+                  <option value="0">Select</option>
                   <option value="3">Industrial Area Zone</option>
                 </select>
+                <p className="help-block text-danger">{errors.Division && touched.Division ? errors.Division : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">Circle</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="Circle">
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="Circle"
+                  onChange={handleChange}
+                  onBlur={handleBlur}>
+                  <option value="0">Select</option>
                   <option value="1">Sabzi Mandi</option>
                   <option value="2">Secretariat</option>
                   <option value="3">Abpara</option>
@@ -104,10 +219,14 @@ function OnlineFIR() {
                   <option value="26">Kirpa</option>
                   <option value="27">Women</option>
                 </select>
+                <p className="help-block text-danger">{errors.Circle && touched.Circle ? errors.Circle : null}</p>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 mx-2">Police Station</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="PoliceStation">
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Police Station</div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="PoliceStation"
+                  onChange={handleChange}
+                  onBlur={handleBlur}>
+                  <option value="0">Select</option>
                   <option value="1">PS Sabzi Mandi</option>
                   <option value="2">PS Secretariat</option>
                   <option value="3">PS Abpara</option>
@@ -136,135 +255,170 @@ function OnlineFIR() {
                   <option value="26">PS Kirpa</option>
                   <option value="27">PS Women</option>
                 </select>
+                <p className="help-block text-danger">{errors.PoliceStation && touched.PoliceStation ? errors.PoliceStation : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">Beat/Moza No.</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="BeatMoza">
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="BeatMoza" 
+                  onChange={handleChange}
+                  onBlur={handleBlur}>
+                  <option value="0">Select</option>
                   <option value="1">Beat/Moza-1</option>
                 </select>
               </div>
             </div>
+            <div className={styles.alignment}>
+            </div>
           </div>
-        </form>
-      </div>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <b>Complaint Information</b>
         </div>
-        <form action="" method="post">
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <b>Complaint Information</b>
+          </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">CNIC</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <input type="number" name="CNIC" className="form-control" />
+              <div className="col-lg-3 col-md-3 col-sm-3">CNIC (without dashes)</div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <input type="number" name="CNIC" className="form-control" onChange={handleChange}
+                  onBlur={handleBlur} />
+                <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 ">
-                <button type="button" className={styles.excelButton}>
-                  Scan CNIC
-                </button>
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+                Email
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3" >
-                <input type="file" className={`${styles.fileControl} ${styles.gaps}`}/>
-                <div className={styles.alter}>
-                <input type="file" className="form-control"/>
-              </div>
+              <div className="col-lg-3 col-md-3 col-sm-3 " >
+                <div >
+                  <input type="email" name="email" className="form-control" onChange={handleChange}
+                    onBlur={handleBlur} />
                 </div>
+                <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
+              </div>
             </div>
+
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">Name</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="Name" className="form-control" />
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <input type="text" name="Name" className="form-control" onChange={handleChange}
+                  onBlur={handleBlur} />
+                <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
                 <div className={styles.radio}>
                   <div className="mx-2">
-                    <input type="radio" name="Son" />
+                    <input type="radio" name="relation" id="son" value="son"
+                      checked={values.relation === 'son'}
+                      onChange={() => handleRadioClick('son')} />
                     <p>S/O</p>
                   </div>
                   <div className="mx-2">
-                    <input type="radio" name="Daughter" />
+                    <input type="radio" name="relation" value="daughter"
+                      id="daughter"
+                       checked={values.relation === 'daughter'}
+                      onChange={() => handleRadioClick('daughter')} />
                     <p>D/O</p>
                   </div>
                   <div className="mx-2">
-                    <input type="radio" name="Wife" />
+                    <input type="radio" name="relation" value="wife"
+                      id="wife"
+                      checked={values.relation === 'wife'}
+                      onChange={() => handleRadioClick('wife')} />
                     <p>W/O</p>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
                   type="text"
                   name="GuardianName"
                   className="form-control"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+                <p className="help-block text-danger">{errors.GuardianName && touched.GuardianName ? errors.GuardianName : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">Gender</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="Gender">
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="Gender" onChange={handleChange}
+                  onBlur={handleBlur}>
+                  <option value="0">Select</option>
                   <option value="1">Male</option>
-                  <option value="1">Female</option>
-                  <option value="1">Others</option>
+                  <option value="2">Female</option>
+                  <option value="3">Others</option>
                 </select>
+                <p className="help-block text-danger">{errors.Gender && touched.Gender ? errors.Gender : null}</p>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 mx-2">Contact Number</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Contact Number</div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
                   type="number"
                   name="ContactNumber"
                   className="form-control"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+                <p className="help-block text-danger">{errors.ContactNumber && touched.ContactNumber ? errors.ContactNumber : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 Permanent Address
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-3 col-sm-3">
                 <textarea
                   type="text"
-                  name="Officer_Name"
+                  name="PermanentAddress"
                   rows={3}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   className={styles.formControl}
                 />
+                <p className="help-block text-danger">{errors.PermanentAddress && touched.PermanentAddress ? errors.PermanentAddress : null}</p>
               </div>
             </div>
           </div>
-        </form>
-      </div>
-      <div className={styles.container}>
-        <div className={styles.header}>
-          <b>Complaint Section</b>
         </div>
-        <form action="" method="post">
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <b>Complaint Section</b>
+          </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 Place of Occurance
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
                   type="text"
                   name="placeOfOccurance"
                   className="form-control"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+                <p className="help-block text-danger">{errors.placeOfOccurance && touched.placeOfOccurance ? errors.placeOfOccurance : null}</p>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 mx-2">Incident Date</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Incident Date</div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
-                  type="datetime-local"
+                  type="date"
                   id="datetime"
-                  className="form-control"
+                  name="IncidentDate"
+                  className="form-control" 
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+                <p className="help-block text-danger">{errors.IncidentDate && touched.IncidentDate ? errors.IncidentDate : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3 ">Category</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="Category">
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="Category" 
+                  onChange={handleChange}
+                  onBlur={handleBlur}>
                   <option value="0">Select</option>
                   <option value="3">Character Verification</option>
                   <option value="18">Car Verification</option>
@@ -287,10 +441,13 @@ function OnlineFIR() {
                   </option>
                   <option value="7">Violence Against Woman</option>
                 </select>
+                <p className="help-block text-danger">{errors.Category && touched.Category ? errors.Category : null}</p>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 mx-2">Offence</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="Offence">
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Offence</div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="Offence" 
+                  onChange={handleChange}
+                  onBlur={handleBlur}>
                   <option value="0">Select</option>
                   <option value="107">295-A PPC</option>
                   <option value="12">382 PPC</option>
@@ -435,20 +592,24 @@ function OnlineFIR() {
                     Violence Against Trangender Person{" "}
                   </option>
                 </select>
+                <p className="help-block text-danger">{errors.Offence && touched.Offence ? errors.Offence : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 Offence Subcategory
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="Offence_Subcategory">
-                  <option value="1">Select</option>
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="OffenceSubcategory"  onChange={handleChange}
+                  onBlur={handleBlur}>
+                  <option value="0">Select</option>
+                  <option value="1">Sub Category</option>
                 </select>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 mx-2">Assigned To</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <select class="form-control" name="Assigned_To">
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Assigned To</div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <select className="form-control" name="AssignedTo"  onChange={handleChange}
+                  onBlur={handleBlur} >
                   <option value="3">Beat Committee</option>
                   <option value="2">Police Officer</option>
                 </select>
@@ -456,90 +617,111 @@ function OnlineFIR() {
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">Officer Name</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
                   type="text"
-                  name="Officer_Name"
+                  name="OfficerName"
                   className="form-control"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 mx-2">Officer Contact</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Officer Contact Number</div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
                   type="number"
-                  name="Officer_Contact"
+                  name="OfficerContact"
                   className="form-control"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">Incident Details</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-3 col-sm-3">
                 <textarea
                   type="text"
                   rows={3}
-                  name="Officer_Name"
+                  name="IncidentDetails"
                   className={styles.formControl}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                 />
+                <p className="help-block text-danger">{errors.IncidentDetails && touched.IncidentDetails ? errors.IncidentDetails : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 Is FIR Registered
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-3 col-sm-3">
                 <div className={styles.radio}>
                   <div className="mx-2">
-                    <input type="radio" name="Yes" />
+                  <input type="radio" name="FIRRegistered" id="Yes" value="Yes"
+                      checked={values.FIRRegistered === 'Yes'}
+                      onChange={() => handleRadioClick2('Yes')} />
                     <p>Yes</p>
                   </div>
                   <div>
-                    <input type="radio" name="No" />
+                  <input type="radio" name="FIRRegistered" id="No" value="No"
+                      checked={values.FIRRegistered === 'No'}
+                      onChange={() => handleRadioClick2('No')} />
                     <p>No</p>
                   </div>
                 </div>
               </div>
-              <div class="col-lg-3 col-md-3 col-sm-3 mx-2">FIR No</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="FIR_No" className="form-control" />
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">FIR No</div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <input type="text" name="FIRNo" className="form-control"   onChange={handleChange}
+                  onBlur={handleBlur}/>
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">IO Name</div>
-              <div class="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="IO_Name" className="form-control" />
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <input type="text" name="IOName" className="form-control"   onChange={handleChange}
+                  onBlur={handleBlur}/>
               </div>
             </div>
             <div className={styles.alignment1}>
-
               {fileInputs.map((file, index) => (
-                <div key={file.id} class={styles.addDiv}>
+                <div key={file.id} className={styles.addDiv} >
                   File {index + 1}
-                  <input type="file" class= {`${styles.fileControl} ${styles.gap} `}/>
+                  <input type="file" className={`${styles.fileControl} ${styles.gap}`} name="file" 
+                  onChange={(event)=>{
+                    let reader = new FileReader();
+                    reader.onloadend = ()=>{
+                      if (reader.readyState===2){
+                        setFieldValue("file",reader.result);
+                      }
+                    }
+                    reader.readAsDataURL(event.currentTarget.files[0]);
+                  }}
+                  onBlur={handleBlur}/>
+                <p className="help-block text-danger">{errors.file && touched.file ? errors.file : null}</p>
                 </div>
               ))}
-
               <button
                 type="button"
                 className={styles.addButton}
-                onClick={addMoreFile}
-              >
+                onClick={addMoreFile}>
                 Add More
               </button>
             </div>
           </div>
-        </form>
-      </div>
-      <div className={styles.buttonsalignment}>
-        <button className={styles.CancelButton} type="reset">
-          <Link to="/" className={styles.Links}>
-            Cancel
-          </Link>
-        </button>
-        <button className={styles.SubmitButton} type="submit">
-          Submit
-        </button>
-      </div>
+        </div>
+        <div className={styles.buttonsalignment}>
+          <button className={styles.CancelButton} type='reset'>
+            <Link to="/" className={styles.Links}>
+              Cancel
+            </Link>
+          </button>
+          <button className={styles.SubmitButton} type='submit' >
+            Submit
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

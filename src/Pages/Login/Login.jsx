@@ -39,6 +39,7 @@ function Login(){
             error={errors.password && touched.password ? 1: undefined}
             errormessage={errors.password}
             />
+            <span ><Link to="/" className={styles.createAccount}>Forget Password</Link></span>
             <button className={styles.loginButton} >Log In</button>
             <span>Don't have an account? <Link to="/SignUp" className={styles.createAccount}>Sign Up</Link></span>
         </div>

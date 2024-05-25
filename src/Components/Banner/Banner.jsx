@@ -15,9 +15,9 @@ function Banner(){
               alt="First slide"
             />
             <Carousel.Caption>
-              <div class="col-md-8 offset-md-2 info">
-                <h1 class="text-center hpic1">Welcome to our E-FIR System</h1>
-                <p class="text-center pic1">
+              <div className="col-md-8 offset-md-2 info">
+                <h1 className="text-center hpic1">Welcome to our E-FIR System</h1>
+                <p className="text-center pic1">
                   The Revolution of Police Stations
                 </p>
                 
@@ -32,9 +32,9 @@ function Banner(){
             />
 
             <Carousel.Caption>
-              <div class="col-md-8 offset-md-2 info">
-                <h1 class="text-center hpic2">Log Into your Account</h1>
-                <p class="text-center pic2">
+              <div className="col-md-8 offset-md-2 info">
+                <h1 className="text-center hpic2">Log Into your Account</h1>
+                <p className="text-center pic2">
                   Goto Online FIR and Report the Incidents
                 </p>
                 
@@ -49,9 +49,9 @@ function Banner(){
             />
 
             <Carousel.Caption>
-              <div class="col-md-10 offset-md-2 info">
-                <h1 class="text-center hpic3">Goto My Applications</h1>
-                <p class="text-center pic3">
+              <div className="col-md-10 offset-md-2 info">
+                <h1 className="text-center hpic3">Goto My Applications</h1>
+                <p className="text-center pic3">
                   Track the progress of your previous FIRs
                 </p>
                 

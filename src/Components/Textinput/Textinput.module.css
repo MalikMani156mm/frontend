@@ -3,11 +3,13 @@
     flex-direction: column;
     width: inherit;
     align-items: center;
+    
 }
 .TextInputWrapper input{
     padding: 18px 30px;
     margin: 15px;
     outline: none;
+    background-color: gainsboro;
     width: 400px;
     border: 1px solid white;
     border-radius: 10px;
