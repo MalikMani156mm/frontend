@@ -11,37 +11,43 @@ function ForeignerRegistration() {
           Sector F-6/1, H-11 Police Lines or your nearest police station:
         </p>
         <h3>Required Documents:</h3>
-        <p>
-          <ol>
-            <li> Applicant must be present.</li>
-            <li> Applicant’s passport size photograph.</li>
-            <li> Copy of Passport.</li>
-            <li> Copy of Visa.</li>
-            <li> Witness CNIC Copy.</li>
-            <li> Sponsor CNIC Copy.</li>
-            <li> Residential Proof in Islamabad.</li>
-            <li> In case, applicant stays in Hotel and Rest House.</li>
-            <ul>
-              <li>
+        <ol>
+          <li><p> Applicant must be present.</p></li>
+          <li><p> Applicant’s passport size photograph.</p></li>
+          <li><p> Copy of Passport.</p></li>
+          <li><p> Copy of Visa.</p></li>
+          <li><p> Witness CNIC Copy.</p></li>
+          <li><p> Sponsor CNIC Copy.</p></li>
+          <li><p> Residential Proof in Islamabad.</p></li>
+          <li><p> In case, applicant stays in Hotel and Rest House.</p></li>
+          <ul>
+            <li>
+              <p>
                 Attested staying Certificate from Hotel and Rest House owner /
                 administration.
-              </li>
-            </ul>
-            <li>
+              </p>
+            </li>
+          </ul>
+          <li>
+            <p>
               Indian National shall be registered within 24 hours and get travel
               permit.
-            </li>
-            <li>
+            </p>
+          </li>
+          <li>
+            <p>
               For Late Exit Permit or Late Registration, all Foreigners will
               have to contact Ministry of Interior(MOI).
-            </li>
-            <li>
+            </p>
+          </li>
+          <li>
+            <p>
               In case, wrong information is submitted, necessary action will be
               taken against the applicant.
-            </li>
-            <li> Rs.200 Fee will be charged.</li>
-          </ol>
-        </p>
+            </p>
+          </li>
+          <li> <p>Rs.200 Fee will be charged.</p></li>
+        </ol>
       </div>
     </div>
   );

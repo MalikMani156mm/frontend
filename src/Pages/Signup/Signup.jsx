@@ -4,9 +4,15 @@ import signupSchema from "../../Schemas/signupSchema";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import logo from "../../images/Logo.png";
+import { useRegisterUserMutation } from "../../Redux/Features/Auth/AuthApi";
 
 function Signup() {
-    const { values, touched, handleBlur, handleChange, errors } = useFormik({
+
+    // eslint-disable-next-line
+    const [register, {isLoading}] = useRegisterUserMutation();
+
+      // eslint-disable-next-line
+    const { values, touched, handleBlur, handleChange, handleSubmit, errors , setFieldValue } = useFormik({
         initialValues: {
             name: '',
             email: '',
@@ -15,15 +21,24 @@ function Signup() {
             password: '',
             confirmpassword: ''
         },
-        validationSchema: signupSchema
+        validationSchema: signupSchema,
+    onSubmit: async (values) => {
+      delete values.confirmpassword;
+      console.log(values);
+      await register(values);
+    }
     });
+
+    
+
     return (
-        <form action="post" name="SignUpForm">
+        <form action='post' name="SignUpForm" onSubmit={handleSubmit} >
             <div className={styles.SignupWrapper}>
                 <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
                 <br />
                 <div className={styles.SignupHeader}>E-FIR System</div>
                 <div className={styles.SignupHeader}>Create an Account</div>
+
                 <Textinput
                     type="text"
                     values={values.name}

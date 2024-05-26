@@ -98,7 +98,7 @@ function OnlineFIR() {
       // Category: yup.string().required('Required'),
       // Offence: yup.string().required('Required'),
       // IncidentDetails: yup.string().max(1000).required('Required'),
-      file:yup.string(),
+      // file:yup.string(),
     }),
     onSubmit: async (values) => {
       console.log(values);

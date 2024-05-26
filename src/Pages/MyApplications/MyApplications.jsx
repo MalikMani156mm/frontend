@@ -17,6 +17,7 @@ function formatNumberWithCommas(number) {
 
 function MyApplications() {
 
+  // eslint-disable-next-line 
  const {isLoading, data, error} = useGetAllFIRsQuery();
 
   const [count1, setCount1] = useState(0);

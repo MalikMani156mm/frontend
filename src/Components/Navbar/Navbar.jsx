@@ -3,11 +3,22 @@ import { useState } from "react";
 import styles from "./Navbar.module.css";
 import logo from "../../images/Logo.png";
 import Message from "../../images/Message.png";
+import {  useSelector , useDispatch } from "react-redux";
+import { useLogoutUserMutation } from "../../Redux/Features/Auth/AuthApi";
+import { clearUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-  // const isAuthenticated = true;
+  const {user,token} = useSelector(state=>state.auth)
+    // eslint-disable-next-line
+  const [ logout ]=useLogoutUserMutation();
+  const dispatch = useDispatch();
+  const handleLogout = async ()=>{
+    await logout();
+    dispatch(clearUserInfo());
+  }
+
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <>
       <nav>
@@ -78,7 +89,7 @@ function Navbar() {
             </NavLink>
           </li>
 
-          {isAuthenticated ? (
+          {user && token ? 
             <>
               <li>
                 <NavLink
@@ -91,16 +102,14 @@ function Navbar() {
               <li>
                 <NavLink>
                   <button
-                    className={`${styles.LogOutButton} ${styles.ActivelyStyle}`} onClick={() => {
-                      setIsAuthenticated(false);
-                    }}
+                    className={`${styles.LogOutButton} ${styles.ActivelyStyle}`} onClick={handleLogout}
                   >
                     Log Out
                   </button>
                 </NavLink>
               </li>
             </>
-          ) : (
+           : 
             <>
               <li>
                 <NavLink
@@ -123,7 +132,7 @@ function Navbar() {
                 </NavLink>
               </li>
             </>
-          )}
+          }
         </ul>
         {/* <input type="checkbox" name="bars" className={styles.check} />
         <label htmlFor="check" className={styles.checkbtn}>

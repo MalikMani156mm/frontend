@@ -11,15 +11,13 @@ function VolunteerRegistration() {
           Sector F-6/1, H-11 Police Lines or your nearest police station:
         </p>
         <h3>Required Documents:</h3>
-        <p>
-          <ol>
-            <li> Applicant must be present.</li>
-            <li> Photocopy of CNIC.</li>
-            <li> Original CNIC.</li>
-            <li>Passport size Photograph.</li>
-            <li> Copy of educational documents.</li>
-          </ol>
-        </p>
+        <ol>
+          <li><p> Applicant must be present.</p></li>
+          <li><p> Photocopy of CNIC.</p></li>
+          <li><p> Original CNIC.</p></li>
+          <li><p> Passport size Photograph.</p></li>
+          <li><p> Copy of educational documents.</p></li>
+        </ol>
       </div>
     </div>
   );
