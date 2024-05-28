@@ -10,7 +10,7 @@ import { isAuthorizedUser } from '../middleware/authMiddleware.js';
 const router = express.Router()
 
 
-router.route('/FIRs').get(getAllFIRs);
+router.route('/FIRs').get(isAuthorizedUser,getAllFIRs);
 router.route('/FIR/:id').get(isAuthorizedUser,getFIRById);
 router.route('/new/FIR').post(createNewFIR);
 router.route('/update/:id').put(isAuthorizedUser,updateFIR);
