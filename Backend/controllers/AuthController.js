@@ -13,7 +13,6 @@ export const RegisterNewUser = async function(req,res,next){
         const user = await User.create(req.body)
         res.json([user,'user is created'])
     } catch (error) {
-        // console.log(error);
         next(error)
     }
 }
@@ -42,9 +41,9 @@ export const LoginUser = async function(req,res,next){
             return next(new Error("Your password is incorrect"))
         }
 
-        const token = await jwt.sign({payload: user},process.env.JWT_SECRET,{expiresIn: 10})
+        const token = await jwt.sign({payload: user},process.env.JWT_SECRET,{expiresIn: 1 * 60 * 60})
 
-        res.cookie("token", token, {expires: new Date(Date.now() + 9000000), httpOnly:true, secure:true}).status(200).json({
+        res.cookie("token", token, {expires: new Date(Date.now() + 9000000)}).status(200).json({
             user,
             token
         })

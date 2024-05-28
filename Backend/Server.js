@@ -2,7 +2,7 @@ import express from 'express';
 import FIRRoutes from "./routes/FIRroute.js";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import bodyParser from 'body-parser';
-import cookieparser from "cookie-parser";
+import cookieParser from "cookie-parser";
 import { connectDB , cloudinaryConfig } from "./config/config.js";
 import { errors } from './middleware/errors.js';
 import cors from "cors";
@@ -12,7 +12,7 @@ connectDB();
 cloudinaryConfig();
 
 app.use(bodyParser.json())
-app.use(cookieparser())
+app.use(cookieParser())
 
 app.use(cors());
 

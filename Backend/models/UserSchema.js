@@ -33,7 +33,14 @@ const UserSchema = new Schema(
             type: String,
             require:[true, 'Please provide the Password'],
         },
-
+        role:{
+            type:String,
+            default:'Citizen',
+            enum: ['Citizen','Admin']
+        }
+    },
+    {
+        timestamps:true
     }
 )
 const User = mongoose.model( 'User', UserSchema );

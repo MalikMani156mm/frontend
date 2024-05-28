@@ -49,6 +49,7 @@ const FIRsSchema = new Schema(
         },
         relation: {
             type: String,
+            enum: ['son','daughter','wife']
         },
         GuardianName: {
             type: String,
@@ -106,6 +107,7 @@ const FIRsSchema = new Schema(
         },
         FIRRegistered: {
             type: String,
+            enum: ['Yes','No']
         },
         FIRNo: {
             type: String,
