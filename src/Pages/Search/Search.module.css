@@ -1,0 +1,294 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    margin: 10px;
+  }
+  
+  .container{
+    width: 90%;
+    border: 2px solid blue;
+    border-radius: 10px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .header {
+    background-color: blue;
+    width: parent;
+    height: 40px;
+    font-size: large;
+    padding-left: 20px;
+    padding-top: 8px;
+  }
+  
+  .header b {
+    color: aliceblue;
+  }
+
+  .row{
+    justify-content: space-between;
+    align-items: center;
+    }
+    
+    .row,.row1{
+      padding: 10px;
+      display: flex;
+    flex-direction: row;
+    }
+
+    .column,
+.column1{
+  display: flex;
+flex-direction: column;
+}
+
+.column2{
+  margin-left: 16px;
+  }   
+
+    .SearchButton{
+        background-color: blue;
+        color: aliceblue;
+        border: none;
+        outline: none;
+        width: 110px; 
+        border-radius: 10px;
+        height: 60px;
+        padding: 15px 20px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 20px;
+        margin: 10px 0; 
+    }
+
+    .SearchButton:hover{
+        background-color: skyblue;
+        color: black;
+    }
+
+    .column > div > select {
+        width: 230px; 
+    }
+
+    .formControl {
+    display: block;
+    width: 230px;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .formControl:focus {
+    color: #495057;
+    background-color: #fff;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.5px blue;
+  }
+
+  @media screen and (max-width: 1460px) {
+    
+    .row,.row1,.row2{
+      flex-direction: column;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 0;
+    }
+    .formControl{
+      width: 1024px;
+    }
+    .column > div > select {
+      width: 1024px; 
+    }
+    .column2{
+      margin-left: 0px;
+      }
+      .align4{
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+      }
+      .boxer{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .resp{
+        display: flex;
+        flex-direction: row;
+      }
+      .size{
+        display: none;
+      }
+      .alter{
+        display: block;
+      }
+      .align,.align1,.align2,.align4,.align5{
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .label{
+        margin-top: 5px;
+      }
+      .excelButton{
+        margin-bottom: 10px;
+      }
+      
+  }
+  @media screen and (max-width: 1188px) {
+    .formControl{
+      width: 768px;
+    }
+    .column > div > select {
+      width: 768px; 
+    }
+  }
+
+  @media screen and (max-width: 902px) {
+    .formControl{
+      width: 540px;
+    }
+    .column > div > select {
+      width: 540px; 
+    }
+  }
+
+  @media screen and (max-width: 680px) {
+    .container {
+      width: 95%;
+      height: auto;
+    }
+  
+    .boxesContainer {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .box1,
+    .box2,
+    .box3,
+    .box4 {
+      width: 80%;
+      margin-bottom: 10px;
+    }
+  
+    .header {
+      font-size: medium;
+    }
+  
+    .num {
+      font-size: 3vh;
+    }
+    .row5{
+      flex-direction: column;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 0;
+    }
+  }
+
+  @media screen and (max-width : 768px){
+    
+    .formControl{
+      width: 370px;
+    }
+    .column > div > select {
+      width: 370px; 
+    }
+    .column2{
+      margin-left: 0px;
+      }
+      .align4{
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+      }
+      .boxer{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .resp{
+        display: flex;
+        flex-direction: row;
+      }
+      .size{
+        display: none;
+      }
+      .alter{
+        display: block;
+      }
+      .align,.align1,.align2,.align4,.align5{
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .label{
+        margin-top: 5px;
+      }
+      .excelButton{
+        margin-bottom: 10px;
+      }
+      .row4{
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .cell,.cell1{
+        flex-basis: 50%;
+      }
+  }
+  @media screen and (max-width: 440px) {
+    .formControl{
+      width: 275px;
+    }
+    .column > div > select {
+      width: 275px; 
+    }
+  }
+  @media screen and (max-width: 380px) {
+    .formControl{
+      width: 275px;
+    }
+    .formControl3{
+      width: 175px;
+    }
+    .column > div > select {
+      width: 275px; 
+    }
+    .row2,.boxer,.resp{
+      align-items: self-start;
+      margin-left: 20px;
+    }
+    .excelButton{
+      margin-left: 60px;
+    }
+    .resp{
+      margin-left: 70px;
+    }
+  }
+  @media screen and (max-width: 330px) {
+    .formControl{
+      width: 230px;
+    }
+    .formControl3{
+      width: 105px;
+    }
+    .column > div > select {
+      width: 230px; 
+    }
+    .row2,.boxer{
+      align-items: self-start;
+      margin-left: 10px;
+    }
+    .excelButton{
+      margin-left: 30px;
+    }
+  }
+

@@ -9,7 +9,6 @@ import { clearUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 function Navbar() {
 
   const {user,token} = useSelector(state=>state.auth)
-    // eslint-disable-next-line
   const [ logout ]=useLogoutUserMutation();
   const dispatch = useDispatch();
   const handleLogout = async ()=>{
@@ -68,27 +67,14 @@ function Navbar() {
               My Applications
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="UserGuide"
-              className={({ isActive }) =>
-                isActive ? styles.ActiveStyle : styles.inActiveStyle
-              }
-            >
-              User Guide
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="PSJudicary"
-              className={({ isActive }) =>
-                isActive ? styles.ActiveStyle : styles.inActiveStyle
-              }
-            >
-              PS Judiciary
-            </NavLink>
-          </li>
-
+  
+          { token ? 
+            <li><NavLink to="Search"className={({ isActive }) =>isActive ? styles.ActiveStyle : styles.inActiveStyle}>Search</NavLink></li>
+           :<>
+          <li><NavLink to="PSJudicary"className={({ isActive }) =>isActive ? styles.ActiveStyle : styles.inActiveStyle}>PS Judiciary</NavLink></li>
+          <li><NavLink to="UserGuide"className={({ isActive }) =>isActive ? styles.ActiveStyle : styles.inActiveStyle}>User Guide</NavLink></li> 
+          </>
+          }
           {user && token ? 
             <>
               <li>

@@ -307,7 +307,7 @@ function MyApplications() {
           </div>
         </div>
       </div>
-      <div className={styles.container}>
+      {/* <div className={styles.container}>
         <div className={styles.header}>
           <b>Search Complaints</b>
         </div>
@@ -538,7 +538,7 @@ function MyApplications() {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
       <div className={styles.container}>
         <div className={styles.header}>
           <b>Filters</b>
