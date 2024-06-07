@@ -16,7 +16,19 @@ export const errors = (err, req, res, next) => {
         const message = `Resource not found, Invalid: ${err.path}`;
         error = new Error(message);
     };
+
+    if (err.name === 'JsonWebTokenError') {
+        const message = `Json Web Token is Invalid, Try again!!!`;
+        error = new Error(message);
+    };
+
+    if (err.name === 'TokenExpiredError') {
+        const message = `Json Web Token is Expired, Try again!!!`;
+        error = new Error(message);
+    };
+
     res.json({
-        error: error.message
+        success: false,
+        message: error.message
     })
 }

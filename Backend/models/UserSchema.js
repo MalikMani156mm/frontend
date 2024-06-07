@@ -15,7 +15,7 @@ const UserSchema = new Schema(
         email: {
             type: String,
             require:[true, 'Please provide the Email'],
-            unique:true
+            // unique:true
         },
         phonenumber: {
             type: Number,

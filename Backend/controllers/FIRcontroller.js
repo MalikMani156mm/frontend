@@ -34,13 +34,14 @@ export const createNewFIR = async function(req,res,next){
         }
         files.push(file)
         newFIR.file = files
-        console.log(newFIR);
       });
 
     try {
         const r = await FIR.create(newFIR);
     res.json({
-        FIR:r
+        FIR:r,
+        message:"FIR Submitted Successfully",
+        success:true
     });
     } catch (error) {
         next(error);
@@ -51,11 +52,17 @@ export const updateFIR = async function(req,res,next){
     const {id} = req.params;
     const data = req.body;
     const UpdateFIR = await FIR.findByIdAndUpdate(id,data);
-    res.json('FIR is Updated')
+    res.json({
+        message:'FIR is Updated',
+        success:true
+    })
 }
 
 export const deleteFIR = async function(req,res,next){
     const {id} = req.params;
     const DeleteFIR = await FIR.findByIdAndDelete(id);
-    res.json('FIR is Delete');
+    res.json({
+        message:'FIR is Deleted',
+        success:true
+    });
 }

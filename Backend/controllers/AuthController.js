@@ -8,10 +8,17 @@ export const RegisterNewUser = async function(req,res,next){
     try {
         let newUser = req.body;
 
+        // console.log(newUser.email);
+
         newUser.password =  await bcrypt.hash( newUser.password, 10)
 
         const user = await User.create(req.body)
-        res.json([user,'user is created'])
+        // LoginUser(req.body);
+        res.json({
+            User: user,
+            success: true,
+            message:'User is registered'
+        })
     } catch (error) {
         next(error)
     }
@@ -41,12 +48,13 @@ export const LoginUser = async function(req,res,next){
             return next(new Error("Your password is incorrect"))
         }
 
-        const token = await jwt.sign({payload: user},process.env.JWT_SECRET,{expiresIn: 1 * 60 * 60})
+        const token = await jwt.sign({payload: user},process.env.JWT_SECRET,{ expiresIn: '24h' })
 
-        res.cookie("token", token, {expires: new Date(Date.now() + 9000000)}).status(200).json({
+        res.cookie("token", token, {expires: new Date(Date.now() + 86400000)}).status(200).json({
             user,
             token
         })
+        
     } catch (error) {
         next(error)
     }
@@ -54,6 +62,7 @@ export const LoginUser = async function(req,res,next){
 
 export const LogoutUser = async function(req,res,next){
     res.cookie("token", "", {expires: new Date( Date.now() )}).json({
+        success: true,
         Message: "logged out"
     })
 }

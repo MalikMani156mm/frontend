@@ -37,9 +37,12 @@ const FIRsSchema = new Schema(
             // min:[13, 'without dash 13 number'],
             // max:[15, 'wit hdash 15 number']
         },
-        email: {
+        // email: {
+        //     type: String,
+        //     require: [true, 'Please provide the Email']
+        // },
+        SerialNumber: {
             type: String,
-            require: [true, 'Please provide the Email']
         },
         Name: {
             type: String,
@@ -119,7 +122,14 @@ const FIRsSchema = new Schema(
             secure_url: String,
             public_id: String,
         }],
-
+        Status: {
+            type: String,
+            default:'pending',
+            enum: ['pending','Approved','filed']
+        },
+    },
+    {
+        timestamps:true
     }
 )
 
