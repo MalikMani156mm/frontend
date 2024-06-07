@@ -223,7 +223,7 @@ function Search() {
                             </select>
                         </div>
                     </div>
-                    <div className={styles.column1}>
+                    <div className={styles.column}>
                         <div className={styles.label}>Is complaint satisfied</div>
                         <div>
                             <select name="ICS" className={styles.formControl}>
@@ -231,12 +231,12 @@ function Search() {
                             </select>
                         </div>
                     </div>
-                    <div className={styles.column2}>
-                        <button className={styles.SearchButton} type="submit">
-                            Search
-                        </button>
-                    </div>
                 </div>
+            </div>
+            <div >
+                <button className={styles.SearchButton} type="submit">
+                    Search
+                </button>
             </div>
         </div>
     );

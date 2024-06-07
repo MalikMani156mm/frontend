@@ -10,8 +10,8 @@ const initialState = {
   initialState,
   reducers: {
     setUserInfo(state,action) {
-        state.user = action.payload.user;
-        state.token = action.payload.token;
+      state.user = action.payload.user;
+      state.token = action.payload.token;
     },
     clearUserInfo(state) {
       state.user = null;

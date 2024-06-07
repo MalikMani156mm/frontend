@@ -2,7 +2,7 @@
     margin: 20px auto; /* Added margin for better spacing */
     padding: 10px;
     /* width: 40vw; */
-    width: 80%;
+    width: 90%;
     max-width: 600px;
     min-height: 65vh; /* Adjusted min-height for better flexibility */
     max-height: 900px; /* Adjusted max-height for better flexibility */
@@ -17,11 +17,27 @@
     padding: 20px;
 }
 .LoginHeader {
-    font-size: 48px;
+    font-size: 36px;
     font-weight: bold;
-    width: inherit;
+    /* width: inherit; */
     text-align: center;
     margin-bottom: 20px; /* Increased margin for better spacing */
+}
+
+.inputContainer {
+    position: relative;
+    width: fit-content; 
+    
+}
+
+.eye {
+    position: absolute;
+    top: 50%;
+    right: 40px; 
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 10;
+    color: #666; 
 }
 
 .loginButton {
@@ -50,12 +66,19 @@
     cursor: pointer;
     outline: none;
     text-decoration: none;
+    border:none;
 }
 
 
 .createAccount:hover {
     font-size: 30px;
     color: #0d6efd;
+}
+
+.homelink{
+    text-decoration: none;
+    font-weight: bold;
+    color: rgb(1, 1, 179);
 }
 
 @media screen and (max-width: 430px) {

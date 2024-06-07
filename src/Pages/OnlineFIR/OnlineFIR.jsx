@@ -4,12 +4,14 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import { useAddNewFIRMutation } from '../../Redux/Features/FIR/FIRApi';
 import * as yup from 'yup';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function OnlineFIR() {
 
   //eslint-disable-next-line
-  const [addFIR, { isLoading }] = useAddNewFIRMutation();
+  const [addFIR, { isLoading, error }] = useAddNewFIRMutation();
 
   const [fileInputs, setFileInputs] = useState([{ id: 1 }]);
 
@@ -24,8 +26,8 @@ function OnlineFIR() {
 
   const handleRadioClick = (value) => {
     if (selectedValue === value) {
-      setSelectedValue(null);  
-      
+      setSelectedValue(null);
+
     } else {
       setSelectedValue(value);
       setFieldValue('relation', values.relation === value ? '' : value);
@@ -34,8 +36,8 @@ function OnlineFIR() {
 
   const handleRadioClick2 = (value) => {
     if (selectedValue2 === value) {
-      setSelectedValue2(null);  
-      
+      setSelectedValue2(null);
+
     } else {
       setSelectedValue2(value);
       setFieldValue('FIRRegistered', values.FIRRegistered === value ? '' : value);
@@ -48,7 +50,7 @@ function OnlineFIR() {
   };
 
   // eslint-disable-next-line
-  const { values, touched, handleBlur, handleChange, handleSubmit, errors ,setFieldValue} = useFormik({
+  const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
     initialValues: {
       EntryDate: getCurrentDateTimeLocal(),
       SourceOfComplaint: 'Online',
@@ -58,7 +60,7 @@ function OnlineFIR() {
       PoliceStation: '',
       BeatMoza: '',
       CNIC: '',
-      email: '',
+      SerialNumber: '',
       Name: '',
       relation: '',
       GuardianName: '',
@@ -87,7 +89,7 @@ function OnlineFIR() {
       // PoliceStation: yup.string().required('Required'),
       // BeatMoza: yup.string(),
       // CNIC: yup.number().min(1111111111111,"Must be atleast 13 digit").max(9999999999999,"Invalid CNIC").required('Required'),
-      // email: yup.string().email('enter a valid email').required('Required'),
+      // SerialNumber: yup.string().email('enter a valid email').required('Required'),
       // Name: yup.string().min(5).max(30).required('Required'),
       // GuardianName: yup.string().min(5).max(30).required('Required'),
       // Gender: yup.string().required('Required'),
@@ -98,14 +100,28 @@ function OnlineFIR() {
       // Category: yup.string().required('Required'),
       // Offence: yup.string().required('Required'),
       // IncidentDetails: yup.string().max(1000).required('Required'),
-      // file:yup.string(),
+      file:yup.string().required('Required'),
     }),
     onSubmit: async (values) => {
       console.log(values);
-      await addFIR(values);
+      const res = await addFIR(values).unwrap();
+      if (res.success) {
+        toast.success(res.message);
+      } 
+      else {
+        toast.error(res.message || res.data.error);
+      }
+     
     }
   });
 
+  if (error) {
+    return (<>
+      <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
+      <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
+      <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
+    </>)
+  }
 
   return (
     <div className={styles.body}>
@@ -261,7 +277,7 @@ function OnlineFIR() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">Beat/Moza No.</div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="BeatMoza" 
+                <select className="form-control" name="BeatMoza"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -286,14 +302,14 @@ function OnlineFIR() {
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
-                Email
+              Serial Number
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 " >
                 <div >
-                  <input type="email" name="email" className="form-control" onChange={handleChange}
+                  <input type="text" name="SerialNumber" className="form-control" onChange={handleChange}
                     onBlur={handleBlur} />
                 </div>
-                <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
+                <p className="help-block text-danger">{errors.SerialNumber && touched.SerialNumber ? errors.SerialNumber : null}</p>
               </div>
             </div>
 
@@ -315,7 +331,7 @@ function OnlineFIR() {
                   <div className="mx-2">
                     <input type="radio" name="relation" value="daughter"
                       id="daughter"
-                       checked={values.relation === 'daughter'}
+                      checked={values.relation === 'daughter'}
                       onChange={() => handleRadioClick('daughter')} />
                     <p>D/O</p>
                   </div>
@@ -406,7 +422,7 @@ function OnlineFIR() {
                   type="date"
                   id="datetime"
                   name="IncidentDate"
-                  className="form-control" 
+                  className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -416,7 +432,7 @@ function OnlineFIR() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3 ">Category</div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="Category" 
+                <select className="form-control" name="Category"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -445,7 +461,7 @@ function OnlineFIR() {
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Offence</div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="Offence" 
+                <select className="form-control" name="Offence"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -600,7 +616,7 @@ function OnlineFIR() {
                 Offence Subcategory
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="OffenceSubcategory"  onChange={handleChange}
+                <select className="form-control" name="OffenceSubcategory" onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
                   <option value="1">Sub Category</option>
@@ -608,7 +624,7 @@ function OnlineFIR() {
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Assigned To</div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="AssignedTo"  onChange={handleChange}
+                <select className="form-control" name="AssignedTo" onChange={handleChange}
                   onBlur={handleBlur} >
                   <option value="3">Beat Committee</option>
                   <option value="2">Police Officer</option>
@@ -658,13 +674,13 @@ function OnlineFIR() {
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <div className={styles.radio}>
                   <div className="mx-2">
-                  <input type="radio" name="FIRRegistered" id="Yes" value="Yes"
+                    <input type="radio" name="FIRRegistered" id="Yes" value="Yes"
                       checked={values.FIRRegistered === 'Yes'}
                       onChange={() => handleRadioClick2('Yes')} />
                     <p>Yes</p>
                   </div>
                   <div>
-                  <input type="radio" name="FIRRegistered" id="No" value="No"
+                    <input type="radio" name="FIRRegistered" id="No" value="No"
                       checked={values.FIRRegistered === 'No'}
                       onChange={() => handleRadioClick2('No')} />
                     <p>No</p>
@@ -673,33 +689,33 @@ function OnlineFIR() {
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2">FIR No</div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="FIRNo" className="form-control"   onChange={handleChange}
-                  onBlur={handleBlur}/>
+                <input type="text" name="FIRNo" className="form-control" onChange={handleChange}
+                  onBlur={handleBlur} />
               </div>
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">IO Name</div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="IOName" className="form-control"   onChange={handleChange}
-                  onBlur={handleBlur}/>
+                <input type="text" name="IOName" className="form-control" onChange={handleChange}
+                  onBlur={handleBlur} />
               </div>
             </div>
             <div className={styles.alignment1}>
               {fileInputs.map((file, index) => (
                 <div key={file.id} className={styles.addDiv} >
                   File {index + 1}
-                  <input type="file" className={`${styles.fileControl} ${styles.gap}`} name="file" 
-                  onChange={(event)=>{
-                    let reader = new FileReader();
-                    reader.onloadend = ()=>{
-                      if (reader.readyState===2){
-                        setFieldValue("file",reader.result);
+                  <input type="file" className={`${styles.fileControl} ${styles.gap}`} name="file"
+                    onChange={(event) => {
+                      let reader = new FileReader();
+                      reader.onloadend = () => {
+                        if (reader.readyState === 2) {
+                          setFieldValue("file", reader.result);
+                        }
                       }
-                    }
-                    reader.readAsDataURL(event.currentTarget.files[0]);
-                  }}
-                  onBlur={handleBlur}/>
-                <p className="help-block text-danger">{errors.file && touched.file ? errors.file : null}</p>
+                      reader.readAsDataURL(event.currentTarget.files[0]);
+                    }}
+                    onBlur={handleBlur} />
+                  <p className="help-block text-danger">{errors.file && touched.file ? errors.file : null}</p>
                 </div>
               ))}
               <button
@@ -717,11 +733,12 @@ function OnlineFIR() {
               Cancel
             </Link>
           </button>
-          <button className={styles.SubmitButton} type='submit' >
-            Submit
+          <button className={styles.SubmitButton} type='submit' disabled={isLoading}>
+            {isLoading ? "Loading..." : "Submit"}
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }

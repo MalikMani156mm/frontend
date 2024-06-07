@@ -18,12 +18,12 @@ function Footer() {
 
         <div className="InLinks">
           <h3>QUICK MENUS:</h3>
-          <ul><Link to={"https://islamabadpolice.gov.pk/public_services.php"}>Public Services</Link></ul>
-          <ul><Link to={"https://islamabadpolice.gov.pk/new_initiatives.php"}>New Initiatives</Link></ul>
-          <ul><Link to={"https://islamabadpolice.gov.pk/public_relations.php"}>Public Relations</Link></ul>
-          <ul><Link to={"https://islamabadpolice.gov.pk/establishment_affairs.php"}>Establishment Affairs</Link></ul>
-          <ul><Link to={"/ContactUs"}>Contact US</Link></ul>
-          <ul><Link to={"/AboutUs"}>About</Link></ul>
+          <ul><Link to={"/UserGuide"} >User Manual Guide</Link></ul>
+          <ul><Link to={"/PSJudicary"}>Police Staions Judiciary</Link></ul>
+          <ul><Link to={"/OnlineFIR"}>Character Certificate</Link></ul>
+          <ul><Link to={"/OnlineFIR"}>Vehicle Verification</Link></ul>
+          <ul><Link to={"/ContactUs"}>Contact Us</Link></ul>
+          <ul><Link to={"/AboutUs"}>About Us</Link></ul>
         </div>
 
         <div className="Helplines">

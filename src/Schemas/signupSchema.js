@@ -5,7 +5,7 @@ const errorMessage = 'Use lowercase, uppercase and digits';
 
 const signupSchema = yup.object().shape({
     name:yup.string().min(5).max(30).required('name is Required'),
-    email:yup.string().email('enter a valid email').required('Email is Required'),
+    // email:yup.string().email('enter a valid email').required('Email is Required'),
     cnic: yup.string().required('required'),
     phonenumber: yup.string().required('required'),
     // cnic: yup.string().number().min(1111111111111,"Must be atleast 13 digit").max(9999999999999,"Invalid CNIC").required('CNIC is Required'),

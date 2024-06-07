@@ -22,14 +22,21 @@ import ForeignerRegistration from './Pages/UserGuide/ForeignerRegistration';
 import RootLayouts from "./Pages/Layouts/RootLayouts.jsx";
 import AuthLayouts from "./Pages/Layouts/AuthLayout.jsx";
 import Search from "./Pages/Search/Search.jsx";
+import AuthAdminLayouts from "./Pages/Layouts/AuthAdminLayout.jsx";
+import ForgetPassword from "./Pages/Login/ForgetPassword.jsx";
+import ConfirmPassword from "./Pages/Login/ConfirmPassword.jsx";
+import NewPassword from "./Pages/Login/NewPassword.jsx";
+import EmailVerification from "./Pages/Login/EmailVerification.jsx";
+
 export const router = createBrowserRouter(
+
+
     createRoutesFromElements(
         <Route>
             <Route path="/" element={<div className={styles.layout}><RootLayouts /></div>}>
                 <Route path="/" exact element={<div className={styles.main}><Home /></div>} />
                 <Route path="/UserGuide" exact element={<div className={styles.main}><UserGuide /></div>} />
                 <Route path="/PSJudicary" exact element={<div className={styles.main}><PSJudicary /></div>} />
-                <Route path="/Search" exact element={<div className={styles.main}><Search /></div>} />
                 <Route path="/CharacterCertificate" exact element={<div className={styles.main}><CharacterCertificate /></div>} />
                 <Route path="/PoliceVerification" exact element={<div className={styles.main}><PoliceVerification /></div>} />
                 <Route path="/LostReport" exact element={<div className={styles.main}><LostReport /></div>} />
@@ -45,10 +52,18 @@ export const router = createBrowserRouter(
                 <Route path="/" element={<div className={styles.layout}><AuthLayouts /></div>}>
                     <Route path="/OnlineFIR" exact element={<div className={styles.main}><OnlineFIR /></div>} />
                     <Route path="/MyApplications" exact element={<div className={styles.main}><MyApplications /></div>} />
+                    <Route path="/ConfirmPassword" exact element={<div className={styles.main}>< ConfirmPassword /></div>} />
+                    <Route path="/NewPassword" exact element={<div className={styles.main}>< NewPassword /></div>} />
+                </Route>
+                <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'Admin'} /></div>}>
+                    <Route path="/Search" exact element={<div className={styles.main}><Search /></div>} />
                 </Route>
             </Route>
             <Route path="/LogIn" exact element={<div className={styles.main}><Login /></div>} />
             <Route path="/SignUp" exact element={<div className={styles.main}><SignUp /></div>} />
+            <Route path="/ForgetPassword" exact element={<div className={styles.main}>< ForgetPassword /></div>} />
+            <Route path="/EmailVerification" exact element={<div className={styles.main}>< EmailVerification /></div>} />
+            <Route path="/setNewPassword" exact element={<div className={styles.main}>< NewPassword /></div>} />
         </Route>
     )
 )

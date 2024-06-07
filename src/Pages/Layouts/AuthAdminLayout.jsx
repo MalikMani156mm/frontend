@@ -2,18 +2,18 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 
-function AuthLayouts(){
+function AuthAdminLayouts({ role }) {
 
-    const {token} = useSelector(state=>state.auth)
-    if(!token){
+    const { user, token } = useSelector(state => state.auth)
+    if (!token || (user && role !== user.role)) {
         return <Navigate to={'/login'} replace={true}/>
     }
 
-    return(
+    return (
         <div>
-            <Outlet/>
+            <Outlet />
         </div>
     );
 }
 
-export default AuthLayouts;
+export default AuthAdminLayouts;

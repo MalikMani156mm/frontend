@@ -7,9 +7,18 @@ import logo from "../../images/Logo.png";
 import { useLoginUserMutation } from "../../Redux/Features/Auth/AuthApi";
 import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 import { useDispatch } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+
 
 function Login() {
 
+    const [showPassword, setShowPassword] = useState(false);
+
+    const toggleShowPassword = () => {
+        setShowPassword(!showPassword);
+    }
     const dispatch = useDispatch();
     const navigate = useNavigate();
     // eslint-disable-next-line
@@ -28,38 +37,55 @@ function Login() {
             navigate("/MyApplications")
         }
     })
-    return (
-        <form action='post' name="SignUpForm" onSubmit={handleSubmit} >
-            <div className={styles.LoginWrapper}>
-                <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
-                <br />
-                <div className={styles.LoginHeader}>E-FIR System</div>
 
-                <Textinput
-                    type="email"
-                    values={values.email}
-                    name="email"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter Email"
-                    error={errors.email && touched.email ? 1 : undefined}
-                    errormessage={errors.email}
-                />
-                <Textinput
-                    type="password"
-                    // values={values.password}
-                    name="password"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    placeholder="Enter password"
-                    error={errors.password && touched.password ? 1 : undefined}
-                    errormessage={errors.password}
-                />
-                <span ><Link to="/" className={styles.createAccount}>Forget Password</Link></span>
-                <button className={styles.loginButton} type="submit">Log In</button>
-                <span>Don't have an account? <Link to="/SignUp" className={styles.createAccount}>Sign Up</Link></span>
-            </div>
-        </form>
+
+    if (error) {
+        return (<>
+            <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
+            <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
+            <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
+        </>)
+    }
+
+    return (
+        <>
+            <form action='post' name="LoginForm" onSubmit={handleSubmit} >
+                <div className={styles.LoginWrapper}>
+                    <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
+                    <br />
+                    <div className={styles.LoginHeader}>E-FIR System</div>
+
+                    <Textinput
+                        type="email"
+                        values={values.email}
+                        name="email"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="Enter Email"
+                    />
+                    <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
+                    <div className={styles.inputContainer}>
+                        <Textinput
+                            type={showPassword ? 'text' : 'password'}
+                            values={values.password}
+                            name="password"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            placeholder="Enter password"
+                            className={styles.inputPassword}
+                        />
+                        <span className={styles.eye} onClick={toggleShowPassword}>
+                            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                        </span>
+                    </div>
+                    <p className="help-block text-danger">{errors.password && touched.password ? errors.password : null}</p>
+                    <span ><Link to="/ForgetPassword" className={styles.createAccount}>Forget Password</Link></span>
+                    <button className={styles.loginButton} type="submit" >
+                        {isLoading ? "Loading..." : "Log In"}</button>
+                    <span>Don't have an account? <Link to="/SignUp" className={styles.createAccount}>Sign Up</Link></span>
+                </div>
+            </form>
+        </>
     );
 
 }

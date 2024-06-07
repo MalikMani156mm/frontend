@@ -1,17 +1,20 @@
-import { NavLink } from "react-router-dom";
+import {  NavLink } from "react-router-dom";
 import { useState } from "react";
 import styles from "./Navbar.module.css";
 import logo from "../../images/Logo.png";
 import Message from "../../images/Message.png";
-import {  useSelector , useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useLogoutUserMutation } from "../../Redux/Features/Auth/AuthApi";
 import { clearUserInfo } from "../../Redux/Features/Auth/AuthSlice";
+
 function Navbar() {
 
-  const {user,token} = useSelector(state=>state.auth)
-  const [ logout ]=useLogoutUserMutation();
+  const { user, token } = useSelector(state => state.auth)
+  const role = "Admin";
+
+  const [logout, {isLoading}] = useLogoutUserMutation();
   const dispatch = useDispatch();
-  const handleLogout = async ()=>{
+  const handleLogout = async () => {
     await logout();
     dispatch(clearUserInfo());
   }
@@ -21,7 +24,7 @@ function Navbar() {
   return (
     <>
       <nav>
-        
+
         <NavLink to="/" className={`${styles.title} ${styles.inActiveStyle} `}>
           <img src={logo} alt="Logo unload" height={60} />
           E-FIR System
@@ -37,16 +40,9 @@ function Navbar() {
           <span></span>
         </div>
         <ul className={menuOpen ? styles.open : ""}>
-          <li>
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                isActive ? styles.ActiveStyle : styles.inActiveStyle
-              }
-            >
-              Home
-            </NavLink>
-          </li>
+          {(user && role === user.role) ? null :
+            <li><NavLink to="/" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Home</NavLink></li>
+          }
           <li>
             <NavLink
               to="OnlineFIR"
@@ -67,15 +63,11 @@ function Navbar() {
               My Applications
             </NavLink>
           </li>
-  
-          { token ? 
-            <li><NavLink to="Search"className={({ isActive }) =>isActive ? styles.ActiveStyle : styles.inActiveStyle}>Search</NavLink></li>
-           :<>
-          <li><NavLink to="PSJudicary"className={({ isActive }) =>isActive ? styles.ActiveStyle : styles.inActiveStyle}>PS Judiciary</NavLink></li>
-          <li><NavLink to="UserGuide"className={({ isActive }) =>isActive ? styles.ActiveStyle : styles.inActiveStyle}>User Guide</NavLink></li> 
-          </>
+          {(user && role === user.role) ?
+            <li><NavLink to="Search" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Search</NavLink></li>
+            : null
           }
-          {user && token ? 
+          {user && token ?
             <>
               <li>
                 <NavLink
@@ -88,14 +80,14 @@ function Navbar() {
               <li>
                 <NavLink>
                   <button
-                    className={`${styles.LogOutButton} ${styles.ActivelyStyle}`} onClick={handleLogout}
+                    className={`${styles.LogOutButton} ${styles.ActivelyStyle}`} onClick={handleLogout} disabled={isLoading}
                   >
-                    Log Out
+                    {isLoading ? "Loading..." : "Log Out"}
                   </button>
                 </NavLink>
               </li>
             </>
-           : 
+            :
             <>
               <li>
                 <NavLink
@@ -120,10 +112,6 @@ function Navbar() {
             </>
           }
         </ul>
-        {/* <input type="checkbox" name="bars" className={styles.check} />
-        <label htmlFor="check" className={styles.checkbtn}>
-          <FontAwesomeIcon icon={faBars} />
-        </label> */}
       </nav>
       <div className={styles.separator}></div>
     </>

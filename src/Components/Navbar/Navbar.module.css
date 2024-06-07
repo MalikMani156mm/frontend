@@ -120,9 +120,14 @@ nav .menu span{
     margin-top: 5px;
     background: linear-gradient(to right,transparent, #9ba3c2, transparent);
 }
+.homelink{
+    text-decoration: none;
+    font-weight: bold;
+    color: rgb(1, 1, 179);
+}
 
 
-@media screen and (max-width: 1460px) {
+@media screen and (max-width: 1121px) {
     nav .menu{
         display: flex;
     }
@@ -135,7 +140,6 @@ nav .menu span{
         flex-direction: column;
         width: 100%;
         margin-bottom: 0.25rem;
-        /* margin-left: 10px; */
     }
     nav ul.open{
         display: flex;

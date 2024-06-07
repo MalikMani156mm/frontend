@@ -2,7 +2,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const FIRApi = createApi({
   reducerPath: 'FIRApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/' ,
+    mode:'cors'
+  }),
   endpoints: (builder) => ({
     getAllFIRs: builder.query({
       query: () => `/FIRs`,

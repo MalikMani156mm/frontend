@@ -30,6 +30,14 @@ h1{
     opacity: 0.8; /* Adjust the opacity for the hover effect */
   }
 
+  .youtube{
+    background-image: url(../../images/youtube.jpg);
+    width: 100px;
+    height: 100px;
+    background-size:cover;
+    border-radius: 15px;
+  }
+
   @media screen and (max-width: 550px) {
     .links{
       flex-direction: column;

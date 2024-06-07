@@ -1,12 +1,63 @@
 
-  .body {
+  .body,.infoBody {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 5px;
     margin: 10px;
   }
-  
+  .infoBody{
+    align-items: flex-start;
+    padding: 10px 30px;
+    margin: 10px 30px;
+  }
+  .info{
+    width: 60%;
+    height: auto;
+    margin-bottom: 20px;
+  }
+
+  .infoRow{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .name{
+    margin-top: 10px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #0d6efd;
+  }
+
+  .email{
+    font-size: 20px;
+    margin-top: -10px;
+    color: #0d6efd;
+  }
+
+  .role{
+    margin-top: 15px;
+    font-size: 30px;
+    color: #0d6efd;
+  }
+
+  .avatarPolice{
+    background-image: url(../../images/pavatar.png);
+    width: 200px;
+    height: 200px;
+    background-size: cover;
+  }
+
+  .avatarCitizen{
+    background-image: url(../../images/cavatar.png);
+    width: 200px;
+    height: 200px;
+    background-size: cover;
+    border-radius: 100px;
+  }
+
   .container,
   .container3,
   .container4{
@@ -111,6 +162,11 @@ flex-direction: row;
   justify-content: space-between;
 }
 
+.rowButton{
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
 
 .row4{
   display: flex;
@@ -142,24 +198,8 @@ flex-direction: column;
   background-color: azure;
 }
 
-.align{
-  margin: 0 26px;
-}
-.align2{
-  margin-left: 7px;
-}
-.align1{
-  margin-left: 30px;
-}
-.align4{
-  margin-left: 10px;
-}
-.align5{
-  margin-right: 10px;
-}
-.alter{
-  display: none;
-}
+
+
   .formControl,
   .formControl1,
   .formControl2,
@@ -177,7 +217,9 @@ flex-direction: column;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   }
   
-
+  .formControl1{
+    width: 330px;
+  }
   .formControl2{
     width: 80px;
   }
@@ -252,70 +294,49 @@ flex-direction: column;
     }
   }
   
-  @media screen and (max-width: 1460px) {
+  @media screen and (max-width: 1515px) {
     
-    .row,.row1,.row2{
+    /* .row,.row1,.row2{
       flex-direction: column;
       flex-wrap: wrap;
       align-items: center;
-      padding: 0;
+      padding-left: 100px;
     }
-    .formControl{
-      width: 1024px;
+    .column{
+      flex-basis: 50%; 
+      margin-bottom: 20px; 
+    } */
+    .formControl1{
+      width: 230px;
     }
-    .column > div > select {
-      width: 1024px; 
-    }
-    .column2{
-      margin-left: 0px;
-      }
-      .align4{
-        display: flex;
-        flex-direction: row;
-        gap: 5px;
-      }
-      .boxer{
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-      .resp{
-        display: flex;
-        flex-direction: row;
-      }
-      .size{
-        display: none;
-      }
-      .alter{
-        display: block;
-      }
-      .align,.align1,.align2,.align4,.align5{
-        margin-left: 0;
-        margin-right: 0;
-      }
-      .label{
-        margin-top: 5px;
-      }
+    
+    
       .excelButton{
         margin-bottom: 10px;
       }
       
   }
-  @media screen and (max-width: 1188px) {
-    .formControl{
-      width: 768px;
+  @media screen and (max-width: 1068px) {
+    .formControl1{
+      width: 190px;
     }
-    .column > div > select {
-      width: 768px; 
+    .row4{
+      display: flex;
+      flex-wrap: wrap;
     }
+    .cell,.cell1{
+      flex-basis: 50%;
+    } 
   }
 
   @media screen and (max-width: 902px) {
-    .formControl{
-      width: 540px;
+    .row,.row1,.row2{
+      flex-direction: column;
+      flex-wrap: wrap;
+      align-items: center;
     }
-    .column > div > select {
-      width: 540px; 
+    .formControl1{
+      width: 540px;
     }
   }
 
@@ -355,43 +376,10 @@ flex-direction: column;
 
   @media screen and (max-width : 768px){
     
-    .formControl{
+    .formControl1{
       width: 370px;
     }
-    .column > div > select {
-      width: 370px; 
-    }
-    .column2{
-      margin-left: 0px;
-      }
-      .align4{
-        display: flex;
-        flex-direction: row;
-        gap: 5px;
-      }
-      .boxer{
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-      .resp{
-        display: flex;
-        flex-direction: row;
-      }
-      .size{
-        display: none;
-      }
-      .alter{
-        display: block;
-      }
-      .align,.align1,.align2,.align4,.align5{
-        margin-left: 0;
-        margin-right: 0;
-      }
-      .label{
-        margin-top: 5px;
-      }
-      .excelButton{
+    .excelButton{
         margin-bottom: 10px;
       }
       .row4{
@@ -400,25 +388,42 @@ flex-direction: column;
       }
       .cell,.cell1{
         flex-basis: 50%;
-      }
+      }  
   }
   @media screen and (max-width: 440px) {
-    .formControl{
+    .formControl1{
       width: 275px;
     }
-    .column > div > select {
-      width: 275px; 
+    .infoRow{
+      margin-left: 20px;
+    }
+    .avatarCitizen,.avatarPolice{
+      width: 100px;
+      height: 100px;
+    }
+    .name,.email,.role{
+      font-size: 20px;
+      margin-top: 0;
+    }
+    .infoBody{
+      margin: 10px;
+      padding: 10px;
+    }
+  }
+  @media screen and (max-width: 400px) {
+    .infoRow{
+      margin-left: 10px;
     }
   }
   @media screen and (max-width: 380px) {
-    .formControl{
+    .formControl1{
       width: 275px;
+    }
+    .infoRow{
+      margin-left: 0px;
     }
     .formControl3{
       width: 175px;
-    }
-    .column > div > select {
-      width: 275px; 
     }
     .row2,.boxer,.resp{
       align-items: self-start;
@@ -427,19 +432,13 @@ flex-direction: column;
     .excelButton{
       margin-left: 60px;
     }
-    .resp{
-      margin-left: 70px;
-    }
   }
   @media screen and (max-width: 330px) {
-    .formControl{
+    .formControl1{
       width: 230px;
     }
     .formControl3{
       width: 105px;
-    }
-    .column > div > select {
-      width: 230px; 
     }
     .row2,.boxer{
       align-items: self-start;
@@ -447,5 +446,17 @@ flex-direction: column;
     }
     .excelButton{
       margin-left: 30px;
+    }
+  }
+  @media screen and (max-width: 360px) {
+    .infoRow{
+      flex-direction: column;
+    }
+    .infoRow{
+      margin-left: 60px;
+    }
+    .infoBody{
+      margin: 0px;
+      padding: 0px;
     }
   }

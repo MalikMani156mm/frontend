@@ -1,0 +1,35 @@
+
+
+.customSelect {
+    width: 330px; 
+  }
+  
+  @media screen and (max-width: 1515px) {
+    .customSelect {
+        width: 230px; 
+      }
+  }
+
+  @media screen and (max-width: 1068px) {
+    .customSelect {
+        width: 190px; 
+      }
+  }
+
+  @media screen and (max-width: 902px) {
+    .customSelect {
+        width: 540px; 
+      }
+  }
+
+  @media screen and (max-width: 768px) {
+    .customSelect {
+        width: 370px; 
+      }
+  }
+
+  @media screen and (max-width: 440px) {
+    .customSelect {
+        width: 270px; 
+      }
+  }

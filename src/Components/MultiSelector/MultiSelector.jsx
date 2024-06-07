@@ -2,7 +2,7 @@ import styles from './MultiSelector.module.css';
 import React, { useState } from 'react';
 import Select from 'react-select';
 
-const CustomSelect = ({ options, onChange, placeholderText, selectWidth}) => {
+const CustomSelect = ({ options, onChange, placeholderText }) => {
   const [selectAllOption, setSelectAllOption] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -19,11 +19,8 @@ const CustomSelect = ({ options, onChange, placeholderText, selectWidth}) => {
   const customStyles = {
     control: (provided) => ({
       ...provided,
-      width: selectWidth, // Default width for normal screens
     }),
   };
-
-  
 
   return (
     <Select
@@ -40,4 +37,3 @@ const CustomSelect = ({ options, onChange, placeholderText, selectWidth}) => {
 };
 
 export default CustomSelect;
-
