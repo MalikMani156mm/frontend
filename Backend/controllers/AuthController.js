@@ -17,7 +17,7 @@ export const RegisterNewUser = async function(req,res,next){
         res.json({
             User: user,
             success: true,
-            message:'User is registered'
+            message:'User Registered Successfully'
         })
     } catch (error) {
         next(error)

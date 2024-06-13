@@ -8,10 +8,10 @@ export const isAuthenticatedUser = async (req, res, next) => {
         // console.log('Cookies:', req.cookies);
         const token = req.cookies.token;
         // console.log(token);
-        if (!token) {
-            return next(new Error("Please Login to access this resource"))
+        if (token) {
+            return next(new Error("Please Login again to access this resource"))
         }
-        const payload = await jwt.verify(token, process.env.JWT_SECRET)
+        const {payload} = jwt.verify(token, process.env.JWT_SECRET)
         req.user = payload;
         next();
     } catch (error) {

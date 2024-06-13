@@ -10,7 +10,12 @@ const FIRsSchema = new Schema(
             require: [true, 'Please provide the Date']
         },
         SourceOfComplaint: {
-            type: String
+            type: String,
+            default: 'Online'
+        },
+        ComplaintNumber: {
+            type: String,
+            unique:true
         },
         District: {
             type: String,
@@ -33,17 +38,11 @@ const FIRsSchema = new Schema(
         },
         CNIC: {
             type: Number,
-            // require:[true, 'Please provide the CNIC'],
+            require:[true, 'Please provide the CNIC'],
             // min:[13, 'without dash 13 number'],
             // max:[15, 'wit hdash 15 number']
         },
-        // email: {
-        //     type: String,
-        //     require: [true, 'Please provide the Email']
-        // },
-        SerialNumber: {
-            type: String,
-        },
+        
         Name: {
             type: String,
             require: [true, 'Please provide the Name'],
@@ -66,14 +65,14 @@ const FIRsSchema = new Schema(
         },
         ContactNumber: {
             type: Number,
-            // require:[true, 'Please provide the Contact Number'],
+            require:[true, 'Please provide the Contact Number'],
             // min:[11, 'At least of 11 number'],
             // max:[13, 'Maximum limit of 13 number']
         },
         PermanentAddress: {
             type: String,
             require: [true, 'Please provide the PermanentAddress'],
-            max: [200, 'Maximum limit of 200 words']
+            max: [300, 'Maximum limit of 200 words']
         },
         placeOfOccurance: {
             type: String,
@@ -106,7 +105,7 @@ const FIRsSchema = new Schema(
         IncidentDetails: {
             type: String,
             require: [true, 'Please provide the IncidentDetails'],
-            max: [1000, 'Maximum limit of 1000 words']
+            max: [2000, 'Maximum limit of 1000 words']
         },
         FIRRegistered: {
             type: String,
