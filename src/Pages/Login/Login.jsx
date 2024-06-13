@@ -1,7 +1,7 @@
 import styles from "./Login.module.css";
 import Textinput from "../../Components/Textinput/Textinput"
-import loginSchema from "../../Schemas/loginSchema";
 import { useFormik } from "formik";
+import * as yup from 'yup';
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/Logo.png";
 import { useLoginUserMutation } from "../../Redux/Features/Auth/AuthApi";
@@ -10,12 +10,20 @@ import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha"
 
 
 function Login() {
 
     const [showPassword, setShowPassword] = useState(false);
+    // eslint-disable-next-line
+    const [ ReCapchaValue, setReCapchaValue] = useState(false);
 
+
+    const onFill = (value) => {
+        setReCapchaValue(value);
+        setFieldValue('ReCapcha', value);
+    }
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     }
@@ -27,9 +35,14 @@ function Login() {
     const { values, touched, handleBlur, handleChange, errors, handleSubmit, setFieldValue } = useFormik({
         initialValues: {
             email: '',
-            password: ''
+            password: '',
+            ReCapcha: ''
         },
-        validationSchema: loginSchema,
+        validationSchema: yup.object().shape({
+            email: yup.string().email('Enter a valid Email').required('Email is Required'),
+            password:yup.string().min(8).max(20).required('Password is Required'),
+            ReCapcha: yup.string().required('Captcha must be filled')
+        }),
         onSubmit: async (values) => {
             console.log(values);
             const user = await UserLogin(values).unwrap();
@@ -79,6 +92,15 @@ function Login() {
                         </span>
                     </div>
                     <p className="help-block text-danger">{errors.password && touched.password ? errors.password : null}</p>
+                    <div>
+                        <ReCAPTCHA
+                            sitekey='6Ld8c_MpAAAAAB_7pSqPaqem6JbL7pni4x_VfMnp'
+                            name="ReCapcha"
+                            onBlur={handleBlur}
+                            onChange={onFill}
+                        />
+                    </div>
+                    <p className="help-block text-danger">{errors.ReCapcha && touched.ReCapcha ? errors.ReCapcha : null}</p>
                     <span ><Link to="/ForgetPassword" className={styles.createAccount}>Forget Password</Link></span>
                     <button className={styles.loginButton} type="submit" >
                         {isLoading ? "Loading..." : "Log In"}</button>

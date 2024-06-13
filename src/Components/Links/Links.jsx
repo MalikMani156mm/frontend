@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import Twitter from "../../images/Twitter.webp";
 import fb from "../../images/fb.png";
 import Instagram from "../../images/instagram.webp";
-import youtube from "../../images/youtube.jpg";
 
 function Links(){
     return(

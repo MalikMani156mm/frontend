@@ -6,21 +6,21 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/Logo.png";
 
 
-function EmailVerification() {
+function MobileVerification() {
 
     const navigate = useNavigate();
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, errors, handleSubmit, setFieldValue } = useFormik({
         initialValues: {
-            email: '',
+            phonenumber: '',
         },
         validationSchema: yup.object().shape({
-            email: yup.string().email('enter a valid email').required('Email is Required'),
+            phonenumber: yup.number().min(1111111111,"Must be atleast 11 digit").max(999999999999,"Invalid Number").required('Mobile Number is Required'),
 
         }),
         onSubmit: async (values) => {
             console.log(values);
-            navigate("/EmailOTP")
+            navigate("/MobileOTP")
         }
     })
 
@@ -42,17 +42,17 @@ function EmailVerification() {
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
                     <br />
                     <div className={styles.LoginHeader}>E-FIR System</div>
-                    <div className={styles.LoginHeader}> Provide Email</div>
+                    <div className={styles.LoginHeader}> Provide Mobile Number</div>
                     <Textinput
-                        type="email"
-                        values={values.email}
-                        name="email"
+                        type="number"
+                        values={values.phonenumber}
+                        name="phonenumber"
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        placeholder="Enter Email"
+                        placeholder="Enter Mobile Number"
                     />
-                    <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
-                    <span className={styles.createAccount}> <Link to="/MobileVerification" style={{ textDecoration: 'none' }}>Use Mobile Number</Link></span>
+                    <p className="help-block text-danger">{errors.phonenumber && touched.phonenumber ? errors.phonenumber : null}</p>
+                    <span className={styles.createAccount}> <Link to="/EmailVerification" style={{ textDecoration: 'none' }}>Use Email</Link></span>
                     
                     <button className={styles.loginButton} type="submit" >
                         {/* {isLoading ? "Loading..." : "Submit"} */}Submit</button>
@@ -63,4 +63,4 @@ function EmailVerification() {
 
 }
 
-export default EmailVerification;
+export default MobileVerification;

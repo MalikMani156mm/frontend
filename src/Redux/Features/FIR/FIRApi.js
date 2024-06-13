@@ -5,16 +5,19 @@ export const FIRApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/' ,
     mode:'cors'
   }),
+  tagTypes:['FIRs'],
   endpoints: (builder) => ({
     getAllFIRs: builder.query({
       query: () => `/FIRs`,
+      providesTags:['FIRs']
     }),
     addNewFIR: builder.mutation({
       query: (data) => ({
         url : `/new/FIR`,
         method: 'POST',
         body: data,
-      }) 
+      }),
+      invalidatesTags:['FIRs'] 
     })
   }),
 })

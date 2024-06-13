@@ -1,7 +1,7 @@
 import styles from "./MyApplications.module.css";
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTh , faPenToSquare , faRightLeft , faHandshake , faFile , faFlag , faPrint } from "@fortawesome/free-solid-svg-icons";
+import { faTh, faPenToSquare, faRightLeft, faHandshake, faFile, faFlag, faPrint } from "@fortawesome/free-solid-svg-icons";
 import { useGetAllFIRsQuery } from "../../Redux/Features/FIR/FIRApi";
 import { useSelector } from "react-redux";
 import Filters from "../../Components/Filters/Filters";
@@ -17,6 +17,7 @@ function MyApplications() {
 
   // eslint-disable-next-line 
   const { isLoading, data, error } = useGetAllFIRsQuery();
+  console.log(data);
 
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
@@ -95,7 +96,7 @@ function MyApplications() {
           </div>
         </div>
         {(user && role === user.role) ? <>
-          <Filters/>
+          <Filters />
         </> : null}
         <div className={styles.container3}>
           <div className={styles.row5}>
@@ -129,196 +130,30 @@ function MyApplications() {
             <div className={styles.cell}>Response Time</div>
             <div className={styles.cell}>Action</div>
           </div>
-          <div className={styles.row4}>
-            <div className={styles.cell1}>SM-12/4/2024-3864</div>
-            <div className={styles.cell1}>Sana ullah</div>
-            <div className={styles.cell1}>03122345876</div>
-            <div className={styles.cell1}>Wajid ASI</div>
-            <div className={styles.cell1}>Loss Report</div>
-            <div className={styles.cell1}>Other</div>
-            <div className={styles.cell1}>04-12-2024 03:45 PM</div>
-            <div className={styles.cell1}>41 minute(s)</div>
-            <div className={`${styles.cell1} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
-          <div className={styles.row4}>
-            <div className={styles.cell}>SM-12/4/2024-3863</div>
-            <div className={styles.cell}>Muhammad Asfand</div>
-            <div className={styles.cell}>03358723932</div>
-            <div className={styles.cell}>Wajid ASI</div>
-            <div className={styles.cell}>Loss Report</div>
-            <div className={styles.cell}>Other Document</div>
-            <div className={styles.cell}>04-12-2024 03:25 PM</div>
-            <div className={styles.cell}>43 minute(s)</div>
-            <div className={`${styles.cell} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
-          <div className={styles.row4}>
-            <div className={styles.cell1}>ICT-12/4/2024-2526</div>
-            <div className={styles.cell1}>Hassan Khan</div>
-            <div className={styles.cell1}>03326676682</div>
-            <div className={styles.cell1}>SHO Sabzi Mandi</div>
-            <div className={styles.cell1}>Loss Report</div>
-            <div className={styles.cell1}>CNIC Loss</div>
-            <div className={styles.cell1}>04-12-2024 02:42 PM</div>
-            <div className={styles.cell1}>1 hour(s) 55 minute(s)</div>
-            <div className={`${styles.cell1} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
-          <div className={styles.row4}>
-            <div className={styles.cell}>ICT-12/4/2024-2528</div>
-            <div className={styles.cell}>Bivi Ilyas Shah</div>
-            <div className={styles.cell}>03461481947</div>
-            <div className={styles.cell}>Afzal HC Moharar</div>
-            <div className={styles.cell}>Loss Report</div>
-            <div className={styles.cell}>Other Document</div>
-            <div className={styles.cell}>04-12-2024 02:24 PM</div>
-            <div className={styles.cell}>2 hour(s) 35 minute(s)</div>
-            <div className={`${styles.cell} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
-          <div className={styles.row4}>
-            <div className={styles.cell1}>SM-12/4/2024-3868</div>
-            <div className={styles.cell1}>Haleema Sadia</div>
-            <div className={styles.cell1}>03363376661</div>
-            <div className={styles.cell1}>SHO Sabzi Mandi</div>
-            <div className={styles.cell1}>Loss Report</div>
-            <div className={styles.cell1}>CNIC Loss</div>
-            <div className={styles.cell1}>04-12-2024 02:14 PM</div>
-            <div className={styles.cell1}>2 hour(s) 53 minute(s)</div>
-            <div className={`${styles.cell1} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
-          <div className={styles.row4}>
-            <div className={styles.cell}>SM-12/4/2024-3863</div>
-            <div className={styles.cell}>Muhammad Asfand</div>
-            <div className={styles.cell}>03358723932</div>
-            <div className={styles.cell}>Wajid ASI</div>
-            <div className={styles.cell}>Loss Report</div>
-            <div className={styles.cell}>Other Document</div>
-            <div className={styles.cell}>04-12-2024 03:25 PM</div>
-            <div className={styles.cell}>43 minute(s)</div>
-            <div className={`${styles.cell} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
-          <div className={styles.row4}>
-            <div className={styles.cell1}>ICT-12/4/2024-2526</div>
-            <div className={styles.cell1}>Hassan Khan</div>
-            <div className={styles.cell1}>03326676682</div>
-            <div className={styles.cell1}>SHO Sabzi Mandi</div>
-            <div className={styles.cell1}>Loss Report</div>
-            <div className={styles.cell1}>CNIC Loss</div>
-            <div className={styles.cell1}>04-12-2024 02:42 PM</div>
-            <div className={styles.cell1}>1 hour(s) 55 minute(s)</div>
-            <div className={`${styles.cell1} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
-          <div className={styles.row4}>
-            <div className={styles.cell}>ICT-12/4/2024-2528</div>
-            <div className={styles.cell}>Bivi Ilyas Shah</div>
-            <div className={styles.cell}>03461481947</div>
-            <div className={styles.cell}>Afzal HC Moharar</div>
-            <div className={styles.cell}>Loss Report</div>
-            <div className={styles.cell}>Other Document</div>
-            <div className={styles.cell}>04-12-2024 02:24 PM</div>
-            <div className={styles.cell}>2 hour(s) 35 minute(s)</div>
-            <div className={`${styles.cell} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
-          <div className={styles.row4}>
-            <div className={styles.cell1}>SM-12/4/2024-3868</div>
-            <div className={styles.cell1}>Haleema Sadia</div>
-            <div className={styles.cell1}>03363376661</div>
-            <div className={styles.cell1}>SHO Sabzi Mandi</div>
-            <div className={styles.cell1}>Loss Report</div>
-            <div className={styles.cell1}>CNIC Loss</div>
-            <div className={styles.cell1}>04-12-2024 02:14 PM</div>
-            <div className={styles.cell1}>2 hour(s) 53 minute(s)</div>
-            <div className={`${styles.cell1} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
-          <div className={styles.row4}>
-            <div className={styles.cell}>SM-12/4/2024-3864</div>
-            <div className={styles.cell}>Sana ullah</div>
-            <div className={styles.cell}>03122345876</div>
-            <div className={styles.cell}>Wajid ASI</div>
-            <div className={styles.cell}>Loss Report</div>
-            <div className={styles.cell}>Other</div>
-            <div className={styles.cell}>04-12-2024 03:45 PM</div>
-            <div className={styles.cell}>41 minute(s)</div>
-            <div className={`${styles.cell} ${styles.icon}`}>
-              <FontAwesomeIcon icon={faTh} />
-              <FontAwesomeIcon icon={faPrint} />
-              <FontAwesomeIcon icon={faFlag} />
-              <FontAwesomeIcon icon={faFile} />
-              <FontAwesomeIcon icon={faHandshake} />
-              <FontAwesomeIcon icon={faRightLeft} />
-              <FontAwesomeIcon icon={faPenToSquare} />
-            </div>
-          </div>
+          {
+            data && data.map(firs => (
+              <div className={styles.row4}>
+                <div className={styles.cell1}>{firs.ComplaintNumber}</div>
+                <div className={styles.cell1}>{firs.Name}</div>
+                <div className={styles.cell1}>{firs.ContactNumber}</div>
+                <div className={styles.cell1}>{firs.CNIC}</div>
+                <div className={styles.cell1}>{firs.Category}</div>
+                <div className={styles.cell1}>{firs.Offence}</div>
+                <div className={styles.cell1}>{firs.EntryDate}</div>
+                <div className={styles.cell1}>{firs.Status}</div>
+                <div className={`${styles.cell1} ${styles.icon}`}>
+                  <FontAwesomeIcon icon={faTh} />
+                  <FontAwesomeIcon icon={faPrint} />
+                  <FontAwesomeIcon icon={faFlag} />
+                  <FontAwesomeIcon icon={faFile} />
+                  <FontAwesomeIcon icon={faHandshake} />
+                  <FontAwesomeIcon icon={faRightLeft} />
+                  <FontAwesomeIcon icon={faPenToSquare} />
+                </div>
+              </div>
+            ))
+          }
+
         </div>
       </div>
     </>

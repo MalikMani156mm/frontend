@@ -7,9 +7,6 @@ import logo from "../../images/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-// import { useLoginUserMutation } from "../../Redux/Features/Auth/AuthApi";
-// import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
-// import { useDispatch } from "react-redux";
 
 
 function NewPassword() {
@@ -26,10 +23,7 @@ function NewPassword() {
     }
 
     
-    // const navigate = useNavigate();
-    // const dispatch = useDispatch();
-    // // eslint-disable-next-line
-    // const [UserLogin, { isLoading, error, data }] = useLoginUserMutation();
+   
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, errors, handleSubmit, setFieldValue } = useFormik({
         initialValues: {
@@ -41,11 +35,7 @@ function NewPassword() {
             confirmpassword:yup.string().oneOf([yup.ref('password')],'passwords must match').required('Confirm Password is Required'),
         }),
         onSubmit: async (values) => {
-            console.log(values);
-            // const user = await UserLogin(values).unwrap();
-            // dispatch(setUserInfo(user));
-            // navigate("/MyApplications")
-        }
+            console.log(values);}
     })
 
 
@@ -72,7 +62,7 @@ function NewPassword() {
                             name="password"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            placeholder="Enter password"
+                            placeholder="Enter New Password"
                             className={styles.inputPassword}
                         />
                         <span className={styles.eye} onClick={toggleShowPassword}>
@@ -87,7 +77,7 @@ function NewPassword() {
                             name="confirmpassword"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            placeholder="Confirm password"
+                            placeholder="Confirm New Password"
                         />
                         <span className={styles.eye} onClick={toggleShowCPassword}>
                             <FontAwesomeIcon icon={showCPassword ? faEyeSlash : faEye} />

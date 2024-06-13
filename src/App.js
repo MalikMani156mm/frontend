@@ -29,7 +29,7 @@ function App() {
 
   return (
     <div className={styles.container}>
-      <RouterProvider router={router} />
+      <RouterProvider router={router} /> 
     </div>
   );
 }

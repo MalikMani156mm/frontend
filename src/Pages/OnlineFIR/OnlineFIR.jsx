@@ -6,12 +6,16 @@ import { useAddNewFIRMutation } from '../../Redux/Features/FIR/FIRApi';
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector } from "react-redux";
 
 
 function OnlineFIR() {
 
   //eslint-disable-next-line
   const [addFIR, { isLoading, error }] = useAddNewFIRMutation();
+  const { user } = useSelector(state => state.auth);
+  const role = "Admin";
+
 
   const [fileInputs, setFileInputs] = useState([{ id: 1 }]);
 
@@ -49,23 +53,51 @@ function OnlineFIR() {
     return current.toISOString().slice(0, 16);
   };
 
+
+  function SerialNumberGenerator(name) {
+    let initials;
+
+    // Check if the name consists of only one word
+    if (name.trim().indexOf(' ') === -1) {
+      initials = name.charAt(0).toUpperCase() + name.slice(1);
+    } else {
+      // Extract initials from each word
+      initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('');
+    }
+
+    // Get current date in YYYYMMDD format
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    const formattedDate = `${day}/${month}/${year}`;
+
+    // Generate 6-digit random number
+    const randomNumber = Math.floor(100000 + Math.random() * 900000);
+
+    // Concatenate the parts
+    const uniqueIdentifier = `${initials}-${formattedDate}-${randomNumber}`;
+    // console.log(values.Circle);
+    console.log(uniqueIdentifier);
+    return uniqueIdentifier;
+  }
   // eslint-disable-next-line
   const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
     initialValues: {
       EntryDate: getCurrentDateTimeLocal(),
       SourceOfComplaint: 'Online',
+      ComplaintNumber: '',
       District: '',
       Division: '',
       Circle: '',
       PoliceStation: '',
       BeatMoza: '',
-      CNIC: '',
-      SerialNumber: '',
-      Name: '',
+      CNIC: user.cnic,
+      Name: user.name,
       relation: '',
       GuardianName: '',
       Gender: '',
-      ContactNumber: '',
+      ContactNumber: user.phonenumber,
       PermanentAddress: '',
       placeOfOccurance: '',
       IncidentDate: '',
@@ -83,35 +115,36 @@ function OnlineFIR() {
     },
     validationSchema: yup.object().shape({
       EntryDate: yup.date().required('Required'),
-      // District: yup.string().required('Required'),
-      // Division: yup.string().required('Required'),
-      // Circle: yup.string().required('Required'),
-      // PoliceStation: yup.string().required('Required'),
-      // BeatMoza: yup.string(),
-      // CNIC: yup.number().min(1111111111111,"Must be atleast 13 digit").max(9999999999999,"Invalid CNIC").required('Required'),
-      // SerialNumber: yup.string().email('enter a valid email').required('Required'),
-      // Name: yup.string().min(5).max(30).required('Required'),
-      // GuardianName: yup.string().min(5).max(30).required('Required'),
-      // Gender: yup.string().required('Required'),
-      // ContactNumber: yup.number().min(1111111111,"Must be atleast 11 digit").max(999999999999,"Invalid Number").required('Required'),
-      // PermanentAddress: yup.string().max(200).required('Required'),
-      // placeOfOccurance: yup.string().required('Required'),
-      // IncidentDate: yup.date().required('Required'),
-      // Category: yup.string().required('Required'),
-      // Offence: yup.string().required('Required'),
-      // IncidentDetails: yup.string().max(1000).required('Required'),
-      file:yup.string().required('Required'),
+      District: yup.string().required('Required'),
+      Division: yup.string().required('Required'),
+      Circle: yup.string().required('Required'),
+      PoliceStation: yup.string().required('Required'),
+      CNIC: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('Required'),
+      Name: yup.string().min(5).max(30).required('Required'),
+      relation: yup.string().required('Required'),
+      GuardianName: yup.string().min(5).max(30).required('Required'),
+      Gender: yup.string().required('Required'),
+      ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
+      PermanentAddress: yup.string().max(300).required('Required'),
+      placeOfOccurance: yup.string().required('Required'),
+      IncidentDate: yup.date().required('Required'),
+      FIRRegistered: yup.string().required('Required'),
+      Category: yup.string().required('Required'),
+      Offence: yup.string().required('Required'),
+      IncidentDetails: yup.string().max(2000).required('Required'),
+      file: yup.string().required('Required'),
     }),
     onSubmit: async (values) => {
+      values.ComplaintNumber = SerialNumberGenerator(values.Circle);
       console.log(values);
       const res = await addFIR(values).unwrap();
       if (res.success) {
         toast.success(res.message);
-      } 
+      }
       else {
         toast.error(res.message || res.data.error);
       }
-     
+
     }
   });
 
@@ -123,6 +156,7 @@ function OnlineFIR() {
     </>)
   }
 
+
   return (
     <div className={styles.body}>
       <form name="addFIR" method="post" onSubmit={handleSubmit} className={styles.size}>
@@ -132,7 +166,7 @@ function OnlineFIR() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 ">Entry Date</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Entry Date</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3 ">
                 <input
                   type="datetime-local"
@@ -145,41 +179,15 @@ function OnlineFIR() {
                 <p className="help-block text-danger">{errors.EntryDate && touched.EntryDate ? errors.EntryDate : null}</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
-                Source of Compliant
+                <p>Source of Compliant</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 ">
-                <select name="SourceOfComplaint" className="form-control"
-                  onChange={handleChange}
-                  onBlur={handleBlur}>
-                  <option value="16">Online</option>
-                  <option value="16">1715</option>
-                  <option value="21">1815</option>
-                  <option value="1">By Post </option>
-                  <option value="14">DPO Office</option>
-                  <option value="2">Email </option>
-                  <option value="3">In Person </option>
-                  <option value="8">In Person (Facilitation Centre)</option>
-                  <option value="18">In Person (PKM Global)</option>
-                  <option value="4">Others </option>
-                  <option value="10">Overseas</option>
-                  <option value="9">PM/CM Citizen Portal</option>
-                  <option value="17">President Office</option>
-                  <option value="20">Public Web</option>
-                  <option value="19">Pukar 15</option>
-                  <option value="5">Rescue 15 </option>
-                  <option value="13">RPO Office</option>
-                  <option value="6">SMS </option>
-                  <option value="22">Social Media</option>
-                  <option value="15">SP Office</option>
-                  <option value="12">SSP (Inv) Offices</option>
-                  <option value="11">SSP (Ops) Offices</option>
-                  <option value="7">Telephone </option>
-                </select>
-                <p className="help-block text-danger">{errors.EntryDate && touched.EntryDate ? errors.EntryDate : null}</p>
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <input type="text" name="CompliantNumber" placeholder="Online" className="form-control" onChange={handleChange}
+                  onBlur={handleBlur} disabled={true} />
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">District</div>
+              <div className="col-lg-3 col-md-3 col-sm-3"><p>District</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <select className="form-control" name="District"
                   onChange={handleChange}
@@ -189,7 +197,7 @@ function OnlineFIR() {
                 </select>
                 <p className="help-block text-danger">{errors.District && touched.District ? errors.District : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Division</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Division</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <select className="form-control" name="Division"
                   onChange={handleChange}
@@ -201,43 +209,44 @@ function OnlineFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">Circle</div>
+              <div className="col-lg-3 col-md-3 col-sm-3"><p>Circle</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <select className="form-control" name="Circle"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="1">Sabzi Mandi</option>
-                  <option value="2">Secretariat</option>
-                  <option value="3">Abpara</option>
-                  <option value="4">Kohsar</option>
-                  <option value="5">Bhara Kahu</option>
-                  <option value="6">Phulgaran</option>
-                  <option value="7">Bani Gala</option>
-                  <option value="8">Margalla</option>
-                  <option value="9">Karachi Company</option>
-                  <option value="10">Golra</option>
-                  <option value="11">Tarnol</option>
-                  <option value="12">Sangjani</option>
-                  <option value="13">Sumbal</option>
-                  <option value="14">Shalimar</option>
-                  <option value="15">Ramna</option>
-                  <option value="16">I-9 Industrial Area</option>
-                  <option value="17">Noon</option>
-                  <option value="18">Shams Colony</option>
-                  <option value="19">Shehzad Town</option>
-                  <option value="20">Khanna</option>
-                  <option value="21">Sihala</option>
-                  <option value="22">Humak</option>
-                  <option value="23">Lohi Bher</option>
-                  <option value="24">Nilore</option>
-                  <option value="25">Koral</option>
-                  <option value="26">Kirpa</option>
-                  <option value="27">Women</option>
+                  <option value="Sabzi Mandi">Sabzi Mandi</option>
+                  <option value="Secretariat">Secretariat</option>
+                  <option value="Abpara">Abpara</option>
+                  <option value="Kohsar">Kohsar</option>
+                  <option value="Bhara Kahu">Bhara Kahu</option>
+                  <option value="Phulgaran">Phulgaran</option>
+                  <option value="Bani Gala">Bani Gala</option>
+                  <option value="Margalla">Margalla</option>
+                  <option value="Karachi Company">Karachi Company</option>
+                  <option value="Golra">Golra</option>
+                  <option value="Tarnol">Tarnol</option>
+                  <option value="Sangjani">Sangjani</option>
+                  <option value="Sumbal">Sumbal</option>
+                  <option value="Shalimar">Shalimar</option>
+                  <option value="Ramna">Ramna</option>
+                  <option value="I-9 Industrial Area">I-9 Industrial Area</option>
+                  <option value="Noon">Noon</option>
+                  <option value="Shams Colony">Shams Colony</option>
+                  <option value="Shehzad Town">Shehzad Town</option>
+                  <option value="Khanna">Khanna</option>
+                  <option value="Sihala">Sihala</option>
+                  <option value="Humak">Humak</option>
+                  <option value="Lohi Bher">Lohi Bher</option>
+                  <option value="Nilore">Nilore</option>
+                  <option value="Koral">Koral</option>
+                  <option value="Kirpa">Kirpa</option>
+                  <option value="Women">Women</option>
+
                 </select>
                 <p className="help-block text-danger">{errors.Circle && touched.Circle ? errors.Circle : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Police Station</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Police Station</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <select className="form-control" name="PoliceStation"
                   onChange={handleChange}
@@ -274,19 +283,18 @@ function OnlineFIR() {
                 <p className="help-block text-danger">{errors.PoliceStation && touched.PoliceStation ? errors.PoliceStation : null}</p>
               </div>
             </div>
-            <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">Beat/Moza No.</div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="BeatMoza"
-                  onChange={handleChange}
-                  onBlur={handleBlur}>
-                  <option value="0">Select</option>
-                  <option value="1">Beat/Moza-1</option>
-                </select>
-              </div>
-            </div>
-            <div className={styles.alignment}>
-            </div>
+            {(user && role === user.role) ? <>
+              <div className={styles.alignment}>
+                <div className="col-lg-3 col-md-3 col-sm-3"><p>Beat/Moza No.</p></div>
+                <div className="col-lg-3 col-md-3 col-sm-3">
+                  <select className="form-control" name="BeatMoza"
+                    onChange={handleChange}
+                    onBlur={handleBlur}>
+                    <option value="0">Select</option>
+                    <option value="1">Beat/Moza-1</option>
+                  </select>
+                </div>
+              </div></> : null}
           </div>
         </div>
         <div className={styles.container}>
@@ -295,28 +303,26 @@ function OnlineFIR() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">CNIC (without dashes)</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 ">
+                <p>Compliant Number</p>
+              </div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="number" name="CNIC" className="form-control" onChange={handleChange}
+                <input type="text" name="CompliantNumber" placeholder={SerialNumberGenerator(values.Circle)} className="form-control" onChange={handleChange}
+                  onBlur={handleBlur} disabled={true} />
+              </div>
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>CNIC (without dashes)</p></div>
+              <div className="col-lg-3 col-md-3 col-sm-3">
+                <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
-              Serial Number
-              </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
-                <div >
-                  <input type="text" name="SerialNumber" className="form-control" onChange={handleChange}
-                    onBlur={handleBlur} />
-                </div>
-                <p className="help-block text-danger">{errors.SerialNumber && touched.SerialNumber ? errors.SerialNumber : null}</p>
-              </div>
+
             </div>
 
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">Name</div>
+              <div className="col-lg-3 col-md-3 col-sm-3"><p>Name</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="Name" className="form-control" onChange={handleChange}
+                <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
@@ -356,7 +362,7 @@ function OnlineFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">Gender</div>
+              <div className="col-lg-3 col-md-3 col-sm-3"><p>Gender</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <select className="form-control" name="Gender" onChange={handleChange}
                   onBlur={handleBlur}>
@@ -367,11 +373,12 @@ function OnlineFIR() {
                 </select>
                 <p className="help-block text-danger">{errors.Gender && touched.Gender ? errors.Gender : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Contact Number</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Contact Number</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
                   type="number"
                   name="ContactNumber"
+                  placeholder={user.phonenumber}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -381,7 +388,7 @@ function OnlineFIR() {
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                Permanent Address
+                <p>Permanent Address</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <textarea
@@ -404,7 +411,7 @@ function OnlineFIR() {
           <div className={styles.content}>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                Place of Occurance
+                <p>Place of Occurance</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
@@ -416,7 +423,7 @@ function OnlineFIR() {
                 />
                 <p className="help-block text-danger">{errors.placeOfOccurance && touched.placeOfOccurance ? errors.placeOfOccurance : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Incident Date</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Incident Date</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
                   type="date"
@@ -430,231 +437,227 @@ function OnlineFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 ">Category</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Category</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <select className="form-control" name="Category"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="3">Character Verification</option>
-                  <option value="18">Car Verification</option>
-                  <option value="8">Child Abuse</option>
-                  <option value="2">Complaint against Police</option>
-                  <option value="14">Foreigner complaint</option>
-                  <option value="9">Gender Abuse</option>
-                  <option value="16">Harassment</option>
-                  <option value="10">Human Rights</option>
-                  <option value="5">Investigation</option>
-                  <option value="4">Loss Report</option>
-                  <option value="11">Minority Abuse</option>
-                  <option value="15">Non registration of FIR</option>
-                  <option value="6">Others</option>
-                  <option value="13">Overseas Pakistan</option>
-                  <option value="1">Reporting of Crime</option>
-                  <option value="12">Traffic Complaint</option>
-                  <option value="17">
-                    Violence Against Transgender Person
-                  </option>
-                  <option value="7">Violence Against Woman</option>
+                  <option value="Character Verification">Character Verification</option>
+                  <option value="Car Verification">Car Verification</option>
+                  <option value="Child Abuse">Child Abuse</option>
+                  <option value="Complaint against Police">Complaint against Police</option>
+                  <option value="Foreigner complaint">Foreigner complaint</option>
+                  <option value="Gender Abuse">Gender Abuse</option>
+                  <option value="Harassment">Harassment</option>
+                  <option value="Human Rights">Human Rights</option>
+                  <option value="Investigation">Investigation</option>
+                  <option value="Loss Report">Loss Report</option>
+                  <option value="Minority Abuse">Minority Abuse</option>
+                  <option value="Non registration of FIR">Non registration of FIR</option>
+                  <option value="Others">Others</option>
+                  <option value="Overseas Pakistan">Overseas Pakistan</option>
+                  <option value="Reporting of Crime">Reporting of Crime</option>
+                  <option value="Traffic Complaint">Traffic Complaint</option>
+                  <option value="Violence Against Transgender Person">Violence Against Transgender Person</option>
+                  <option value="Violence Against Woman">Violence Against Woman</option>
                 </select>
                 <p className="help-block text-danger">{errors.Category && touched.Category ? errors.Category : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Offence</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Offence</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <select className="form-control" name="Offence"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="107">295-A PPC</option>
-                  <option value="12">382 PPC</option>
-                  <option value="106">Access to public place</option>
-                  <option value="92">Acid Throwing</option>
-                  <option value="35">Anti-Norcotics Act</option>
-                  <option value="36">Anti-Terrorism Act</option>
-                  <option value="80">Arm License / Slip</option>
-                  <option value="37">Arms Ordinance Act</option>
-                  <option value="123">Arrest of innocent persons</option>
-                  <option value="83">ATM Card</option>
-                  <option value="31">Attack on Govt. Servant</option>
-                  <option value="34">Attempted Murder</option>
-                  <option value="75">BayForm Loss</option>
-                  <option value="38">Begging Act </option>
-                  <option value="33">Blind Murder</option>
-                  <option value="39">Border Crossing Act</option>
-                  <option value="109">Breach of trust 406PPC</option>
-                  <option value="32">Burglary</option>
-                  <option value="30">Canal Cut</option>
-                  <option value="111">Cancellation of False FIR</option>
-                  <option value="29">Car Snatching</option>
-                  <option value="7">Car Theft</option>
-                  <option value="77">Character Certificate</option>
-                  <option value="58">Cheating</option>
-                  <option value="84">Cheque / Cheque Book</option>
-                  <option value="55">Cheque Dishonour</option>
-                  <option value="130">Child Marriage</option>
-                  <option value="135">Child Sexual Abuse</option>
-                  <option value="40">Cigarette Act</option>
-                  <option value="59">CNIC Loss</option>
-                  <option value="101">Commission</option>
-                  <option value="96">Complaint against police</option>
-                  <option value="41">Copyright Act</option>
-                  <option value="97">Corruption</option>
-                  <option value="112">Corruption</option>
-                  <option value="61">Cyber Crime Act</option>
-                  <option value="70">Cycle Theft</option>
-                  <option value="6">Dacoity</option>
-                  <option value="28">Dacoity/Robbery with Murder</option>
-                  <option value="108">Defective Investigation</option>
-                  <option value="113">Demand of Illegal Gratification</option>
-                  <option value="42">Dengue Act</option>
-                  <option value="93">Domestic Violence</option>
-                  <option value="134">Dowry Related Violence</option>
-                  <option value="60">Driving License</option>
-                  <option value="74">Educational Documents Loss</option>
-                  <option value="43">Electricity Act</option>
-                  <option value="27">Fatal Accident</option>
-                  <option value="132">Female Genital Mutilation/Cutting</option>
-                  <option value="66">Fight</option>
-                  <option value="136">Forced Abortion</option>
-                  <option value="131">Forced Marriage</option>
-                  <option value="104">
-                    Freedom of Assembly &amp; Association
-                  </option>
-                  <option value="103">Freedom of movement</option>
-                  <option value="2">Gambling</option>
-                  <option value="5">Gang Rape</option>
-                  <option value="4">Habs e Beja</option>
-                  <option value="128">Harassment </option>
-                  <option value="94">Harassment at workplace</option>
-                  <option value="120">High Heandedness</option>
-                  <option value="133">Honor Killng</option>
-                  <option value="26">Hurt (personal feud)</option>
-                  <option value="100">Illegal detention</option>
-                  <option value="25">Illegal Extortion</option>
-                  <option value="44">Illegal Gas Cylinder Act</option>
-                  <option value="24">Illegal Weapon</option>
-                  <option value="82">Insurance Claim</option>
-                  <option value="126">Intimate Partner Violence</option>
-                  <option value="114">Investigation – Delay</option>
-                  <option value="115">Investigation – Faulty / Unfair</option>
-                  <option value="116">Involvement in Criminal Activity</option>
-                  <option value="69">Jewellery Snatching</option>
-                  <option value="23">Kidnapping</option>
-                  <option value="22">Kidnapping Minors</option>
-                  <option value="45">Kite Flying Act</option>
-                  <option value="65">Laptop theft</option>
-                  <option value="46">Local Government Act</option>
-                  <option value="78">Loss of Property Document</option>
-                  <option value="79">Loss of Service Card</option>
-                  <option value="81">Loss of Utility Meter/ No Plate</option>
-                  <option value="63">Lost Bike Registration book</option>
-                  <option value="47">Loud Speaker Act</option>
-                  <option value="21">M/Cycle Snatching</option>
-                  <option value="20">M/Cycle Theft</option>
-                  <option value="57">Misappropriation</option>
-                  <option value="122">Misbehavior</option>
-                  <option value="56">Miscellaneous</option>
-                  <option value="121">Misconduct</option>
-                  <option value="85">Mobile Phone</option>
-                  <option value="67">Mobile Snatching</option>
-                  <option value="64">Mobile theft</option>
-                  <option value="19">Murder</option>
-                  <option value="18">Narcotics</option>
-                  <option value="99">Non registration of FIR</option>
-                  <option value="3">Non-Fatal Accident</option>
-                  <option value="117">Non-Registration of FIR</option>
-                  <option value="102">Omission</option>
-                  <option value="48">One Wheeling Act</option>
-                  <option value="90">Original File (Bike/Car)</option>
-                  <option value="110">Other</option>
-                  <option value="17">Other Crime</option>
-                  <option value="86">Other Document</option>
-                  <option value="16">Other Vehicle Snatching</option>
-                  <option value="15">Other Vehicle Theft</option>
-                  <option value="14">Outraging the Modesty of Women</option>
-                  <option value="1">Overspeeding</option>
-                  <option value="62">Passport Loss</option>
-                  <option value="89">Pay Order</option>
-                  <option value="88">Pension Book</option>
-                  <option value="13">Police Encounter</option>
-                  <option value="49">Police Order Act</option>
-                  <option value="50">Price Control Act</option>
-                  <option value="105">Property</option>
-                  <option value="68">Purse Snatching</option>
-                  <option value="51">Railway Act</option>
-                  <option value="11">Rape</option>
-                  <option value="71">Registration book</option>
-                  <option value="10">Robbery</option>
-                  <option value="87">Saving Certificate</option>
-                  <option value="9">Secretarianism</option>
-                  <option value="125">Sexual Assualt</option>
-                  <option value="118">Slackness in Duty</option>
-                  <option value="124">Snatching</option>
-                  <option value="127">Stalking</option>
-                  <option value="138">Suicide Attempt</option>
-                  <option value="52">Telephone Act</option>
-                  <option value="72">Theft</option>
-                  <option value="73">Threats</option>
-                  <option value="139">Threats Via Call Or SMS</option>
-                  <option value="98">Torture</option>
-                  <option value="53">Touheen Quran Act</option>
-                  <option value="54">Tree Theft Act</option>
-                  <option value="8">Tresspassing</option>
-                  <option value="95">Unlawful Marriages</option>
-                  <option value="129">Un-Natural Offence</option>
-                  <option value="119">Use of Torture</option>
-                  <option value="76">Vehicle Checking</option>
-                  <option value="137">
-                    Violence Against Trangender Person{" "}
-                  </option>
+                  <option value="295-A PPC">295-A PPC</option>
+                  <option value="382 PPC">382 PPC</option>
+                  <option value="Access to public place">Access to public place</option>
+                  <option value="Acid Throwing">Acid Throwing</option>
+                  <option value="Anti-Norcotics Act">Anti-Norcotics Act</option>
+                  <option value="Anti-Terrorism Act">Anti-Terrorism Act</option>
+                  <option value="Arm License / Slip">Arm License / Slip</option>
+                  <option value="Arms Ordinance Act">Arms Ordinance Act</option>
+                  <option value="Arrest of innocent persons">Arrest of innocent persons</option>
+                  <option value="ATM Card">ATM Card</option>
+                  <option value="Attack on Govt. Servant">Attack on Govt. Servant</option>
+                  <option value="Attempted Murder">Attempted Murder</option>
+                  <option value="BayForm Loss">BayForm Loss</option>
+                  <option value="Begging Act">Begging Act</option>
+                  <option value="Blind Murder">Blind Murder</option>
+                  <option value="Border Crossing Act">Border Crossing Act</option>
+                  <option value="Breach of trust 406PPC">Breach of trust 406PPC</option>
+                  <option value="Burglary">Burglary</option>
+                  <option value="Canal Cut">Canal Cut</option>
+                  <option value="Cancellation of False FIR">Cancellation of False FIR</option>
+                  <option value="Car Snatching">Car Snatching</option>
+                  <option value="Car Theft">Car Theft</option>
+                  <option value="Character Certificate">Character Certificate</option>
+                  <option value="Cheating">Cheating</option>
+                  <option value="Cheque / Cheque Book">Cheque / Cheque Book</option>
+                  <option value="Cheque Dishonour">Cheque Dishonour</option>
+                  <option value="Child Marriage">Child Marriage</option>
+                  <option value="Child Sexual Abuse">Child Sexual Abuse</option>
+                  <option value="Cigarette Act">Cigarette Act</option>
+                  <option value="CNIC Loss">CNIC Loss</option>
+                  <option value="Commission">Commission</option>
+                  <option value="Complaint against police">Complaint against police</option>
+                  <option value="Copyright Act">Copyright Act</option>
+                  <option value="Corruption">Corruption</option>
+                  <option value="Cyber Crime Act">Cyber Crime Act</option>
+                  <option value="Cycle Theft">Cycle Theft</option>
+                  <option value="Dacoity">Dacoity</option>
+                  <option value="Dacoity/Robbery with Murder">Dacoity/Robbery with Murder</option>
+                  <option value="Defective Investigation">Defective Investigation</option>
+                  <option value="Demand of Illegal Gratification">Demand of Illegal Gratification</option>
+                  <option value="Dengue Act">Dengue Act</option>
+                  <option value="Domestic Violence">Domestic Violence</option>
+                  <option value="Dowry Related Violence">Dowry Related Violence</option>
+                  <option value="Driving License">Driving License</option>
+                  <option value="Educational Documents Loss">Educational Documents Loss</option>
+                  <option value="Electricity Act">Electricity Act</option>
+                  <option value="Fatal Accident">Fatal Accident</option>
+                  <option value="Female Genital Mutilation/Cutting">Female Genital Mutilation/Cutting</option>
+                  <option value="Fight">Fight</option>
+                  <option value="Forced Abortion">Forced Abortion</option>
+                  <option value="Forced Marriage">Forced Marriage</option>
+                  <option value="Freedom of Assembly & Association">Freedom of Assembly & Association</option>
+                  <option value="Freedom of movement">Freedom of movement</option>
+                  <option value="Gambling">Gambling</option>
+                  <option value="Gang Rape">Gang Rape</option>
+                  <option value="Habs e Beja">Habs e Beja</option>
+                  <option value="Harassment">Harassment</option>
+                  <option value="Harassment at workplace">Harassment at workplace</option>
+                  <option value="High Heandedness">High Heandedness</option>
+                  <option value="Honor Killng">Honor Killng</option>
+                  <option value="Hurt (personal feud)">Hurt (personal feud)</option>
+                  <option value="Illegal detention">Illegal detention</option>
+                  <option value="Illegal Extortion">Illegal Extortion</option>
+                  <option value="Illegal Gas Cylinder Act">Illegal Gas Cylinder Act</option>
+                  <option value="Illegal Weapon">Illegal Weapon</option>
+                  <option value="Insurance Claim">Insurance Claim</option>
+                  <option value="Intimate Partner Violence">Intimate Partner Violence</option>
+                  <option value="Investigation – Delay">Investigation – Delay</option>
+                  <option value="Investigation – Faulty / Unfair">Investigation – Faulty / Unfair</option>
+                  <option value="Involvement in Criminal Activity">Involvement in Criminal Activity</option>
+                  <option value="Jewellery Snatching">Jewellery Snatching</option>
+                  <option value="Kidnapping">Kidnapping</option>
+                  <option value="Kidnapping Minors">Kidnapping Minors</option>
+                  <option value="Kite Flying Act">Kite Flying Act</option>
+                  <option value="Laptop theft">Laptop theft</option>
+                  <option value="Local Government Act">Local Government Act</option>
+                  <option value="Loss of Property Document">Loss of Property Document</option>
+                  <option value="Loss of Service Card">Loss of Service Card</option>
+                  <option value="Loss of Utility Meter/ No Plate">Loss of Utility Meter/ No Plate</option>
+                  <option value="Lost Bike Registration book">Lost Bike Registration book</option>
+                  <option value="Loud Speaker Act">Loud Speaker Act</option>
+                  <option value="M/Cycle Snatching">M/Cycle Snatching</option>
+                  <option value="M/Cycle Theft">M/Cycle Theft</option>
+                  <option value="Misappropriation">Misappropriation</option>
+                  <option value="Misbehavior">Misbehavior</option>
+                  <option value="Miscellaneous">Miscellaneous</option>
+                  <option value="Misconduct">Misconduct</option>
+                  <option value="Mobile Phone">Mobile Phone</option>
+                  <option value="Mobile Snatching">Mobile Snatching</option>
+                  <option value="Mobile theft">Mobile theft</option>
+                  <option value="Murder">Murder</option>
+                  <option value="Narcotics">Narcotics</option>
+                  <option value="Non registration of FIR">Non registration of FIR</option>
+                  <option value="Non-Fatal Accident">Non-Fatal Accident</option>
+                  <option value="Non-Registration of FIR">Non-Registration of FIR</option>
+                  <option value="Omission">Omission</option>
+                  <option value="One Wheeling Act">One Wheeling Act</option>
+                  <option value="Original File (Bike/Car)">Original File (Bike/Car)</option>
+                  <option value="Other">Other</option>
+                  <option value="Other Crime">Other Crime</option>
+                  <option value="Other Document">Other Document</option>
+                  <option value="Other Vehicle Snatching">Other Vehicle Snatching</option>
+                  <option value="Other Vehicle Theft">Other Vehicle Theft</option>
+                  <option value="Outraging the Modesty of Women">Outraging the Modesty of Women</option>
+                  <option value="Overspeeding">Overspeeding</option>
+                  <option value="Passport Loss">Passport Loss</option>
+                  <option value="Pay Order">Pay Order</option>
+                  <option value="Pension Book">Pension Book</option>
+                  <option value="Police Encounter">Police Encounter</option>
+                  <option value="Police Order Act">Police Order Act</option>
+                  <option value="Price Control Act">Price Control Act</option>
+                  <option value="Property">Property</option>
+                  <option value="Purse Snatching">Purse Snatching</option>
+                  <option value="Railway Act">Railway Act</option>
+                  <option value="Rape">Rape</option>
+                  <option value="Registration book">Registration book</option>
+                  <option value="Robbery">Robbery</option>
+                  <option value="Saving Certificate">Saving Certificate</option>
+                  <option value="Secretarianism">Secretarianism</option>
+                  <option value="Sexual Assualt">Sexual Assualt</option>
+                  <option value="Slackness in Duty">Slackness in Duty</option>
+                  <option value="Snatching">Snatching</option>
+                  <option value="Stalking">Stalking</option>
+                  <option value="Suicide Attempt">Suicide Attempt</option>
+                  <option value="Telephone Act">Telephone Act</option>
+                  <option value="Theft">Theft</option>
+                  <option value="Threats">Threats</option>
+                  <option value="Threats Via Call Or SMS">Threats Via Call Or SMS</option>
+                  <option value="Torture">Torture</option>
+                  <option value="Touheen Quran Act">Touheen Quran Act</option>
+                  <option value="Tree Theft Act">Tree Theft Act</option>
+                  <option value="Tresspassing">Tresspassing</option>
+                  <option value="Unlawful Marriages">Unlawful Marriages</option>
+                  <option value="Un-Natural Offence">Un-Natural Offence</option>
+                  <option value="Use of Torture">Use of Torture</option>
+                  <option value="Vehicle Checking">Vehicle Checking</option>
+                  <option value="Violence Against Trangender Person">Violence Against Trangender Person</option>
                 </select>
                 <p className="help-block text-danger">{errors.Offence && touched.Offence ? errors.Offence : null}</p>
               </div>
             </div>
+            {(user && role === user.role) ? <>
+
+              <div className={styles.alignment}>
+                <div className="col-lg-3 col-md-3 col-sm-3">
+                  <p>Offence Subcategory</p>
+                </div>
+                <div className="col-lg-3 col-md-3 col-sm-3">
+                  <select className="form-control" name="OffenceSubcategory" onChange={handleChange}
+                    onBlur={handleBlur}>
+                    <option value="0">Select</option>
+                    <option value="1">Sub Category</option>
+                  </select>
+                </div>
+                <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Assigned To</p></div>
+                <div className="col-lg-3 col-md-3 col-sm-3">
+                  <select className="form-control" name="AssignedTo" onChange={handleChange}
+                    onBlur={handleBlur} >
+                    <option value="3">Beat Committee</option>
+                    <option value="2">Police Officer</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.alignment}>
+                <div className="col-lg-3 col-md-3 col-sm-3"><p>Officer Name</p></div>
+                <div className="col-lg-3 col-md-3 col-sm-3">
+                  <input
+                    type="text"
+                    name="OfficerName"
+                    className="form-control"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </div>
+                <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Officer Contact Number</p></div>
+                <div className="col-lg-3 col-md-3 col-sm-3">
+                  <input
+                    type="number"
+                    name="OfficerContact"
+                    className="form-control"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </div>
+              </div>
+            </> : null}
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                Offence Subcategory
-              </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="OffenceSubcategory" onChange={handleChange}
-                  onBlur={handleBlur}>
-                  <option value="0">Select</option>
-                  <option value="1">Sub Category</option>
-                </select>
-              </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Assigned To</div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="AssignedTo" onChange={handleChange}
-                  onBlur={handleBlur} >
-                  <option value="3">Beat Committee</option>
-                  <option value="2">Police Officer</option>
-                </select>
-              </div>
-            </div>
-            <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">Officer Name</div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <input
-                  type="text"
-                  name="OfficerName"
-                  className="form-control"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-              </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">Officer Contact Number</div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <input
-                  type="number"
-                  name="OfficerContact"
-                  className="form-control"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-              </div>
-            </div>
-            <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">Incident Details</div>
+              <div className="col-lg-3 col-md-3 col-sm-3"><p>Incident Details</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <textarea
                   type="text"
@@ -669,7 +672,7 @@ function OnlineFIR() {
             </div>
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                Is FIR Registered
+                <p>Is FIR Registered</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <div className={styles.radio}>
@@ -687,19 +690,22 @@ function OnlineFIR() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">FIR No</div>
+              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>FIR No</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <input type="text" name="FIRNo" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
               </div>
             </div>
-            <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">IO Name</div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="IOName" className="form-control" onChange={handleChange}
-                  onBlur={handleBlur} />
+            {(user && role === user.role) ? <>
+
+              <div className={styles.alignment}>
+                <div className="col-lg-3 col-md-3 col-sm-3"><p>IO Name</p></div>
+                <div className="col-lg-3 col-md-3 col-sm-3">
+                  <input type="text" name="IOName" className="form-control" onChange={handleChange}
+                    onBlur={handleBlur} />
+                </div>
               </div>
-            </div>
+            </> : null}
             <div className={styles.alignment1}>
               {fileInputs.map((file, index) => (
                 <div key={file.id} className={styles.addDiv} >

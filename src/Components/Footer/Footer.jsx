@@ -20,8 +20,8 @@ function Footer() {
           <h3>QUICK MENUS:</h3>
           <ul><Link to={"/UserGuide"} >User Manual Guide</Link></ul>
           <ul><Link to={"/PSJudicary"}>Police Staions Judiciary</Link></ul>
-          <ul><Link to={"/OnlineFIR"}>Character Certificate</Link></ul>
-          <ul><Link to={"/OnlineFIR"}>Vehicle Verification</Link></ul>
+          <ul><Link to={"/CharacterCertificateForm"}>Character Certificate</Link></ul>
+          <ul><Link to={"/VehicleVerificationForm"}>Vehicle Verification</Link></ul>
           <ul><Link to={"/ContactUs"}>Contact Us</Link></ul>
           <ul><Link to={"/AboutUs"}>About Us</Link></ul>
         </div>
