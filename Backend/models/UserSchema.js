@@ -20,6 +20,7 @@ const UserSchema = new Schema(
         phonenumber: {
             type: Number,
             require:[true, 'Please provide the Phone Number'],
+            unique:true,
             // min:[11, 'At least of 11 number'],
             // max:[13, 'Maximum limit of 13 number']
         },

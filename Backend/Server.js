@@ -1,6 +1,9 @@
 import express from 'express';
 import FIRRoutes from "./routes/FIRroute.js";
 import AuthRoutes from "./routes/AuthRoutes.js";
+import CCRoutes from "./routes/CCroute.js";
+import VVRoutes from "./routes/VVroutes.js";
+import PoliceStationRoutes from "./routes/PoliceStationRoutes.js"
 import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
 import { connectDB , cloudinaryConfig } from "./config/config.js";
@@ -14,9 +17,9 @@ cloudinaryConfig();
 app.use(bodyParser.json())
 app.use(cookieParser())
 
-app.use(cors());
+app.use(cors('http://localhost:3000'));
 
-app.use('/api', FIRRoutes, AuthRoutes)
+app.use('/api', FIRRoutes, AuthRoutes, CCRoutes, VVRoutes, PoliceStationRoutes)
 
 app.use(errors)
 
