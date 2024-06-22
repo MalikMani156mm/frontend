@@ -10,14 +10,16 @@ import { useDispatch } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha"
+import ReCAPTCHA from "react-google-recaptcha";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function Login() {
 
     const [showPassword, setShowPassword] = useState(false);
     // eslint-disable-next-line
-    const [ ReCapchaValue, setReCapchaValue] = useState(false);
+    const [ReCapchaValue, setReCapchaValue] = useState(false);
 
 
     const onFill = (value) => {
@@ -40,12 +42,18 @@ function Login() {
         },
         validationSchema: yup.object().shape({
             email: yup.string().email('Enter a valid Email').required('Email is Required'),
-            password:yup.string().min(8).max(20).required('Password is Required'),
+            password: yup.string().min(8).max(20).required('Password is Required'),
             ReCapcha: yup.string().required('Captcha must be filled')
         }),
         onSubmit: async (values) => {
             console.log(values);
             const user = await UserLogin(values).unwrap();
+            if (user.success) {
+                toast.success(user.error);
+            }
+            else {
+                toast.error(user.error);
+            }
             dispatch(setUserInfo(user));
             navigate("/MyApplications")
         }
@@ -107,6 +115,7 @@ function Login() {
                     <span>Don't have an account? <Link to="/SignUp" className={styles.createAccount}>Sign Up</Link></span>
                 </div>
             </form>
+            <ToastContainer />
         </>
     );
 

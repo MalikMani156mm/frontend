@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 
 function VolunteerRegistration() {
+
+  const [isUrdu, setIsUrdu] = useState(true);
+
+  const toggleLanguage = () => {
+    setIsUrdu(prevIsUrdu => !prevIsUrdu);
+  };
+
   return (
-    <div>
+    <>
+      <div className="buttonBody">
+        <div className="uiCheck">
+          <button className="checkButton" onClick={toggleLanguage}>
+            <input type="checkbox" />
+            <strong></strong>
+            <label></label>
+          </button>
+        </div>
+      </div>
+      {isUrdu ? <>
       <div className="container">
         <h1>Volunteer Registration:</h1>
         <p>
@@ -19,7 +36,23 @@ function VolunteerRegistration() {
           <li><p> Copy of educational documents.</p></li>
         </ol>
       </div>
-    </div>
+      </>:<>
+      <div className="container">
+        <h1>:رضاکار رجسٹریشن</h1>
+        <p>
+        رضاکار بننے کے لئے، یقینی بنائیں کہ آپ کے پاس پولیس خدمت مرکز سیکٹر ایف-6/1، ایچ-11 پولیس لائنز یا آپ کے قریبی پولیس اسٹیشن جانے کیلئے مندرجہ ذیل دستاویزات ہیں
+        </p>
+        <h3 className="urduH3"> :درکار دستاویزات</h3>
+          <ol className="urduOl">
+          <li><p> درخواست دینے والا خود موجود ہونا لازمی ہے۔ *</p></li>
+          <li><p> قومی شناختی کارڈ کی فوٹو کاپی۔ *</p></li>
+          <li><p> اصل قومی شناختی کارڈ۔ *</p></li>
+          <li><p> پاسپورٹ سائز کی تصویر۔ *</p></li>
+          <li><p> تعلیمی دستاویزات کی کاپی۔ *</p></li>
+        </ol>
+      </div>
+      </>}
+    </>
   );
 }
 

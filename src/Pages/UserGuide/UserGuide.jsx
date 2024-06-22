@@ -1,7 +1,10 @@
 import "./UserGuide.css";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function UserGuide() {
+
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="container1">
@@ -17,44 +20,45 @@ function UserGuide() {
           </p>
         </div>
         <div className="grid">
-          <div className="Button1">
-              <Link to="/CharacterCertificate">Character Certificate</Link>
+
+          <button className="Button1" onClick={() => { navigate("/CharacterCertificate") }}>
+            Character Certificate
+          </button>
+
+          <div className="Button2" onClick={() => { navigate("/PoliceVerification") }}>
+            Police Verification
           </div>
 
-          <div className="Button2">
-            <Link to="/PoliceVerification">Police Verification</Link>
-          </div>
-
-          <div className="Button1">
-            <Link to="/LostReport">Lost Report</Link>
-          </div>
-        </div>
-
-        <div className="grid">
-          <div className="Button2">
-            <Link to="/TenantRegistration">Tenant Registration</Link>
-          </div>
-
-          <div className="Button1">
-            <Link to="/ForeignerRegistration">Foreigner Registration</Link>
-          </div>
-
-          <div className="Button2">
-            <Link to="/VolunteerRegistration">Volunteer Registration</Link>
+          <div className="Button1" onClick={() => { navigate("/LostReport") }}>
+            Lost Report
           </div>
         </div>
 
         <div className="grid">
-          <div className="Button1">
-            <Link to="/ServentRegistration">Servent Registration</Link>
+          <div className="Button2" onClick={() => { navigate("/TenantRegistration") }}>
+            Tenant Registration
           </div>
 
-          <div className="Button2">
-            <Link to="/VehicleVerification">Vehicle Verification</Link>
+          <div className="Button1" onClick={() => { navigate("/ForeignerRegistration") }}>
+            Foreigner Registration
           </div>
 
-          <div className="Button1">
-            <Link to="/CopyofFIR">Copy of FIR</Link>
+          <div className="Button2" onClick={() => { navigate("/VolunteerRegistration") }}>
+            Volunteer Registration
+          </div>
+        </div>
+
+        <div className="grid">
+          <div className="Button1" onClick={() => { navigate("/ServentRegistration") }} >
+            Servent Registration
+          </div>
+
+          <div className="Button2" onClick={() => { navigate("/VehicleVerification") }}>
+            Vehicle Verification
+          </div>
+
+          <div className="Button1" onClick={() => { navigate("/CopyofFIR") }}>
+            Copy of FIR
           </div>
         </div>
       </div>

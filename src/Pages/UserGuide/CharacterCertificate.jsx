@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function CharacterCertificate() {
-  // const isUrdu = true;
+
   const [isUrdu, setIsUrdu] = useState(true);
 
   const toggleLanguage = () => {
@@ -35,16 +35,12 @@ function CharacterCertificate() {
             <li><p>Original CNIC/B-Form and Passport.</p></li>
             <li>
               <p>
-                Original and copy of Passport, CNIC/B-Form and Affidavit (if
-                Applicant has no Islamabad address at CNIC).
+                Original and copy of Passport, CNIC/B-Form and Affidavit (if Applicant has no Islamabad address at CNIC).
               </p>
             </li>
             <li>
               <p>
-                Authority Letter (If applicant is in abroad). Authority letter
-                with the stamp of relevant Embassy will be accepted, or it should
-                be attested by respectable Gazetted person who are known to the
-                applicant.
+                Authority Letter (If applicant is in abroad). Authority letter with the stamp of relevant Embassy will be accepted, or it should be attested by respectable Gazetted person who are known to the applicant.
               </p>
               <ul>
                 <li><p><Link className="sampleLink" to={"https://islamabadpolice.gov.pk/img/authority-letter.pdf"}>Authority letter Sample:</Link></p></li>
@@ -76,20 +72,14 @@ function CharacterCertificate() {
       </> : <>
         <div className="container">
           <h1>:پولیس کریکٹر سرٹیفکیٹ</h1>
-          <p>
-            بیرون ملک سفر، ملازمت کے لیے پولیس کریکٹر سرٹیفکیٹ ضروری ہے۔
-            بیرون ملک مختلف تنظیموں، امیگریشن وغیرہ میں پہلے،
-            کریکٹر سرٹیفکیٹ حاصل کرنا ایک پیچیدہ اور وقت لینے والا عمل تھا۔
-            نہ صرف شہریوں کے لیے بلکہ پولیس کے لیے بھی۔ پولیس خدمت مرکز نے آسانیاں پیدا کر دیں۔
-            اسے وقت کے قابل بنایا۔
+          <p>پولیس کریکٹر سرٹیفکیٹ بیرون ملک سفر، مختلف تنظیموں میں نوکریوں اور امیگریشن کے لئے درکار ہوتا ہے۔ پہلے، کریکٹر سرٹیفکیٹ حاصل کرنا شہریوں اور پولیس دونوں کے لئے پیچیدہ اور وقت طلب عمل تھا۔ پولیس خدمت مرکز نے اس عمل کو آسان اور وقت کی بچت بنا دیا ہے۔
           </p>
-          <h3 className="urduH3"> :مطلوبہ دستاویزات</h3>
+          <h3 className="urduH3"> :درکار دستاویزات</h3>
           <ol className="urduOl">
-            <li><p>۔ اصلی شناختی کارڈ / فارم ب اور پاسپورٹ</p></li>
+            <li><p>۔اصل قومی شناختی کارڈ/ب-فارم اور پاسپورٹ۔</p></li>
             <li>
               <p>۔
-                پاسپورٹ کی اصل اور کاپی، شناختی کارڈ/فارم۔ب اور حلف نامہ
-                (اگر درخواست دہندہ کا شناختی کارڈ میں اسلام آباد کا پتہ نہیں ہے)۔
+                اصل اور کاپی پاسپورٹ، قومی شناختی کارڈ/ب-فارم اور حلف نامہ (اگر درخواست گزار کے قومی شناختی کارڈ پر اسلام آباد کا پتہ نہ ہو)۔
               </p>
             </li>
             <li>
@@ -107,20 +97,22 @@ function CharacterCertificate() {
                   </p>
                 </li>
                 <li><p><Link className="sampleLink" to={"https://islamabadpolice.gov.pk/img/authority-letter.pdf"}> :حلف نامہ مواد کا نمونہ *</Link></p></li>
-                <li><p> پاسپورٹ کے آخری ایگزٹ پیج کی فوٹو کاپی۔* </p></li>
+                <li><p> پاسپورٹ کے آخری اخراج صفحے کی فوٹو کاپی۔* </p></li>
                 <li>
-                  <p> درخواست کا عمل کسی بھی خونی رشتہ دار (بھائی، والد، والدہ، بہن وغیرہ) کے ذریعے جمع کرایا جا سکتا ہے جسے درخواست دہندہ نے درخواست دہندہ کے اتھارٹی لیٹر کے ساتھ اختیار دیا ہے۔
+                  <p>
+                    درخواست کا عمل کسی بھی خونی رشتہ دار (بھائی، والد، والدہ، بہن وغیرہ) کے ذریعے جمع کروایا جا سکتا ہے، جنہیں درخواست گزار کی جانب سے اختیاری خط کے ساتھ اختیار دیا گیا ہو۔
                   </p>
                 </li>
               </ul>
             </li>
           </ol>
-          <h3 className="urduH3"> :ٹرن اراؤنڈ ٹائم </h3>
-          <p className="rightText"> درخواست کی تاریخ کے بعد تین کام کے دن۔ </p>
+          <h3 className="urduH3"> :مکمل ہونے کا وقت</h3>
+          <p className="rightText"> درخواست کی تاریخ کے بعد 3 کام کے دنوں میں ۔</p>
           <p className="Conclusion"> تین دن کے بعد کریکٹر سرٹیفکیٹ حاصل کریں۔ </p>
         </div>
       </>
       }
+
     </>
   )
 }

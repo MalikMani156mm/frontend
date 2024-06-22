@@ -2,7 +2,7 @@ import styles from "./Signup.module.css";
 import Textinput from "../../Components/Textinput/Textinput"
 import signupSchema from "../../Schemas/signupSchema";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/Logo.png";
 import { useRegisterUserMutation } from "../../Redux/Features/Auth/AuthApi";
 import { ToastContainer, toast } from 'react-toastify';
@@ -10,8 +10,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 
 function Signup() {
+
+    // const dispatch = useDispatch();
+    // const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
     const [showCPassword, setShowCPassword] = useState(false);
@@ -41,12 +46,14 @@ function Signup() {
         onSubmit: async (values) => {
             delete values.confirmpassword;
             console.log(values);
-            const res = await register(values);
-            if (res.success) {
-                toast.success(res.message);
+            const user = await register(values);
+            // dispatch(setUserInfo(user));
+            // navigate("/MyApplications")
+            if (user.success) {
+                toast.success(user.message);
             }
             else {
-                toast.info(res.data.message);
+                toast.info(user.data.message);
             }
         }
     });

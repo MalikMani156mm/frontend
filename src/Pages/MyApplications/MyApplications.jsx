@@ -1,4 +1,5 @@
 import styles from "./MyApplications.module.css";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faPenToSquare, faRightLeft, faHandshake, faFile, faFlag, faPrint } from "@fortawesome/free-solid-svg-icons";
@@ -12,12 +13,12 @@ function formatNumberWithCommas(number) {
 
 function MyApplications() {
 
+  const navigate = useNavigate();
   const { user } = useSelector(state => state.auth)
   const role = "Admin";
 
   // eslint-disable-next-line 
   const { isLoading, data, error } = useGetAllFIRsQuery();
-  console.log(data);
 
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
@@ -56,8 +57,41 @@ function MyApplications() {
     animateCount(count4, target4, setCount4);
   }, [count1, count2, count3, count4]);
 
+  const handleChangePassword = () => {
+    navigate("/ConfirmPassword");
+  }
+
+  const handleAddPoliceStation = () => {
+    navigate("/AddPoliceStation");
+  }
+
+  if (error) {
+    return (<>
+      <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
+      <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
+      <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
+    </>)
+  }
+
   return (
     <>
+      <div className={styles.topBarBody}>
+        <div className={styles.topBar}>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+              Settings
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+              {(user && role === user.role) ? <>
+              <li><button class="dropdown-item" type="button" onClick={handleAddPoliceStation}>Add Police Station</button></li>
+              <li><button class="dropdown-item" type="button">Add Offence</button></li>
+              </> : null}
+              <li><button class="dropdown-item" type="button">Change Username</button></li>
+              <li><button class="dropdown-item" type="button" onClick={handleChangePassword}>Change Password</button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
       <div className={styles.infoBody}>
         <div className={styles.Info}>
           <div className={styles.infoRow}>
@@ -69,7 +103,8 @@ function MyApplications() {
               <div className={styles.email}>{user.email}</div>
               <div className={styles.role}>{user.role}</div>
             </div>
-          </div></div>
+          </div>
+        </div>
       </div>
       <div className={styles.body}>
         <div className={styles.container}>
@@ -123,12 +158,12 @@ function MyApplications() {
             <div className={styles.cell}>Complaint No</div>
             <div className={styles.cell}>Name</div>
             <div className={styles.cell}>Contact Number</div>
-            <div className={styles.cell}>Officer Name</div>
+            <div className={styles.cell}>CNIC</div>
             <div className={styles.cell}>Category</div>
             <div className={styles.cell}>Offence</div>
             <div className={styles.cell}>Date</div>
-            <div className={styles.cell}>Response Time</div>
-            <div className={styles.cell}>Action</div>
+            <div className={styles.cell}>Status</div>
+            <div className={styles.cell}>Actions</div>
           </div>
           {
             data && data.map(firs => (

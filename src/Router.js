@@ -33,6 +33,8 @@ import MobileVerification from "./Pages/Login/MobileVerification.jsx";
 import MobileOTP from "./Pages/Login/MobileOTP.jsx";
 import CharacterCertificateForm from "./Pages/OnlineFIR/CharacterCertificateForm.jsx";
 import VehicleVerificationForm from "./Pages/OnlineFIR/VehicleVerificationForm.jsx";
+import AddPoliceStation from "./Pages/PSJudicary/AddPoliceStation.jsx";
+import PoliceStationInfo from "./Pages/PSJudicary/PoliceStationInfo.jsx";
 
 export const router = createBrowserRouter(
 
@@ -43,6 +45,7 @@ export const router = createBrowserRouter(
                 <Route path="/" exact element={<div className={styles.main}><Home /></div>} />
                 <Route path="/UserGuide" exact element={<div className={styles.main}><UserGuide /></div>} />
                 <Route path="/PSJudicary" exact element={<div className={styles.main}><PSJudicary /></div>} />
+                <Route path="/PSJudicary/:id" exact element={<div className={styles.main}><PoliceStationInfo /></div>} />
                 <Route path="/CharacterCertificate" exact element={<div className={styles.main}><CharacterCertificate /></div>} />
                 <Route path="/PoliceVerification" exact element={<div className={styles.main}><PoliceVerification /></div>} />
                 <Route path="/LostReport" exact element={<div className={styles.main}><LostReport /></div>} />
@@ -65,6 +68,7 @@ export const router = createBrowserRouter(
                 </Route>
                 <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'Admin'} /></div>}>
                     <Route path="/Search" exact element={<div className={styles.main}><Search /></div>} />
+                    <Route path="/AddPoliceStation" exact element={<div className={styles.main}><AddPoliceStation /></div>} />
                 </Route>
             </Route>
             <Route path="/LogIn" exact element={<div className={styles.main}><Login /></div>} />

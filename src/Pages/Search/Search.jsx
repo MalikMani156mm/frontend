@@ -83,12 +83,12 @@ function Search() {
                         <div className={styles.label}>Division</div>
                         <div>
                             <select name="Division" className={styles.formControl}>
-                                <option value="1">Select</option>
-                                <option value="2">Zone I</option>
-                                <option value="3">Zone II</option>
-                                <option value="4">Zone III</option>
-                                <option value="5">Zone IV</option>
-                                <option value="6">Zone V</option>
+                                <option value="0">Select</option>
+                                <option value="1">City</option>
+                                <option value="1">Saddar</option>
+                                <option value="1">Industrial Area</option>
+                                <option value="1">Rural</option>
+                                <option value="1">Soan</option>
                             </select>
                         </div>
                     </div>
@@ -99,31 +99,16 @@ function Search() {
                                 <option value="0">Select</option>
                                 <option value="1">Sabzi Mandi</option>
                                 <option value="2">Secretariat</option>
-                                <option value="3">Abpara</option>
                                 <option value="4">Kohsar</option>
                                 <option value="5">Bhara Kahu</option>
-                                <option value="6">Phulgaran</option>
-                                <option value="7">Bani Gala</option>
                                 <option value="8">Margalla</option>
-                                <option value="9">Karachi Company</option>
-                                <option value="10">Golra</option>
                                 <option value="11">Tarnol</option>
-                                <option value="12">Sangjani</option>
-                                <option value="13">Sumbal</option>
+                                <option value="13">Saddar</option>
                                 <option value="14">Shalimar</option>
-                                <option value="15">Ramna</option>
                                 <option value="16">I-9 Industrial Area</option>
-                                <option value="17">Noon</option>
-                                <option value="18">Shams Colony</option>
                                 <option value="19">Shehzad Town</option>
-                                <option value="20">Khanna</option>
                                 <option value="21">Sihala</option>
-                                <option value="22">Humak</option>
-                                <option value="23">Lohi Bher</option>
-                                <option value="24">Nilore</option>
                                 <option value="25">Koral</option>
-                                <option value="26">Kirpa</option>
-                                <option value="27">Women</option>
                             </select>
                         </div>
                     </div>

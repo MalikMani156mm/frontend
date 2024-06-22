@@ -77,8 +77,7 @@ function OnlineFIR() {
 
     // Concatenate the parts
     const uniqueIdentifier = `${initials}-${formattedDate}-${randomNumber}`;
-    // console.log(values.Circle);
-    console.log(uniqueIdentifier);
+    
     return uniqueIdentifier;
   }
   // eslint-disable-next-line
@@ -114,7 +113,7 @@ function OnlineFIR() {
       file: '',
     },
     validationSchema: yup.object().shape({
-      EntryDate: yup.date().required('Required'),
+      EntryDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
       District: yup.string().required('Required'),
       Division: yup.string().required('Required'),
       Circle: yup.string().required('Required'),
@@ -127,7 +126,7 @@ function OnlineFIR() {
       ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
       PermanentAddress: yup.string().max(300).required('Required'),
       placeOfOccurance: yup.string().required('Required'),
-      IncidentDate: yup.date().required('Required'),
+      IncidentDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
       FIRRegistered: yup.string().required('Required'),
       Category: yup.string().required('Required'),
       Offence: yup.string().required('Required'),
@@ -182,7 +181,7 @@ function OnlineFIR() {
                 <p>Source of Compliant</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="CompliantNumber" placeholder="Online" className="form-control" onChange={handleChange}
+                <input type="text" name="SourceOfComplaint" placeholder="Online" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} disabled={true} />
               </div>
             </div>
