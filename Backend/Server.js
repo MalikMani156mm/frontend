@@ -14,7 +14,7 @@ const app = express();
 connectDB();
 cloudinaryConfig();
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit:'50mb'}))
 app.use(cookieParser())
 
 app.use(cors('http://localhost:3000'));

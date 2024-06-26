@@ -18,8 +18,9 @@ const VVSchema = new Schema(
             unique: true
         },
         RequestTo: {
-            type: String,
-            require: [true, 'Please provide the District']
+            type:Schema.Types.ObjectId,
+            ref:'PoliceStation',
+            require: [true, 'Please provide the Police Station']
         },
         CNIC: {
             type: Number,
@@ -64,10 +65,9 @@ const VVSchema = new Schema(
         //     // min:[13, 'without dash 13 number'],
         //     // max:[15, 'wit hdash 15 number']
         // },
-        OCNICPic: [{
-            secure_url: String,
-            public_id: String,
-        }],
+        OCNICPic: {
+            type: String,
+        },
         OName: {
             type: String,
             require: [true, 'Please provide the Name'],
@@ -136,30 +136,24 @@ const VVSchema = new Schema(
             require: [true, 'Please provide the IncidentDetails'],
             max: [2000, 'Maximum limit of 1000 words']
         },
-        // CNICFront: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // CNICBack: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // ApplicantPic: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // RegistrationBookPic: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // ChassisNumberPic: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // EngineNumberPic: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
+        CNICFront: {
+            type: String
+        },
+        CNICBack: {
+            type: String
+        },
+        ApplicantPic: {
+            type: String
+        },
+        RegistrationBookPic: {
+            type: String
+        },
+        ChassisNumberPic: {
+            type: String
+        },
+        EngineNumberPic: {
+            type: String
+        },
         Status: {
             type: String,
             default: 'pending',

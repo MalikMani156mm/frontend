@@ -2,8 +2,13 @@ import PS from "../models/PoliceStationSchema.js";
 
 
 export const getAllPoliceStations = async function(req,res,next){
-    const PSs = await PS.find({});
+    try {
+        const PSs = await PS.find({}).populate('FIRs Certificates');
     res.json( PSs );
+    } catch (error) {
+        next(error)
+    }
+    
 }
 
 export const getPoliceStationById = async function(req,res,next){

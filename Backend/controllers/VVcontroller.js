@@ -1,5 +1,5 @@
 import VV from "../models/VVSchema.js"
-import * as cloudinary from "cloudinary";
+import { imageUploading } from "../Utils/Utils.js";
 
 
 export const getAllRequests = async function(req,res,next){
@@ -21,20 +21,55 @@ export const getRequestById = async function(req,res,next){
 export const createNewRequest = async function(req,res,next){
     const newRequest = req.body;
     
+    const OCNICPicURL = await imageUploading({
+        folder: 'VehicleVerification',
+        image: newRequest.OCNICPic,
+    })
 
-    // await cloudinary.v2.uploader.upload(newRequest.file, {folder: 'E-FIR'}, (error, result)=>{
-        
-    //     let files = [];
-    //     let secure_url = result.secure_url
-    //     let public_id = result.public_id
+    newRequest.OCNICPic = OCNICPicURL;
+    
+    const CNICFrontURL = await imageUploading({
+        folder: 'VehicleVerification',
+        image: newRequest.CNICFront,
+    })
 
-    //     let file = {
-    //         secure_url,
-    //         public_id
-    //     }
-    //     files.push(file)
-    //     newRequest.file = files
-    //   });
+    newRequest.CNICFront = CNICFrontURL;
+
+    const CNICBackURL = await imageUploading({
+        folder: 'VehicleVerification',
+        image: newRequest.CNICBack,
+    })
+
+    newRequest.CNICBack = CNICBackURL;
+
+    const RegistrationBookPicURL = await imageUploading({
+        folder: 'VehicleVerification',
+        image: newRequest.RegistrationBookPic,
+    })
+
+    newRequest.RegistrationBookPic = RegistrationBookPicURL;
+
+    const ChassisNumberPicURL = await imageUploading({
+        folder: 'VehicleVerification',
+        image: newRequest.ChassisNumberPic,
+    })
+
+    newRequest.ChassisNumberPic = ChassisNumberPicURL;
+
+    const EngineNumberPicURL = await imageUploading({
+        folder: 'VehicleVerification',
+        image: newRequest.EngineNumberPic,
+    })
+
+    newRequest.EngineNumberPic = EngineNumberPicURL;
+
+    const ApplicantPicURL = await imageUploading({
+        folder: 'VehicleVerification',
+        image: newRequest.ApplicantPic,
+    })
+
+    newRequest.ApplicantPic = ApplicantPicURL;
+
 
     try {
         const resp = await VV.create(newRequest);

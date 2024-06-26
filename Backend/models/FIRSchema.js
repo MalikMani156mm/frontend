@@ -30,7 +30,8 @@ const FIRsSchema = new Schema(
             require: [true, 'Please provide the Circle']
         },
         PoliceStation: {
-            type: String,
+            type:Schema.Types.ObjectId,
+            ref:'PoliceStation',
             require: [true, 'Please provide the Police Station']
         },
         BeatMoza: {
@@ -117,10 +118,9 @@ const FIRsSchema = new Schema(
         IOName: {
             type: String,
         },
-        file: [{
-            secure_url: String,
-            public_id: String,
-        }],
+        file: {
+            type:String
+        },
         Status: {
             type: String,
             default:'pending',

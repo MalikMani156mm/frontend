@@ -52,6 +52,24 @@ const PoliceStationSchema = new Schema(
         Location: {
             type: String,
         },
+        FIRs:[
+            {
+                type:Schema.Types.ObjectId,
+                ref:'FIR'
+            }
+        ],
+        Certificates:[
+            {
+                type:Schema.Types.ObjectId,
+                ref:'CharacterCertificate'
+            }
+        ],
+        VehicleVerifications:[
+            {
+                type:Schema.Types.ObjectId,
+                ref:'VehicleVerification'
+            }
+        ],
     },
     {
         timestamps:true

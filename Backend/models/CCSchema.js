@@ -15,7 +15,7 @@ const CCSchema = new Schema(
         },
         ApplicationtNumber: {
             type: String,
-            unique:true
+            unique: true
         },
         District: {
             type: String,
@@ -30,7 +30,8 @@ const CCSchema = new Schema(
             require: [true, 'Please provide the Circle']
         },
         PoliceStation: {
-            type: String,
+            type:Schema.Types.ObjectId,
+            ref:'PoliceStation',
             require: [true, 'Please provide the Police Station']
         },
         BeatMoza: {
@@ -38,13 +39,13 @@ const CCSchema = new Schema(
         },
         CNIC: {
             type: Number,
-            require:[true, 'Please provide the CNIC'],
+            require: [true, 'Please provide the CNIC'],
             // min:[13, 'without dash 13 number'],
             // max:[15, 'wit hdash 15 number']
         },
         PassportNumber: {
             type: String,
-            require:[true, 'Please provide the Passport Number'],
+            require: [true, 'Please provide the Passport Number'],
         },
         Name: {
             type: String,
@@ -54,7 +55,7 @@ const CCSchema = new Schema(
         },
         relation: {
             type: String,
-            enum: ['son','daughter','wife']
+            enum: ['son', 'daughter', 'wife']
         },
         GuardianName: {
             type: String,
@@ -68,7 +69,7 @@ const CCSchema = new Schema(
         },
         ContactNumber: {
             type: Number,
-            require:[true, 'Please provide the Contact Number'],
+            require: [true, 'Please provide the Contact Number'],
             // min:[11, 'At least of 11 number'],
             // max:[13, 'Maximum limit of 13 number']
         },
@@ -81,9 +82,9 @@ const CCSchema = new Schema(
             type: String,
             require: [true, 'Please provide the Category']
         },
-        SubmitByApplicant:{
+        SubmitByApplicant: {
             type: String,
-            enum: ['Yes','No']
+            enum: ['Yes', 'No']
         },
         SubmitterName: {
             type: String,
@@ -91,7 +92,7 @@ const CCSchema = new Schema(
             min: [5, 'At least of 5 words'],
             max: [30, 'Maximum limit of 30 words']
         },
-        RelationWithApplicant:{
+        RelationWithApplicant: {
             type: String,
             require: [true, 'Please provide the Category']
         },
@@ -100,46 +101,38 @@ const CCSchema = new Schema(
             require: [true, 'Please provide the IncidentDetails'],
             max: [2000, 'Maximum limit of 1000 words']
         },
-        // CNICFront: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // CNICBack: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // PassportInfoPic: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // PassportLastPic: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // ApplicantPic: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // AffidavitPic: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // AuthorityLetterPic: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
-        // AffidavitPicture: [{
-        //     secure_url: String,
-        //     public_id: String,
-        // }],
+        CNICFront: {
+            type: String
+        },
+        CNICBack: {
+            type: String
+        },
+        PassportInfoPic: {
+            type: String
+        },
+        PassportLastPic: {
+            type: String
+        },
+        ApplicantPic: {
+            type: String
+        },
+        AffidavitPic: {
+            type: String
+        },
+        AuthorityLetterPic: {
+            type: String
+        },
+        AffidavitPicture: {
+            type: String
+        },
         Status: {
             type: String,
-            default:'pending',
-            enum: ['pending','Approved','filed']
+            default: 'pending',
+            enum: ['pending', 'Approved', 'filed']
         },
     },
     {
-        timestamps:true
+        timestamps: true
     }
 )
 
