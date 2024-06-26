@@ -35,6 +35,7 @@ import CharacterCertificateForm from "./Pages/OnlineFIR/CharacterCertificateForm
 import VehicleVerificationForm from "./Pages/OnlineFIR/VehicleVerificationForm.jsx";
 import AddPoliceStation from "./Pages/PSJudicary/AddPoliceStation.jsx";
 import PoliceStationInfo from "./Pages/PSJudicary/PoliceStationInfo.jsx";
+import PriorityComplaint from "./Pages/PriorityComplaint/PriorityComplaint.jsx";
 
 export const router = createBrowserRouter(
 
@@ -68,6 +69,7 @@ export const router = createBrowserRouter(
                 </Route>
                 <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'Admin'} /></div>}>
                     <Route path="/Search" exact element={<div className={styles.main}><Search /></div>} />
+                    <Route path="/PriorityComplaint" exact element={<div className={styles.main}><PriorityComplaint /></div>} />
                     <Route path="/AddPoliceStation" exact element={<div className={styles.main}><AddPoliceStation /></div>} />
                 </Route>
             </Route>

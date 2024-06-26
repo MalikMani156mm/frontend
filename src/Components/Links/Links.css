@@ -26,7 +26,7 @@ h1{
   .Twitter:hover,
   .Fb:hover,
   .Instagram:hover,
-  .Youtube:hover {
+  .youtube:hover {
     opacity: 0.8; /* Adjust the opacity for the hover effect */
   }
 

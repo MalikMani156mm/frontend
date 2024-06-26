@@ -2,11 +2,11 @@ import styles from "./Login.module.css";
 import Textinput from "../../Components/Textinput/Textinput"
 import { useFormik } from "formik";
 import * as yup from 'yup';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import logo from "../../images/Logo.png";
 import { useLoginUserMutation } from "../../Redux/Features/Auth/AuthApi";
 import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -29,6 +29,7 @@ function Login() {
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     }
+    const { user, token } = useSelector(state => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     // eslint-disable-next-line
@@ -55,7 +56,7 @@ function Login() {
                 toast.error(user.error);
             }
             dispatch(setUserInfo(user));
-            navigate("/MyApplications")
+            navigate("/MyApplications");
         }
     })
 
@@ -66,6 +67,10 @@ function Login() {
             <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
             <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
         </>)
+    }
+
+    if (user && token){
+        return <Navigate to={'/MyApplications'} replace={true}/>
     }
 
     return (

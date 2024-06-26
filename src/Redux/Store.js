@@ -7,6 +7,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { VVApi } from './Features/VehicleVerification/VVApi';
 import { PoliceStationApi } from './Features/PoliceStationInfo/PoliceStationApi';
+import CartSlice from './Slices/CartSlice';
 
 const persistConfig = {
   key: 'root',
@@ -15,6 +16,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     auth:AuthSlice,
+    cart:CartSlice,
     [FIRApi.reducerPath]: FIRApi.reducer,
     [AuthApi.reducerPath]: AuthApi.reducer,
     [CertificateApi.reducerPath]: CertificateApi.reducer,

@@ -1,0 +1,32 @@
+.PriorBar{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    position: sticky;
+    bottom: -4%;
+    z-index: 10;
+    background-color: transparent; /* Add a background color to avoid transparency */
+    /* padding: 10px; */
+}
+
+.Button{
+    text-align: center;
+    color: aliceblue;
+    text-decoration: none;
+    background-color: red;
+    border: none;
+    outline: none;
+    height: 8vh;
+    border-radius: 10px;
+    padding: 5px 30px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    margin: 20px 0; 
+  }
+    
+  .Button:hover{
+    background-color: #0d6efd;
+    color: black;
+    font-size: 1.1rem;
+  }

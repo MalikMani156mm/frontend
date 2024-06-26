@@ -1,11 +1,13 @@
 import styles from "./MyApplications.module.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTh, faPenToSquare, faRightLeft, faHandshake, faFile, faFlag, faPrint } from "@fortawesome/free-solid-svg-icons";
+import { Tooltip } from 'react-tooltip';
 import { useGetAllFIRsQuery } from "../../Redux/Features/FIR/FIRApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Filters from "../../Components/Filters/Filters";
+import { addToCart } from "../../Redux/Slices/CartSlice";
 
 function formatNumberWithCommas(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -13,6 +15,7 @@ function formatNumberWithCommas(number) {
 
 function MyApplications() {
 
+  const dispatch = useDispatch();  
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth)
   const role = "Admin";
@@ -65,6 +68,9 @@ function MyApplications() {
     navigate("/AddPoliceStation");
   }
 
+  const handleCart = (FIRData) => {
+    dispatch(addToCart(FIRData));
+  }
   if (error) {
     return (<>
       <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
@@ -77,17 +83,17 @@ function MyApplications() {
     <>
       <div className={styles.topBarBody}>
         <div className={styles.topBar}>
-          <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+          <div className="dropdown">
+            <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
               Settings
             </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenu2">
               {(user && role === user.role) ? <>
-              <li><button class="dropdown-item" type="button" onClick={handleAddPoliceStation}>Add Police Station</button></li>
-              <li><button class="dropdown-item" type="button">Add Offence</button></li>
+                <li><button className="dropdown-item" type="button" onClick={handleAddPoliceStation}>Add Police Station</button></li>
+                <li><button className="dropdown-item" type="button">Add Offence</button></li>
               </> : null}
-              <li><button class="dropdown-item" type="button">Change Username</button></li>
-              <li><button class="dropdown-item" type="button" onClick={handleChangePassword}>Change Password</button></li>
+              <li><button className="dropdown-item" type="button">Change Username</button></li>
+              <li><button className="dropdown-item" type="button" onClick={handleChangePassword}>Change Password</button></li>
             </ul>
           </div>
         </div>
@@ -167,7 +173,7 @@ function MyApplications() {
           </div>
           {
             data && data.map(firs => (
-              <div className={styles.row4}>
+              <div className={styles.row4} key={firs._id}>
                 <div className={styles.cell1}>{firs.ComplaintNumber}</div>
                 <div className={styles.cell1}>{firs.Name}</div>
                 <div className={styles.cell1}>{firs.ContactNumber}</div>
@@ -177,18 +183,18 @@ function MyApplications() {
                 <div className={styles.cell1}>{firs.EntryDate}</div>
                 <div className={styles.cell1}>{firs.Status}</div>
                 <div className={`${styles.cell1} ${styles.icon}`}>
-                  <FontAwesomeIcon icon={faTh} />
-                  <FontAwesomeIcon icon={faPrint} />
-                  <FontAwesomeIcon icon={faFlag} />
-                  <FontAwesomeIcon icon={faFile} />
-                  <FontAwesomeIcon icon={faHandshake} />
-                  <FontAwesomeIcon icon={faRightLeft} />
-                  <FontAwesomeIcon icon={faPenToSquare} />
+                  <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" />
+                  <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" />
+                  <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
+                  <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" />
+                  <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" />
+                  <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" />
+                  <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" />
+                  <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
                 </div>
               </div>
             ))
           }
-
         </div>
       </div>
     </>

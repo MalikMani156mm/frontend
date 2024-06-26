@@ -7,12 +7,15 @@ import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
+import { useGetAllPoliceStationsQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 
 
 function OnlineFIR() {
 
   //eslint-disable-next-line
   const [addFIR, { isLoading, error }] = useAddNewFIRMutation();
+  //eslint-disable-next-line
+  const { data } = useGetAllPoliceStationsQuery();
   const { user } = useSelector(state => state.auth);
   const role = "Admin";
 
@@ -77,7 +80,7 @@ function OnlineFIR() {
 
     // Concatenate the parts
     const uniqueIdentifier = `${initials}-${formattedDate}-${randomNumber}`;
-    
+
     return uniqueIdentifier;
   }
   // eslint-disable-next-line
@@ -114,23 +117,23 @@ function OnlineFIR() {
     },
     validationSchema: yup.object().shape({
       EntryDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
-      District: yup.string().required('Required'),
-      Division: yup.string().required('Required'),
-      Circle: yup.string().required('Required'),
-      PoliceStation: yup.string().required('Required'),
-      CNIC: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('Required'),
-      Name: yup.string().min(5).max(30).required('Required'),
-      relation: yup.string().required('Required'),
-      GuardianName: yup.string().min(5).max(30).required('Required'),
-      Gender: yup.string().required('Required'),
-      ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
-      PermanentAddress: yup.string().max(300).required('Required'),
-      placeOfOccurance: yup.string().required('Required'),
-      IncidentDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
-      FIRRegistered: yup.string().required('Required'),
-      Category: yup.string().required('Required'),
-      Offence: yup.string().required('Required'),
-      IncidentDetails: yup.string().max(2000).required('Required'),
+      // District: yup.string().required('Required'),
+      // Division: yup.string().required('Required'),
+      // Circle: yup.string().required('Required'),
+      // PoliceStation: yup.string().required('Required'),
+      // CNIC: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('Required'),
+      // Name: yup.string().min(5).max(30).required('Required'),
+      // relation: yup.string().required('Required'),
+      // GuardianName: yup.string().min(5).max(30).required('Required'),
+      // Gender: yup.string().required('Required'),
+      // ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
+      // PermanentAddress: yup.string().max(300).required('Required'),
+      // placeOfOccurance: yup.string().required('Required'),
+      // IncidentDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
+      // FIRRegistered: yup.string().required('Required'),
+      // Category: yup.string().required('Required'),
+      // Offence: yup.string().required('Required'),
+      // IncidentDetails: yup.string().max(2000).required('Required'),
       file: yup.string().required('Required'),
     }),
     onSubmit: async (values) => {
@@ -251,33 +254,11 @@ function OnlineFIR() {
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="1">PS Sabzi Mandi</option>
-                  <option value="2">PS Secretariat</option>
-                  <option value="3">PS Abpara</option>
-                  <option value="4">PS Kohsar</option>
-                  <option value="5">PS Bhara Kahu</option>
-                  <option value="6">PS Phulgaran</option>
-                  <option value="7">PS Bani Gala</option>
-                  <option value="8">PS Margalla</option>
-                  <option value="9">PS Karachi Company</option>
-                  <option value="10">PS Golra</option>
-                  <option value="11">PS Tarnol</option>
-                  <option value="12">PS Sangjani</option>
-                  <option value="13">PS Sumbal</option>
-                  <option value="14">PS Shalimar</option>
-                  <option value="15">PS Ramna</option>
-                  <option value="16">PS I-9 Industrial Area</option>
-                  <option value="17">PS Noon</option>
-                  <option value="18">PS Shams Colony</option>
-                  <option value="19">PS Shehzad Town</option>
-                  <option value="20">PS Khanna</option>
-                  <option value="21">PS Sihala</option>
-                  <option value="22">PS Humak</option>
-                  <option value="23">PS Lohi Bher</option>
-                  <option value="24">PS Nilore</option>
-                  <option value="25">PS Koral</option>
-                  <option value="26">PS Kirpa</option>
-                  <option value="27">PS Women</option>
+                  {
+                    data && data.map(PS => (
+                      <option value={PS._id} key={PS._id}>{PS.PSName}</option>
+                    ))}
+
                 </select>
                 <p className="help-block text-danger">{errors.PoliceStation && touched.PoliceStation ? errors.PoliceStation : null}</p>
               </div>
