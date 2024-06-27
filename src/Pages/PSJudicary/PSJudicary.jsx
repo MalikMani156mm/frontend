@@ -1,5 +1,5 @@
 import { useGetAllPoliceStationsQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import styles from './PSJudicary.module.css';
 
 
@@ -12,11 +12,7 @@ function PSJudicary() {
 
 
   if (error) {
-    return (<>
-      <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
-      <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
-      <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className="homelink">Home</Link></h3>
-    </>)
+    return <Navigate to={'*'} replace={true} />
   }
 
   return (
@@ -29,15 +25,15 @@ function PSJudicary() {
           </p>
         </div>
         <div className={styles.buttonBody}>
-        {
-        data && data.map(PS => (
-          <button className={styles.Button} onClick={() => { navigate(`/PSJudicary/${PS._id}`) }}>
-            {PS.PSName}
-          </button>
-        ))}
+          {
+            data && data.map(PS => (
+              <button className={styles.Button} onClick={() => { navigate(`/PSJudicary/${PS._id}`) }}>
+                {PS.PSName}
+              </button>
+            ))}
         </div>
       </div>
-      
+
     </>
   );
 }

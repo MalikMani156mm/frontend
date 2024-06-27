@@ -1,4 +1,4 @@
-import {  NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import styles from "./Navbar.module.css";
 import logo from "../../images/Logo.png";
@@ -6,18 +6,31 @@ import Message from "../../images/Message.png";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutUserMutation } from "../../Redux/Features/Auth/AuthApi";
 import { clearUserInfo } from "../../Redux/Features/Auth/AuthSlice";
+import CustomAlert from "../CustomAlert/CustomAlert";
+
 
 function Navbar() {
 
   const { user, token } = useSelector(state => state.auth)
   const role = "Admin";
 
-  const [logout, {isLoading}] = useLogoutUserMutation();
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [logout, { isLoading }] = useLogoutUserMutation();
   const dispatch = useDispatch();
+
   const handleLogout = async () => {
+    setShowConfirmation(true);
+
+  }
+  const handleConfirmLogout = async () => {
     await logout();
     dispatch(clearUserInfo());
-  }
+    setShowConfirmation(false);
+  };
+
+  const handleCancelLogout = () => {
+    setShowConfirmation(false);
+  };
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -114,6 +127,14 @@ function Navbar() {
         </ul>
       </nav>
       <div className={styles.separator}></div>
+      {showConfirmation && (
+                <CustomAlert
+                    message="Are you sure you want to Logout?"
+                    onConfirm={handleConfirmLogout}
+                    onCancel={handleCancelLogout}
+                    buttonLabel={"Confirm"}
+                />
+            )}
     </>
   );
 }

@@ -1,13 +1,13 @@
 import styles from "./MyApplications.module.css";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTh, faPenToSquare, faRightLeft, faHandshake, faFile, faFlag, faPrint } from "@fortawesome/free-solid-svg-icons";
+import { faTh, faPenToSquare, faRightLeft, faHandshake, faFile, faFlag,faStar, faPrint, faRemove } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip } from 'react-tooltip';
-import { useGetAllFIRsQuery } from "../../Redux/Features/FIR/FIRApi";
+import {  useGetAllFIRsQuery } from "../../Redux/Features/FIR/FIRApi";
 import { useDispatch, useSelector } from "react-redux";
 import Filters from "../../Components/Filters/Filters";
-import { addToCart } from "../../Redux/Slices/CartSlice";
+import { addToCart, removeFromCart } from "../../Redux/Slices/CartSlice";
 
 function formatNumberWithCommas(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -15,7 +15,7 @@ function formatNumberWithCommas(number) {
 
 function MyApplications() {
 
-  const dispatch = useDispatch();  
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth)
   const role = "Admin";
@@ -23,14 +23,31 @@ function MyApplications() {
   // eslint-disable-next-line 
   const { isLoading, data, error } = useGetAllFIRsQuery();
 
+  const [showIcon, setShowIcon] = useState(() => {
+    const storedState = localStorage.getItem("showIcon");
+    return storedState ? JSON.parse(storedState) : {};
+  });
+
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
   const [count3, setCount3] = useState(0);
   const [count4, setCount4] = useState(0);
-  const target1 = 150; // Total
-  const target2 = 13; // Filed
-  const target3 = 36; // Pending
-  const target4 = 101; // Completed
+  const [target1, setTarget1] = useState(0);
+  const target2 = 0; // Filed
+  const [target3, setTarget3] = useState(0);
+  const target4 = 0; // Completed
+
+  useEffect(() => {
+    if (data) {
+      setTarget1(data.length); // Set target1 to data.length when data is available
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data) {
+      setTarget3(data.length); // Set target1 to data.length when data is available
+    }
+  }, [data]);
 
   useEffect(() => {
     const animateCount = (currentCount, targetCount, setter) => {
@@ -58,7 +75,7 @@ function MyApplications() {
     animateCount(count2, target2, setCount2);
     animateCount(count3, target3, setCount3);
     animateCount(count4, target4, setCount4);
-  }, [count1, count2, count3, count4]);
+  }, [count1, count2, count3, count4, target1, target3]);
 
   const handleChangePassword = () => {
     navigate("/ConfirmPassword");
@@ -68,15 +85,42 @@ function MyApplications() {
     navigate("/AddPoliceStation");
   }
 
+  useEffect(() => {
+    localStorage.setItem("showIcon", JSON.stringify(showIcon));
+  }, [showIcon]);
+
   const handleCart = (FIRData) => {
     dispatch(addToCart(FIRData));
+    setShowIcon((prevShowIcon) => ({
+      ...prevShowIcon,
+      [FIRData._id]: !prevShowIcon[FIRData._id],
+    }));
   }
+  const handleRemove = (FIRData) => {
+    dispatch(removeFromCart(FIRData));
+    setShowIcon((prevShowIcon) => ({
+      ...prevShowIcon,
+      [FIRData._id]: !prevShowIcon[FIRData._id],
+    }));
+  }
+  
+
+  const stars = [];
+  
+  for (let i = 0; i < 5; i++) {
+    stars.push(<FontAwesomeIcon key={i} icon={faStar} />);
+  }
+
   if (error) {
     return (<>
       <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
       <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
       <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
     </>)
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -159,6 +203,7 @@ function MyApplications() {
             </div>
           </div>
         </div>
+        {(user && role === user.role) ? <>
         <div className={styles.container4}>
           <div className={styles.row4}>
             <div className={styles.cell}>Complaint No</div>
@@ -174,25 +219,52 @@ function MyApplications() {
           {
             data && data.map(firs => (
               <div className={styles.row4} key={firs._id}>
-                <div className={styles.cell1}>{firs.ComplaintNumber}</div>
-                <div className={styles.cell1}>{firs.Name}</div>
-                <div className={styles.cell1}>{firs.ContactNumber}</div>
-                <div className={styles.cell1}>{firs.CNIC}</div>
-                <div className={styles.cell1}>{firs.Category}</div>
-                <div className={styles.cell1}>{firs.Offence}</div>
-                <div className={styles.cell1}>{firs.EntryDate}</div>
-                <div className={styles.cell1}>{firs.Status}</div>
-                <div className={`${styles.cell1} ${styles.icon}`}>
+                <div className={styles.cell}>{firs.ComplaintNumber}</div>
+                <div className={styles.cell}>{firs.Name}</div>
+                <div className={styles.cell}>{firs.ContactNumber}</div>
+                <div className={styles.cell}>{firs.CNIC}</div>
+                <div className={styles.cell}>{firs.Category}</div>
+                <div className={styles.cell}>{firs.Offence}</div>
+                <div className={styles.cell}>{firs.EntryDate}</div>
+                <div className={styles.cell}>{firs.Status}</div>
+                <div className={`${styles.cell} ${styles.icon}`}>
                   <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" />
                   <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" />
-                  <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
                   <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" />
                   <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" />
                   <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" />
                   <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" />
+                  {showIcon[firs._id] ? <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
+                    : <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
+                  }
                   <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
                 </div>
               </div>
+            ))
+          }
+        </div></> : null}
+        <div className={styles.container4}>
+          <div className={styles.row4}>
+            <div className={styles.cell1}>Complaint No</div>
+            <div className={styles.cell1}>Category</div>
+            <div className={styles.cell1}>Offence</div>
+            <div className={styles.cell1}>Date</div>
+            <div className={styles.cell1}>Status</div>
+            <div className={styles.cell1}>Rating</div>
+          </div>
+          {
+            data && data.map(firs => (
+              <>
+              <div className={styles.row4} key={firs._id}>
+                <div className={styles.cell1}>{firs.ComplaintNumber}</div>
+                <div className={styles.cell1}>{firs.Category}</div>
+                <div className={styles.cell1}>{firs.Offence}</div>
+                <div className={styles.cell1}>{firs.EntryDate}</div>
+                <div className={styles.cell1}>{firs.Status}</div>
+                  <div className={styles.cell1}>{stars}</div>
+              <div><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
+              </div>
+              </>
             ))
           }
         </div>

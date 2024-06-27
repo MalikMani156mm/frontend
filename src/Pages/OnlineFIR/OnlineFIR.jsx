@@ -195,7 +195,7 @@ function OnlineFIR() {
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="1">Islamabad</option>
+                  <option value="Islamabad">Islamabad</option>
                 </select>
                 <p className="help-block text-danger">{errors.District && touched.District ? errors.District : null}</p>
               </div>
@@ -205,7 +205,11 @@ function OnlineFIR() {
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="3">Industrial Area Zone</option>
+                  <option value="City">City</option>
+                  <option value="Saddar">Saddar</option>
+                  <option value="Industrial Area">Industrial Area</option>
+                  <option value="Rural">Rural</option>
+                  <option value="Soan">Soan</option>
                 </select>
                 <p className="help-block text-danger">{errors.Division && touched.Division ? errors.Division : null}</p>
               </div>
@@ -271,10 +275,11 @@ function OnlineFIR() {
                     onChange={handleChange}
                     onBlur={handleBlur}>
                     <option value="0">Select</option>
-                    <option value="1">Beat/Moza-1</option>
+                    <option value="Beat/Moza-1">Beat/Moza-1</option>
                   </select>
                 </div>
-              </div></> : null}
+              </div></> : null
+            }
           </div>
         </div>
         <div className={styles.container}>
@@ -347,9 +352,9 @@ function OnlineFIR() {
                 <select className="form-control" name="Gender" onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="1">Male</option>
-                  <option value="2">Female</option>
-                  <option value="3">Others</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Others">Others</option>
                 </select>
                 <p className="help-block text-danger">{errors.Gender && touched.Gender ? errors.Gender : null}</p>
               </div>

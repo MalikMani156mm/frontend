@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import React from "react";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import styles from './PSJudicary.module.css';
@@ -9,12 +9,8 @@ function PoliceStationInfo() {
     const { data, error } = useGetPoliceStationByIdQuery(id);
 
     if (error) {
-        return (<>
-            <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
-            <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
-            <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className="homelink">Home</Link></h3>
-        </>)
-    }
+        return <Navigate to={'*'} replace={true} />
+      }
 
     if (!data || !data.PSs) {
         return <div>Loading...</div>;

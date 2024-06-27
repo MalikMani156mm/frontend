@@ -36,6 +36,9 @@ import VehicleVerificationForm from "./Pages/OnlineFIR/VehicleVerificationForm.j
 import AddPoliceStation from "./Pages/PSJudicary/AddPoliceStation.jsx";
 import PoliceStationInfo from "./Pages/PSJudicary/PoliceStationInfo.jsx";
 import PriorityComplaint from "./Pages/PriorityComplaint/PriorityComplaint.jsx";
+import FIRDetail from "./Pages/FIRDetails/FIRDetail.js";
+import ViewFIR from "./Pages/OnlineFIR/ViewFIR.jsx";
+import EditFIR from "./Pages/OnlineFIR/EditFIR.jsx";
 
 export const router = createBrowserRouter(
 
@@ -61,6 +64,9 @@ export const router = createBrowserRouter(
                 <Route path="*" element={<div className={styles.main}><Error /></div>} />
                 <Route path="/" element={<div className={styles.layout}><AuthLayouts /></div>}>
                     <Route path="/OnlineFIR" exact element={<div className={styles.main}><OnlineFIR /></div>} />
+                    <Route path="/ViewFIR/:id" exact element={<div className={styles.main}><ViewFIR /></div>} />
+                    <Route path="/EditFIR/:id" exact element={<div className={styles.main}><EditFIR /></div>} />
+                    <Route path="/FIRDetail/:id" exact element={<div className={styles.main}><FIRDetail /></div>} />
                     <Route path="/MyApplications" exact element={<div className={styles.main}><MyApplications /></div>} />
                     <Route path="/CharacterCertificateForm" exact element={<div className={styles.main}><CharacterCertificateForm /></div>} />
                     <Route path="/VehicleVerificationForm" exact element={<div className={styles.main}><VehicleVerificationForm /></div>} />

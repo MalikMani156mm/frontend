@@ -83,13 +83,16 @@
   }
   
   
+  
   .container3,
   .container4{
     border: none;
-    width: 98%;
+    width: 90%;
   }
 
-
+.actionClass{
+  padding-top: 10px;
+}
   .header {
     background-color: blue;
     width: parent;
@@ -172,11 +175,22 @@ flex-direction: row;
   padding: 10px;
   display: flex;
   flex-direction: row;
-  gap: 10px;
+  /* gap: 10px; */
   align-items: center;
   justify-content: space-between;
 }
 
+.row6{
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.buttonBody{
+  display: flex;
+  justify-content: center;
+}
 .rowButton{
   display: flex;
   justify-content: center;
@@ -206,11 +220,13 @@ flex-direction: column;
   border: 0.5px ridge grey;
   width: 12%;
   font-weight: bold;
-  background-color: #fff;
+  background-color: white;
+  text-align: center;
 }
 
 .cell1{
-  background-color: azure;
+  width: 14.3%;
+  background-color: aliceblue;
 }
 
 
@@ -312,16 +328,6 @@ flex-direction: column;
   
   @media screen and (max-width: 1515px) {
     
-    /* .row,.row1,.row2{
-      flex-direction: column;
-      flex-wrap: wrap;
-      align-items: center;
-      padding-left: 100px;
-    }
-    .column{
-      flex-basis: 50%; 
-      margin-bottom: 20px; 
-    } */
     .formControl1{
       width: 230px;
     }
