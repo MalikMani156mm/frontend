@@ -52,7 +52,6 @@ export const createNewFIR = async function (req, res, next) {
         const newFIRS = [...policeStation.FIRs, FIRId.toString()]
         policeStation.FIRs = newFIRS;
         const updatePoliceStation = await PoliceStaion.findByIdAndUpdate( PSId , policeStation);
-        console.log("new",policeStation.FIRs);
         res.json({
             FIR: r,
             message: "FIR Submitted Successfully",
