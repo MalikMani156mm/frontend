@@ -36,11 +36,11 @@ function PriorityComplaint() {
                 <div >
                     <h1>Priority Complaints</h1>
                 </div>
-                <div className={styles.container4}>
+                <div className={styles.container0}>
                     <div className={styles.row4}>
                         <div className={styles.cell}>Complaint No</div>
                         <div className={styles.cell}>Name</div>
-                        <div className={styles.cell}>Contact Number</div>
+                        <div className={styles.cell}>Phone Number</div>
                         <div className={styles.cell}>CNIC</div>
                         <div className={styles.cell}>Category</div>
                         <div className={styles.cell}>Offence</div>

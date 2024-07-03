@@ -6,8 +6,14 @@ function PriorBar() {
 
     const navigate = useNavigate();
     const { cart } = useSelector(state => state.cart);
+    const { user } = useSelector(state => state.auth);
+    const Role = "SuperAdmin";
     const handleClick = () => {
-        navigate("/PriorityComplaint");
+        if (user.role === Role) {
+            navigate("/admin/PriorityComplaint");
+        } else {
+            navigate("/PriorityComplaint");
+        }
     }
     return (
         <div className={styles.PriorBar}>

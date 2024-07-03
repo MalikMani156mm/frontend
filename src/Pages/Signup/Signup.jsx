@@ -2,7 +2,7 @@ import styles from "./Signup.module.css";
 import Textinput from "../../Components/Textinput/Textinput"
 import signupSchema from "../../Schemas/signupSchema";
 import { useFormik } from "formik";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import logo from "../../images/Logo.png";
 import { useRegisterUserMutation } from "../../Redux/Features/Auth/AuthApi";
 import { ToastContainer, toast } from 'react-toastify';
@@ -10,8 +10,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
+// import { useDispatch } from "react-redux";
+// import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 
 function Signup() {
 
@@ -50,7 +50,7 @@ function Signup() {
             // dispatch(setUserInfo(user));
             // navigate("/MyApplications")
             if (user.success) {
-                toast.success(user.message);
+                toast.success(user.data.message);
             }
             else {
                 toast.info(user.data.message);

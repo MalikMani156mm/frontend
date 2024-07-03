@@ -18,6 +18,7 @@ function OnlineFIR() {
   const { data } = useGetAllPoliceStationsQuery();
   const { user } = useSelector(state => state.auth);
   const role = "Admin";
+  const Role = "SuperAdmin"
 
 
   const [fileInputs, setFileInputs] = useState([{ id: 1 }]);
@@ -53,7 +54,14 @@ function OnlineFIR() {
 
   const getCurrentDateTimeLocal = () => {
     const current = new Date();
-    return current.toISOString().slice(0, 16);
+    const options = { 
+      year: 'numeric', 
+      month: '2-digit', 
+      day: '2-digit', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    };
+    return new Intl.DateTimeFormat('default', options).format(current);
   };
 
 
@@ -262,12 +270,11 @@ function OnlineFIR() {
                     data && data.map(PS => (
                       <option value={PS._id} key={PS._id}>{PS.PSName}</option>
                     ))}
-
                 </select>
                 <p className="help-block text-danger">{errors.PoliceStation && touched.PoliceStation ? errors.PoliceStation : null}</p>
               </div>
             </div>
-            {(user && role === user.role) ? <>
+            {(user && (role=== user.role || Role === user.role)) ? <>
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-3 col-sm-3"><p>Beat/Moza No.</p></div>
                 <div className="col-lg-3 col-md-3 col-sm-3">
@@ -411,7 +418,7 @@ function OnlineFIR() {
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Incident Date</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <input
-                  type="date"
+                  type="datetime-local"
                   id="datetime"
                   name="IncidentDate"
                   className="form-control"
@@ -428,8 +435,6 @@ function OnlineFIR() {
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="Character Verification">Character Verification</option>
-                  <option value="Car Verification">Car Verification</option>
                   <option value="Child Abuse">Child Abuse</option>
                   <option value="Complaint against Police">Complaint against Police</option>
                   <option value="Foreigner complaint">Foreigner complaint</option>
@@ -596,7 +601,7 @@ function OnlineFIR() {
                 <p className="help-block text-danger">{errors.Offence && touched.Offence ? errors.Offence : null}</p>
               </div>
             </div>
-            {(user && role === user.role) ? <>
+            {(user && (role=== user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-3 col-sm-3">
@@ -681,7 +686,7 @@ function OnlineFIR() {
                   onBlur={handleBlur} />
               </div>
             </div>
-            {(user && role === user.role) ? <>
+            {(user && (role=== user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-3 col-sm-3"><p>IO Name</p></div>

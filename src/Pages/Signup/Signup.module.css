@@ -43,6 +43,24 @@
     color: black;
 }
 
+.SelectOption{
+    padding: 18px 30px;
+    padding-right: 50px;
+    margin: 15px;
+    outline: none;
+    background-color: gainsboro;
+    width: 400px;
+    color: rgba(0, 0, 0, 0.484);
+    border: 1px solid white;
+    border-radius: 10px;
+    font-size: 20px;
+    appearance: none; 
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20"><path fill="black" d="M0 0l10 10 10-10z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: 93% center; 
+    padding-right: 40px;
+}
+
 .login {
     margin-top: 20px;
     color: rgb(1, 1, 179);
@@ -67,7 +85,6 @@
 .inputContainer {
     position: relative;
     width: fit-content; 
-    
 }
 
 .eye {
@@ -98,6 +115,24 @@
     }
 }
 
+@media screen and (max-width: 530px) {
+    .SelectOption{
+        width: 300px;
+    }
+    
+}
+@media screen and (max-width: 400px) {
+    .SelectOption{
+        width: 250px;
+    }
+    
+}
+@media screen and (max-width: 325px) {
+    .SelectOption{
+        width: 200px;
+    }
+    
+}
 
 @media screen and (max-width: 430px) {
     .login{

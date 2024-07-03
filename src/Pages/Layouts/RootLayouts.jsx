@@ -10,13 +10,14 @@ function RootLayouts() {
 
     const { user } = useSelector(state => state.auth)
     const role = "Admin";
+    const Role = "SuperAdmin";
 
     return (
         <div>
             <Navbar />
             <ScrollToTop />
             <Outlet />
-            {(user && role === user.role) ? <PriorBar /> : null}
+            {(user && (role=== user.role || Role === user.role)) ? <PriorBar /> : null}
             <Footer />
         </div>
     );

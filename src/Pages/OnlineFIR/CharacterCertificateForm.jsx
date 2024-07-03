@@ -15,8 +15,8 @@ function CharacterCertificateForm() {
 
   const { user } = useSelector(state => state.auth)
   const role = "Admin";
+  const Role = "SuperAdmin";
 
-  
 
   const [selectedValue, setSelectedValue] = useState(null);
   const [selectedValue2, setSelectedValue2] = useState(null);
@@ -70,7 +70,7 @@ function CharacterCertificateForm() {
 
     // Concatenate the parts
     const uniqueIdentifier = `${initials}-CC-${formattedDate}-${randomNumber}`;
-    
+
     return uniqueIdentifier;
   }
 
@@ -114,12 +114,12 @@ function CharacterCertificateForm() {
       Circle: yup.string().required('Required'),
       PoliceStation: yup.string().required('Required'),
       BeatMoza: yup.string(),
-      CNIC: yup.number().min(1111111111111,"Must be atleast 13 digit").max(9999999999999,"Invalid CNIC").required('Required'),
+      CNIC: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('Required'),
       PassportNumber: yup.string().min(9).required('Required'),
       Name: yup.string().min(5).max(30).required('Required'),
       GuardianName: yup.string().min(5).max(30).required('Required'),
       Gender: yup.string().required('Required'),
-      ContactNumber: yup.number().min(1111111111,"Must be atleast 11 digit").max(999999999999,"Invalid Number").required('Required'),
+      ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
       PermanentAddress: yup.string().max(200).required('Required'),
       Category: yup.string().required('Required'),
       Reason: yup.string().max(200).required('Required'),
@@ -133,14 +133,14 @@ function CharacterCertificateForm() {
     }),
     onSubmit: async (values) => {
       console.log(values);
-      values.ApplicationtNumber=SerialNumberGenerator(values.Circle)
-          const res = await addCertificate(values).unwrap();
-          if (res.success) {
-            toast.success(res.message);
-          } 
-          else {
-            toast.error(res.message || res.data.error);
-          }
+      values.ApplicationtNumber = SerialNumberGenerator(values.Circle)
+      const res = await addCertificate(values).unwrap();
+      if (res.success) {
+        toast.success(res.message);
+      }
+      else {
+        toast.error(res.message || res.data.error);
+      }
 
     }
   });
@@ -175,7 +175,7 @@ function CharacterCertificateForm() {
                 <p className="help-block text-danger">{errors.EntryDate && touched.EntryDate ? errors.EntryDate : null}</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
-                 <p>Source of Application</p>
+                <p>Source of Application</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <input type="text" name="SourceofApplication" placeholder="Online" className="form-control" onChange={handleChange}
@@ -278,19 +278,6 @@ function CharacterCertificateForm() {
                 <p className="help-block text-danger">{errors.PoliceStation && touched.PoliceStation ? errors.PoliceStation : null}</p>
               </div>
             </div>
-        {(user && role === user.role) ? <>
-
-            <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Beat/Moza No.</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="BeatMoza"
-                  onChange={handleChange}
-                  onBlur={handleBlur}>
-                  <option value="0">Select</option>
-                  <option value="1">Beat/Moza-1</option>
-                </select>
-              </div>
-            </div></>:null}
           </div>
         </div>
         <div className={styles.container}>
@@ -488,15 +475,15 @@ function CharacterCertificateForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3"><p>CNIC Picture (Front Side)</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="file" name="CNICFront"  className="form-control" onChange={(event) => {
-                      let reader = new FileReader();
-                      reader.onloadend = () => {
-                        if (reader.readyState === 2) {
-                          setFieldValue("CNICFront", reader.result);
-                        }
-                      }
-                      reader.readAsDataURL(event.currentTarget.files[0]);
-                    }}
+                <input type="file" name="CNICFront" className="form-control" onChange={(event) => {
+                  let reader = new FileReader();
+                  reader.onloadend = () => {
+                    if (reader.readyState === 2) {
+                      setFieldValue("CNICFront", reader.result);
+                    }
+                  }
+                  reader.readAsDataURL(event.currentTarget.files[0]);
+                }}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNICFront && touched.CNICFront ? errors.CNICFront : null}</p>
               </div>
@@ -505,14 +492,14 @@ function CharacterCertificateForm() {
               <div className="col-lg-3 col-md-3 col-sm-3 " >
                 <div >
                   <input type="file" name="CNICBack" className="form-control" onChange={(event) => {
-                      let reader = new FileReader();
-                      reader.onloadend = () => {
-                        if (reader.readyState === 2) {
-                          setFieldValue("CNICBack", reader.result);
-                        }
+                    let reader = new FileReader();
+                    reader.onloadend = () => {
+                      if (reader.readyState === 2) {
+                        setFieldValue("CNICBack", reader.result);
                       }
-                      reader.readAsDataURL(event.currentTarget.files[0]);
-                    }}
+                    }
+                    reader.readAsDataURL(event.currentTarget.files[0]);
+                  }}
                     onBlur={handleBlur} />
                 </div>
                 <p className="help-block text-danger">{errors.CNICBack && touched.CNICBack ? errors.CNICBack : null}</p>
@@ -521,15 +508,15 @@ function CharacterCertificateForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3"><p>Passport Info Picture</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="file" name="PassportInfoPic"  className="form-control" onChange={(event) => {
-                      let reader = new FileReader();
-                      reader.onloadend = () => {
-                        if (reader.readyState === 2) {
-                          setFieldValue("PassportInfoPic", reader.result);
-                        }
-                      }
-                      reader.readAsDataURL(event.currentTarget.files[0]);
-                    }}
+                <input type="file" name="PassportInfoPic" className="form-control" onChange={(event) => {
+                  let reader = new FileReader();
+                  reader.onloadend = () => {
+                    if (reader.readyState === 2) {
+                      setFieldValue("PassportInfoPic", reader.result);
+                    }
+                  }
+                  reader.readAsDataURL(event.currentTarget.files[0]);
+                }}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.PassportInfoPic && touched.PassportInfoPic ? errors.PassportInfoPic : null}</p>
               </div>
@@ -538,14 +525,14 @@ function CharacterCertificateForm() {
               <div className="col-lg-3 col-md-3 col-sm-3 " >
                 <div >
                   <input type="file" name="PassportLastPic" className="form-control" onChange={(event) => {
-                      let reader = new FileReader();
-                      reader.onloadend = () => {
-                        if (reader.readyState === 2) {
-                          setFieldValue("PassportLastPic", reader.result);
-                        }
+                    let reader = new FileReader();
+                    reader.onloadend = () => {
+                      if (reader.readyState === 2) {
+                        setFieldValue("PassportLastPic", reader.result);
                       }
-                      reader.readAsDataURL(event.currentTarget.files[0]);
-                    }}
+                    }
+                    reader.readAsDataURL(event.currentTarget.files[0]);
+                  }}
                     onBlur={handleBlur} />
                 </div>
                 <p className="help-block text-danger">{errors.PassportLastPic && touched.PassportLastPic ? errors.PassportLastPic : null}</p>
@@ -554,15 +541,15 @@ function CharacterCertificateForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3"><p>Applicant Picture</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="file" name="ApplicantPic"  className="form-control" onChange={(event) => {
-                      let reader = new FileReader();
-                      reader.onloadend = () => {
-                        if (reader.readyState === 2) {
-                          setFieldValue("ApplicantPic", reader.result);
-                        }
-                      }
-                      reader.readAsDataURL(event.currentTarget.files[0]);
-                    }}
+                <input type="file" name="ApplicantPic" className="form-control" onChange={(event) => {
+                  let reader = new FileReader();
+                  reader.onloadend = () => {
+                    if (reader.readyState === 2) {
+                      setFieldValue("ApplicantPic", reader.result);
+                    }
+                  }
+                  reader.readAsDataURL(event.currentTarget.files[0]);
+                }}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.ApplicantPic && touched.ApplicantPic ? errors.ApplicantPic : null}</p>
               </div>
@@ -571,14 +558,14 @@ function CharacterCertificateForm() {
               <div className="col-lg-3 col-md-3 col-sm-3 " >
                 <div >
                   <input type="file" name="AffidavitPic" className="form-control" onChange={(event) => {
-                      let reader = new FileReader();
-                      reader.onloadend = () => {
-                        if (reader.readyState === 2) {
-                          setFieldValue("AffidavitPic", reader.result);
-                        }
+                    let reader = new FileReader();
+                    reader.onloadend = () => {
+                      if (reader.readyState === 2) {
+                        setFieldValue("AffidavitPic", reader.result);
                       }
-                      reader.readAsDataURL(event.currentTarget.files[0]);
-                    }}
+                    }
+                    reader.readAsDataURL(event.currentTarget.files[0]);
+                  }}
                     onBlur={handleBlur} />
                 </div>
               </div>
@@ -586,15 +573,15 @@ function CharacterCertificateForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3"><p>Authority Letter Picture</p><Link to={"https://islamabadpolice.gov.pk/img/authority-letter.pdf"} style={{ textDecoration: 'none' }}>Download Authority Letter Sample</Link></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="file" name="AuthorityLetterPic"  className="form-control" onChange={(event) => {
-                      let reader = new FileReader();
-                      reader.onloadend = () => {
-                        if (reader.readyState === 2) {
-                          setFieldValue("AuthorityLetterPic", reader.result);
-                        }
-                      }
-                      reader.readAsDataURL(event.currentTarget.files[0]);
-                    }}
+                <input type="file" name="AuthorityLetterPic" className="form-control" onChange={(event) => {
+                  let reader = new FileReader();
+                  reader.onloadend = () => {
+                    if (reader.readyState === 2) {
+                      setFieldValue("AuthorityLetterPic", reader.result);
+                    }
+                  }
+                  reader.readAsDataURL(event.currentTarget.files[0]);
+                }}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.AuthorityLetterPic && touched.AuthorityLetterPic ? errors.AuthorityLetterPic : null}</p>
               </div>
@@ -603,28 +590,28 @@ function CharacterCertificateForm() {
               <div className="col-lg-3 col-md-3 col-sm-3 " >
                 <div >
                   <input type="file" name="AffidavitPicture" className="form-control" onChange={(event) => {
-                      let reader = new FileReader();
-                      reader.onloadend = () => {
-                        if (reader.readyState === 2) {
-                          setFieldValue("AffidavitPicture", reader.result);
-                        }
+                    let reader = new FileReader();
+                    reader.onloadend = () => {
+                      if (reader.readyState === 2) {
+                        setFieldValue("AffidavitPicture", reader.result);
                       }
-                      reader.readAsDataURL(event.currentTarget.files[0]);
-                    }}
+                    }
+                    reader.readAsDataURL(event.currentTarget.files[0]);
+                  }}
                     onBlur={handleBlur} />
                 </div>
                 <p className="help-block text-danger">{errors.AffidavitPicture && touched.AffidavitPicture ? errors.AffidavitPicture : null}</p>
               </div>
             </div>
-            {(user && role === user.role) ? <>
-            <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>IO Name</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="IOName" className="form-control" onChange={handleChange}
-                  onBlur={handleBlur} />
+            {(user && (role === user.role || Role === user.role)) ? <>
+              <div className={styles.alignment}>
+                <div className="col-lg-3 col-md-3 col-sm-3"><p>Operator Name</p></div>
+                <div className="col-lg-3 col-md-3 col-sm-3">
+                  <input type="text" name="IOName" className="form-control" onChange={handleChange}
+                    onBlur={handleBlur} />
+                </div>
               </div>
-            </div>
-            </>:null}
+            </> : null}
           </div>
         </div>
         <div className={styles.buttonsalignment}>

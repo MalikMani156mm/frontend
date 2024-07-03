@@ -8,6 +8,9 @@ import storage from 'redux-persist/lib/storage';
 import { VVApi } from './Features/VehicleVerification/VVApi';
 import { PoliceStationApi } from './Features/PoliceStationInfo/PoliceStationApi';
 import CartSlice from './Slices/CartSlice';
+import { AdminApi } from './Features/Admin/adminApi';
+import { CategoryApi } from './Features/Category/CategoryApi';
+import { OffenceApi } from './Features/Offence/OffenceApi';
 
 const persistConfig = {
   key: 'root',
@@ -19,9 +22,12 @@ const rootReducer = combineReducers({
     cart:CartSlice,
     [FIRApi.reducerPath]: FIRApi.reducer,
     [AuthApi.reducerPath]: AuthApi.reducer,
+    [AdminApi.reducerPath]: AdminApi.reducer,
     [CertificateApi.reducerPath]: CertificateApi.reducer,
     [VVApi.reducerPath]: VVApi.reducer,
     [PoliceStationApi.reducerPath]: PoliceStationApi.reducer,
+    [CategoryApi.reducerPath]: CategoryApi.reducer,
+    [OffenceApi.reducerPath]: OffenceApi.reducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -29,7 +35,9 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 export const store = configureStore({
   reducer:persistedReducer,
   middleware: (getDefaultMiddleware) =>
-  getDefaultMiddleware().concat([FIRApi.middleware , AuthApi.middleware, CertificateApi.middleware , VVApi.middleware, PoliceStationApi.middleware]),
+  getDefaultMiddleware({
+    serializableCheck: false,
+  }).concat([FIRApi.middleware , AuthApi.middleware, AdminApi.middleware, CertificateApi.middleware , VVApi.middleware, PoliceStationApi.middleware, OffenceApi.middleware, CategoryApi.middleware]),
 });
 
 export const persistor = persistStore(store);

@@ -39,6 +39,14 @@ import PriorityComplaint from "./Pages/PriorityComplaint/PriorityComplaint.jsx";
 import FIRDetail from "./Pages/FIRDetails/FIRDetail.js";
 import ViewFIR from "./Pages/OnlineFIR/ViewFIR.jsx";
 import EditFIR from "./Pages/OnlineFIR/EditFIR.jsx";
+import FIRPDF from "./Pages/FIRPDF/FIRPDF.jsx";
+import DownloadFIRPDF from "./Pages/FIRPDF/DownloadFIRPDF.jsx";
+import UpdatePoliceStation from "./Pages/PSJudicary/UpdatePoliceStation.jsx";
+import DeletePoliceStation from "./Pages/PSJudicary/DeletePoliceStation.jsx";
+import AddAdmin from "./Pages/Signup/AddAdmin.jsx";
+import AdminLogin from "./Pages/Login/AdminLogin.jsx";
+import AddOffence from "./Pages/AddSingleItem/AddOffence.jsx";
+import AddCategory from "./Pages/AddSingleItem/AddCategory.jsx";
 
 export const router = createBrowserRouter(
 
@@ -64,6 +72,8 @@ export const router = createBrowserRouter(
                 <Route path="*" element={<div className={styles.main}><Error /></div>} />
                 <Route path="/" element={<div className={styles.layout}><AuthLayouts /></div>}>
                     <Route path="/OnlineFIR" exact element={<div className={styles.main}><OnlineFIR /></div>} />
+                    <Route path="/DownloadFIRPDF/:id" element={<div className={styles.main}><DownloadFIRPDF /></div>} />
+                    <Route path="/FIRPDF/:id" exact element={<div className={styles.main}><FIRPDF /></div>} />
                     <Route path="/ViewFIR/:id" exact element={<div className={styles.main}><ViewFIR /></div>} />
                     <Route path="/EditFIR/:id" exact element={<div className={styles.main}><EditFIR /></div>} />
                     <Route path="/FIRDetail/:id" exact element={<div className={styles.main}><FIRDetail /></div>} />
@@ -73,13 +83,25 @@ export const router = createBrowserRouter(
                     <Route path="/ConfirmPassword" exact element={<div className={styles.main}>< ConfirmPassword /></div>} />
                     <Route path="/NewPassword" exact element={<div className={styles.main}>< NewPassword /></div>} />
                 </Route>
-                <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'Admin'} /></div>}>
+                 <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'Admin'} /></div>}>
                     <Route path="/Search" exact element={<div className={styles.main}><Search /></div>} />
                     <Route path="/PriorityComplaint" exact element={<div className={styles.main}><PriorityComplaint /></div>} />
+                    <Route path="/UpdatePoliceStation/:id" exact element={<div className={styles.main}><UpdatePoliceStation /></div>} />
+                    <Route path="/AddOffence" exact element={<div className={styles.main}><AddOffence /></div>} />
+                    <Route path="/AddCategory" exact element={<div className={styles.main}><AddCategory /></div>} />
+                </Route>
+                <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'SuperAdmin'} /></div>}>
                     <Route path="/AddPoliceStation" exact element={<div className={styles.main}><AddPoliceStation /></div>} />
+                    <Route path="/DeletePoliceStation" exact element={<div className={styles.main}><DeletePoliceStation /></div>} />
+                    <Route path="/AddAdmin" exact element={<div className={styles.main}><AddAdmin /></div>} />
+                    <Route path="/admin/AddOffence" exact element={<div className={styles.main}><AddOffence /></div>} />
+                    <Route path="/admin/AddCategory" exact element={<div className={styles.main}><AddCategory /></div>} />
+                    <Route path="/admin/Search" exact element={<div className={styles.main}><Search /></div>} />
+                    <Route path="/admin/PriorityComplaint" exact element={<div className={styles.main}><PriorityComplaint /></div>} />
                 </Route>
             </Route>
             <Route path="/LogIn" exact element={<div className={styles.main}><Login /></div>} />
+            <Route path="/AdminLogIn" exact element={<div className={styles.main}><AdminLogin /></div>} />
             <Route path="/SignUp" exact element={<div className={styles.main}><SignUp /></div>} />
             <Route path="/OTPVerification" exact element={<div className={styles.main}><OTPVerification /></div>} />
             <Route path="/ForgetPassword" exact element={<div className={styles.main}>< ForgetPassword /></div>} />

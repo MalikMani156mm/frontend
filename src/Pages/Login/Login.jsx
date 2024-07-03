@@ -118,6 +118,7 @@ function Login() {
                     <button className={styles.loginButton} type="submit" >
                         {isLoading ? "Loading..." : "Log In"}</button>
                     <span>Don't have an account? <Link to="/SignUp" className={styles.createAccount}>Sign Up</Link></span>
+                    <span><Link to="/AdminLogin" className={styles.createAccount}>Log In as Admin</Link></span>
                 </div>
             </form>
             <ToastContainer />

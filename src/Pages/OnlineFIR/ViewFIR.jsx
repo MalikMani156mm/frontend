@@ -11,6 +11,7 @@ function ViewFIR() {
     const navigate = useNavigate();
     const { user } = useSelector(state => state.auth);
     const role = "Admin";
+    const Role = "SuperAdmin";
     const { id } = useParams();
     const { data, error, isLoading } = useGetFIRByIdQuery(id);
     const [policeStationId, setPoliceStationId] = useState(null);
@@ -34,16 +35,9 @@ function ViewFIR() {
         return <div>No data available</div>;
     }
 
-
-
-
-
-
     if (!data || !data.FIRs) {
         return <div>Loading...</div>;
     }
-
-
 
     if (error) {
         return (<>
@@ -52,7 +46,6 @@ function ViewFIR() {
             <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
         </>)
     }
-
 
     return (
         <div className={styles.body}>
@@ -105,7 +98,7 @@ function ViewFIR() {
                                     disabled={true} />
                             </div>
                         </div>
-                        {(user && role === user.role) ? <>
+                        {(user && (role=== user.role || Role === user.role)) ? <>
                             <div className={styles.alignment}>
                                 <div className="col-lg-3 col-md-3 col-sm-3"><p>Beat/Moza No.</p></div>
                                 <div className="col-lg-3 col-md-3 col-sm-3">
@@ -229,7 +222,7 @@ function ViewFIR() {
                                     disabled={true} />
                             </div>
                         </div>
-                        {(user && role === user.role) ? <>
+                        {(user && (role=== user.role || Role === user.role)) ? <>
 
                             <div className={styles.alignment}>
                                 <div className="col-lg-3 col-md-3 col-sm-3">
@@ -295,7 +288,7 @@ function ViewFIR() {
                                     disabled={true} />
                             </div>
                         </div>
-                        {(user && role === user.role) ? <>
+                        {(user && (role=== user.role || Role === user.role)) ? <>
 
                             <div className={styles.alignment}>
                                 <div className="col-lg-3 col-md-3 col-sm-3"><p>IO Name</p></div>

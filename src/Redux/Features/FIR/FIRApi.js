@@ -6,7 +6,7 @@ export const FIRApi = createApi({
     baseUrl: 'http://localhost:5000/api/',
     mode: 'cors'
   }),
-  tagTypes: ['FIRs', 'FIR'],
+  tagTypes: ['FIRs'],
   endpoints: (builder) => ({
     getAllFIRs: builder.query({
       query: () => `/FIRs`,
@@ -14,8 +14,7 @@ export const FIRApi = createApi({
     }),
     getFIRById: builder.query({
       query: (id) => `/FIR/${id}`,
-      providesTags: ['FIR']
-    }),
+      providesTags: (result, error, id) => [{ type: 'FIRs', id }],    }),
     addNewFIR: builder.mutation({
       query: (data) => ({
         url: `/new/FIR`,
@@ -33,12 +32,13 @@ export const FIRApi = createApi({
     }),
 
     updateFIR: builder.mutation({
-      query: (id) => ({
+      query: ({ id, data }) => ({
         url: `/update/${id}`,
         method: 'PUT',
+        body: data,
       }),
-      invalidatesTags: ['FIRs']
-    }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'FIRs' }],
+        }),
   }),
 })
 

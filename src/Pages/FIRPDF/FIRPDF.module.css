@@ -1,0 +1,115 @@
+.body{
+    padding: 5px;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+}
+.topBarBody{
+    padding: 0;
+    margin: 0;
+  }
+p{
+    font-size: medium;
+}
+  .topBar{
+    width: 98%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+.document{
+    background-color: white;
+    width: 60%;
+    height: auto;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.topHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.topLine{
+    display: flex;
+    text-align: center;
+}
+.detail{
+    display: flex;
+    text-align: right;
+}
+.Section{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 5px;
+}
+.formGroup{
+    display: flex;
+    flex-direction: row;
+    gap: 2px;
+}
+.Section img {
+    align-self: center;
+}
+.tableRow{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+.serialNumber,
+.rowLabel,
+.rowData,
+.serialNumber1,
+.rowLabel1,
+.rowData1,
+.rowData2{
+  border: 0.5px ridge grey;
+  width: 47.5%;
+  height: auto;
+  background-color: white;
+  text-align: center;
+}
+.serialNumber{
+    width: 5%;
+}
+.serialNumber1,
+.rowLabel1,
+.rowData1,
+.rowData2{
+  width: 23.5%;
+}
+.serialNumber1{
+    width: 5.5%;
+}
+.rowData2{
+    width: 29%;
+}
+
+@media (max-width: 768px) {
+    .document {
+        width: 80%;
+    }
+    p{
+        font-size: small;
+    }
+    .Section img {
+        display: none;
+    }
+}
+
+@media (max-width: 499px) {
+    .document {
+        width: 100%;
+    }
+    .Section{
+        display: flex;
+        flex-direction: column;}
+        p{
+            font-size: small;
+        }
+}

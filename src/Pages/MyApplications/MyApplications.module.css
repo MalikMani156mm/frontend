@@ -40,7 +40,7 @@
 
   .name{
     margin-top: 10px;
-    font-size: 40px;
+    font-size: 30px;
     font-weight: bold;
     color: #0d6efd;
   }
@@ -73,6 +73,7 @@
   }
 
   .container,
+  .container0,
   .container3,
   .container4{
     width: 90%;
@@ -82,7 +83,10 @@
     margin-bottom: 10px;
   }
   
-  
+  .container0{
+    border: none;
+    width: 100%;
+  }
   
   .container3,
   .container4{
@@ -398,6 +402,9 @@ flex-direction: column;
 
   @media screen and (max-width : 768px){
     
+    .infoRow{
+      flex-direction: column;
+    }
     .formControl1{
       width: 370px;
     }

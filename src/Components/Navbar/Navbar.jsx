@@ -13,6 +13,7 @@ function Navbar() {
 
   const { user, token } = useSelector(state => state.auth)
   const role = "Admin";
+  const Role = "SuperAdmin";
 
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [logout, { isLoading }] = useLogoutUserMutation();
@@ -53,7 +54,7 @@ function Navbar() {
           <span></span>
         </div>
         <ul className={menuOpen ? styles.open : ""}>
-          {(user && role === user.role) ? null :
+          {(user && (role=== user.role || Role === user.role)) ? null :
             <li><NavLink to="/" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Home</NavLink></li>
           }
           <li>
@@ -76,8 +77,12 @@ function Navbar() {
               My Applications
             </NavLink>
           </li>
-          {(user && role === user.role) ?
+          {(user && role=== user.role ) ?
             <li><NavLink to="Search" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Search</NavLink></li>
+            : null
+          }
+          {(user && Role === user.role ) ?
+            <li><NavLink to="admin/Search" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Search</NavLink></li>
             : null
           }
           {user && token ?

@@ -1,34 +1,60 @@
 import styles from "./OnlineFIR.module.css";
-import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { Link, Navigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { useAddNewFIRMutation } from '../../Redux/Features/FIR/FIRApi';
+import { useGetFIRByIdQuery, useUpdateFIRMutation } from '../../Redux/Features/FIR/FIRApi';
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
-import { useGetAllPoliceStationsQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
+import { useGetAllPoliceStationsQuery, useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 
 
 function EditFIR() {
 
-  //eslint-disable-next-line
-  const [addFIR, { isLoading, error }] = useAddNewFIRMutation();
-  //eslint-disable-next-line
-  const { data } = useGetAllPoliceStationsQuery();
   const { user } = useSelector(state => state.auth);
   const role = "Admin";
-
-
+  const Role = "SuperAdmin";
+  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValue2, setSelectedValue2] = useState(null);
+  const [policeStationId, setPoliceStationId] = useState(null);
   const [fileInputs, setFileInputs] = useState([{ id: 1 }]);
+  const { id } = useParams();
+  //eslint-disable-next-line
+  const [updateFIR, { isLoading, error }] = useUpdateFIRMutation();
+  const { data: allPSData } = useGetAllPoliceStationsQuery();
+  const { data: firData, error: firError, isLoading: firLoading } = useGetFIRByIdQuery(id);
+  useEffect(() => {
+    if (firData && firData.FIRs) {
+      setPoliceStationId(firData.FIRs.PoliceStation);
+    }
+  }, [firData]);
+  const { data: psData, error: psError, isLoading: psLoading } = useGetPoliceStationByIdQuery(policeStationId, {
+    skip: !policeStationId,
+  });
+
+  if (firError || psError) {
+    return <Navigate to={'*'} replace={true} />
+  }
+
+  if (firLoading || (!policeStationId && psLoading)) {
+    return <div>Loading...</div>;
+  }
+
+  if (!firData || !firData.FIRs) {
+    return <div>No data available</div>;
+  }
+
+  if (!firData || !firData.FIRs) {
+    return <div>Loading...</div>;
+  }
+
 
   const addMoreFile = () => {
     const newId = fileInputs[fileInputs.length - 1].id + 1;
     setFileInputs([...fileInputs, { id: newId }]);
   };
 
-  const [selectedValue, setSelectedValue] = useState(null);
-  const [selectedValue2, setSelectedValue2] = useState(null);
 
 
   const handleRadioClick = (value) => {
@@ -51,95 +77,64 @@ function EditFIR() {
     }
   };
 
-  const getCurrentDateTimeLocal = () => {
-    const current = new Date();
-    return current.toISOString().slice(0, 16);
-  };
 
-
-  function SerialNumberGenerator(name) {
-    let initials;
-
-    // Check if the name consists of only one word
-    if (name.trim().indexOf(' ') === -1) {
-      initials = name.charAt(0).toUpperCase() + name.slice(1);
-    } else {
-      // Extract initials from each word
-      initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('');
-    }
-
-    // Get current date in YYYYMMDD format
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const formattedDate = `${day}/${month}/${year}`;
-
-    // Generate 6-digit random number
-    const randomNumber = Math.floor(100000 + Math.random() * 900000);
-
-    // Concatenate the parts
-    const uniqueIdentifier = `${initials}-${formattedDate}-${randomNumber}`;
-
-    return uniqueIdentifier;
-  }
+  
   // eslint-disable-next-line
   const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
     initialValues: {
-      EntryDate: getCurrentDateTimeLocal(),
+      EntryDate: firData.FIRs.EntryDate,
       SourceOfComplaint: 'Online',
-      ComplaintNumber: '',
-      District: '',
-      Division: '',
-      Circle: '',
-      PoliceStation: '',
-      BeatMoza: '',
-      CNIC: user.cnic,
-      Name: user.name,
-      relation: '',
-      GuardianName: '',
-      Gender: '',
-      ContactNumber: user.phonenumber,
-      PermanentAddress: '',
-      placeOfOccurance: '',
-      IncidentDate: '',
-      Category: '',
-      Offence: '',
-      OffenceSubcategory: '',
-      AssignedTo: '',
-      OfficerName: '',
-      OfficerContact: '',
-      IncidentDetails: '',
-      FIRRegistered: '',
-      FIRNo: '',
-      IOName: '',
-      file: '',
+      ComplaintNumber: firData.FIRs.ComplaintNumber,
+      District: firData.FIRs.District,
+      Division: firData.FIRs.Division,
+      Circle: firData.FIRs.Circle,
+      PoliceStation: firData.FIRs.PoliceStation,
+      BeatMoza: firData.FIRs.BeatMoza,
+      CNIC: firData.FIRs.CNIC,
+      Name: firData.FIRs.Name,
+      relation: firData.FIRs.relation,
+      GuardianName: firData.FIRs.GuardianName,
+      Gender: firData.FIRs.Gender,
+      ContactNumber: firData.FIRs.ContactNumber,
+      PermanentAddress: firData.FIRs.PermanentAddress,
+      placeOfOccurance: firData.FIRs.placeOfOccurance,
+      IncidentDate: firData.FIRs.IncidentDate,
+      Category: firData.FIRs.Category,
+      Offence: firData.FIRs.Offence,
+      OffenceSubcategory: firData.FIRs.OffenceSubcategory,
+      AssignedTo: firData.FIRs.AssignedTo,
+      OfficerName: firData.FIRs.OfficerName,
+      OfficerContact: firData.FIRs.OfficerContact,
+      IncidentDetails: firData.FIRs.IncidentDetails,
+      FIRRegistered: firData.FIRs.FIRRegistered,
+      FIRNo: firData.FIRs.FIRNo,
+      IOName: firData.FIRs.IOName,
+      file: firData.FIRs.file,
     },
     validationSchema: yup.object().shape({
       EntryDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
-      // District: yup.string().required('Required'),
-      // Division: yup.string().required('Required'),
-      // Circle: yup.string().required('Required'),
-      // PoliceStation: yup.string().required('Required'),
-      // CNIC: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('Required'),
-      // Name: yup.string().min(5).max(30).required('Required'),
-      // relation: yup.string().required('Required'),
-      // GuardianName: yup.string().min(5).max(30).required('Required'),
-      // Gender: yup.string().required('Required'),
-      // ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
-      // PermanentAddress: yup.string().max(300).required('Required'),
-      // placeOfOccurance: yup.string().required('Required'),
-      // IncidentDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
-      // FIRRegistered: yup.string().required('Required'),
-      // Category: yup.string().required('Required'),
-      // Offence: yup.string().required('Required'),
-      // IncidentDetails: yup.string().max(2000).required('Required'),
-      file: yup.string().required('Required'),
+      District: yup.string().required('Required'),
+      Division: yup.string().required('Required'),
+      Circle: yup.string().required('Required'),
+      PoliceStation: yup.string().required('Required'),
+      CNIC: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('Required'),
+      Name: yup.string().min(5).max(30).required('Required'),
+      relation: yup.string().required('Required'),
+      GuardianName: yup.string().min(5).max(30).required('Required'),
+      Gender: yup.string().required('Required'),
+      ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
+      PermanentAddress: yup.string().max(300).required('Required'),
+      placeOfOccurance: yup.string().required('Required'),
+      IncidentDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
+      FIRRegistered: yup.string().required('Required'),
+      Category: yup.string().required('Required'),
+      Offence: yup.string().required('Required'),
+      IncidentDetails: yup.string().max(2000).required('Required'),
+      // file: yup.string().required('Required'),
     }),
     onSubmit: async (values) => {
-      values.ComplaintNumber = SerialNumberGenerator(values.Circle);
       console.log(values);
-      const res = await addFIR(values).unwrap();
+      const res = await updateFIR({ id, data: values }).unwrap();
       if (res.success) {
         toast.success(res.message);
       }
@@ -150,14 +145,9 @@ function EditFIR() {
     }
   });
 
-  if (error) {
-    return (<>
-      <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
-      <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
-      <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
-    </>)
-  }
-
+  const handleIncidentDetailsChange = (event) => {
+    setFieldValue('IncidentDetails', event.target.value);
+};
 
   return (
     <div className={styles.body}>
@@ -175,6 +165,7 @@ function EditFIR() {
                   id="datetime"
                   name="EntryDate"
                   className="form-control"
+                  placeholder={firData.FIRs.EntryDate}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -193,9 +184,9 @@ function EditFIR() {
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <select className="form-control" name="District"
                   onChange={handleChange}
-                  onBlur={handleBlur}>
-                  <option value="0">Select</option>
-                  <option value="1">Islamabad</option>
+                  onBlur={handleBlur}
+                >
+                  <option value="0" disabled selected>{firData.FIRs.District}</option>
                 </select>
                 <p className="help-block text-danger">{errors.District && touched.District ? errors.District : null}</p>
               </div>
@@ -204,9 +195,12 @@ function EditFIR() {
                 <select className="form-control" name="Division"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0">Select</option>
-                  <option value="3">Industrial Area Zone</option>
-                </select>
+                  <option value="0"disabled selected>{firData.FIRs.Division}</option>
+                  <option value="City">City</option>
+                  <option value="Saddar">Saddar</option>
+                  <option value="Industrial Area">Industrial Area</option>
+                  <option value="Rural">Rural</option>
+                  <option value="Soan">Soan</option>                </select>
                 <p className="help-block text-danger">{errors.Division && touched.Division ? errors.Division : null}</p>
               </div>
             </div>
@@ -216,7 +210,7 @@ function EditFIR() {
                 <select className="form-control" name="Circle"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0">Select</option>
+                  <option value="0"disabled selected>{firData.FIRs.Circle}</option>
                   <option value="Sabzi Mandi">Sabzi Mandi</option>
                   <option value="Secretariat">Secretariat</option>
                   <option value="Abpara">Abpara</option>
@@ -253,9 +247,9 @@ function EditFIR() {
                 <select className="form-control" name="PoliceStation"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0">Select</option>
+                  <option value="0"disabled selected>{psData && psData.PSs.PSName}</option>
                   {
-                    data && data.map(PS => (
+                    allPSData && allPSData.map(PS => (
                       <option value={PS._id} key={PS._id}>{PS.PSName}</option>
                     ))}
 
@@ -263,14 +257,14 @@ function EditFIR() {
                 <p className="help-block text-danger">{errors.PoliceStation && touched.PoliceStation ? errors.PoliceStation : null}</p>
               </div>
             </div>
-            {(user && role === user.role) ? <>
+            {(user && (role=== user.role || Role === user.role)) ? <>
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-3 col-sm-3"><p>Beat/Moza No.</p></div>
                 <div className="col-lg-3 col-md-3 col-sm-3">
                   <select className="form-control" name="BeatMoza"
                     onChange={handleChange}
                     onBlur={handleBlur}>
-                    <option value="0">Select</option>
+                    <option value="0"disabled selected>{firData.FIRs.BeatMoza}</option>
                     <option value="1">Beat/Moza-1</option>
                   </select>
                 </div>
@@ -287,12 +281,12 @@ function EditFIR() {
                 <p>Compliant Number</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="CompliantNumber" placeholder={SerialNumberGenerator(values.Circle)} className="form-control" onChange={handleChange}
+                <input type="text" name="CompliantNumber" placeholder={firData.FIRs.ComplaintNumber} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} disabled={true} />
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>CNIC (without dashes)</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange}
+                <input type="number" name="CNIC" placeholder={firData.FIRs.CNIC} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
@@ -302,7 +296,7 @@ function EditFIR() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3"><p>Name</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange}
+                <input type="text" name="Name" placeholder={firData.FIRs.Name} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
@@ -335,6 +329,7 @@ function EditFIR() {
                   type="text"
                   name="GuardianName"
                   className="form-control"
+                  placeholder={firData.FIRs.GuardianName}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -346,7 +341,7 @@ function EditFIR() {
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <select className="form-control" name="Gender" onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0">Select</option>
+                  <option value="0"disabled selected>{firData.FIRs.Gender}</option>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
                   <option value="3">Others</option>
@@ -358,7 +353,7 @@ function EditFIR() {
                 <input
                   type="number"
                   name="ContactNumber"
-                  placeholder={user.phonenumber}
+                  placeholder={`0${firData.FIRs.ContactNumber}`}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -374,6 +369,7 @@ function EditFIR() {
                 <textarea
                   type="text"
                   name="PermanentAddress"
+                  placeholder={firData.FIRs.PermanentAddress}
                   rows={3}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -398,6 +394,7 @@ function EditFIR() {
                   type="text"
                   name="placeOfOccurance"
                   className="form-control"
+                  placeholder={firData.FIRs.placeOfOccurance}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -422,9 +419,7 @@ function EditFIR() {
                 <select className="form-control" name="Category"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0">Select</option>
-                  <option value="Character Verification">Character Verification</option>
-                  <option value="Car Verification">Car Verification</option>
+                  <option value="0"disabled selected>{firData.FIRs.Category}</option>
                   <option value="Child Abuse">Child Abuse</option>
                   <option value="Complaint against Police">Complaint against Police</option>
                   <option value="Foreigner complaint">Foreigner complaint</option>
@@ -449,7 +444,7 @@ function EditFIR() {
                 <select className="form-control" name="Offence"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0">Select</option>
+                  <option value="0"disabled selected>{firData.FIRs.Offence}</option>
                   <option value="295-A PPC">295-A PPC</option>
                   <option value="382 PPC">382 PPC</option>
                   <option value="Access to public place">Access to public place</option>
@@ -591,7 +586,7 @@ function EditFIR() {
                 <p className="help-block text-danger">{errors.Offence && touched.Offence ? errors.Offence : null}</p>
               </div>
             </div>
-            {(user && role === user.role) ? <>
+            {(user && (role=== user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-3 col-sm-3">
@@ -600,7 +595,7 @@ function EditFIR() {
                 <div className="col-lg-3 col-md-3 col-sm-3">
                   <select className="form-control" name="OffenceSubcategory" onChange={handleChange}
                     onBlur={handleBlur}>
-                    <option value="0">Select</option>
+                    <option value="0"disabled selected>{firData.FIRs.OffenceSubcategory}</option>
                     <option value="1">Sub Category</option>
                   </select>
                 </div>
@@ -608,6 +603,7 @@ function EditFIR() {
                 <div className="col-lg-3 col-md-3 col-sm-3">
                   <select className="form-control" name="AssignedTo" onChange={handleChange}
                     onBlur={handleBlur} >
+                    <option value="0"disabled selected>{firData.FIRs.AssignedTo}</option>
                     <option value="3">Beat Committee</option>
                     <option value="2">Police Officer</option>
                   </select>
@@ -619,6 +615,7 @@ function EditFIR() {
                   <input
                     type="text"
                     name="OfficerName"
+                    placeholder={firData.FIRs.OfficerName}
                     className="form-control"
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -629,6 +626,7 @@ function EditFIR() {
                   <input
                     type="number"
                     name="OfficerContact"
+                    placeholder={firData.FIRs.OfficerContact}
                     className="form-control"
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -643,8 +641,10 @@ function EditFIR() {
                   type="text"
                   rows={3}
                   name="IncidentDetails"
+                  placeholder={firData.FIRs.IncidentDetails}
+                  value={values.IncidentDetails} 
+                  onChange={handleIncidentDetailsChange}
                   className={styles.formControl}
-                  onChange={handleChange}
                   onBlur={handleBlur}
                 />
                 <p className="help-block text-danger">{errors.IncidentDetails && touched.IncidentDetails ? errors.IncidentDetails : null}</p>
@@ -673,10 +673,11 @@ function EditFIR() {
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>FIR No</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <input type="text" name="FIRNo" className="form-control" onChange={handleChange}
-                  onBlur={handleBlur} />
+                    placeholder={firData.FIRs.FIRNo}
+                    onBlur={handleBlur} />
               </div>
             </div>
-            {(user && role === user.role) ? <>
+            {(user && (role=== user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-3 col-sm-3"><p>IO Name</p></div>

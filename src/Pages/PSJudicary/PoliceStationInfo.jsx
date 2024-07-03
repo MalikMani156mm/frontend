@@ -1,12 +1,15 @@
 import { Navigate, useParams } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import styles from './PSJudicary.module.css';
 
 function PoliceStationInfo() {
 
     const { id } = useParams();
-    const { data, error } = useGetPoliceStationByIdQuery(id);
+    const { data, error,refetch } = useGetPoliceStationByIdQuery(id);
+    useEffect(() => {
+        refetch();
+    }, [refetch]);
 
     if (error) {
         return <Navigate to={'*'} replace={true} />

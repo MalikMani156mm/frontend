@@ -2,48 +2,61 @@ import styles from "./Login.module.css";
 import Textinput from "../../Components/Textinput/Textinput"
 import { useFormik } from "formik";
 import * as yup from 'yup';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import logo from "../../images/Logo.png";
+import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSelector } from "react-redux";
-import { useConfirmPasswordMutation } from "../../Redux/Features/Auth/AuthApi";
+import { useLoginAdminMutation } from "../../Redux/Features/Admin/adminApi";
 
 
-function ConfirmPassword() {
+function AdminLogin() {
 
-    const navigate = useNavigate();
-    const { user } = useSelector(state => state.auth);
     const [showPassword, setShowPassword] = useState(false);
+    // eslint-disable-next-line
+    const [ReCapchaValue, setReCapchaValue] = useState(false);
 
+
+    const onFill = (value) => {
+        setReCapchaValue(value);
+        setFieldValue('ReCapcha', value);
+    }
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     }
-
-    
-
-    const [UserCredential, { isLoading, error }] = useConfirmPasswordMutation();
+    const { user, token } = useSelector(state => state.auth);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    // eslint-disable-next-line
+    const [Adminlogin, { isLoading, error, data }] = useLoginAdminMutation();
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, errors, handleSubmit, setFieldValue } = useFormik({
         initialValues: {
-            email: user.email,
+            email: '',
             password: '',
+            ReCapcha: ''
         },
         validationSchema: yup.object().shape({
+            email: yup.string().email('Enter a valid Email').required('Email is Required'),
             password: yup.string().min(8).max(20).required('Password is Required'),
+            ReCapcha: yup.string().required('Captcha must be filled')
         }),
         onSubmit: async (values) => {
             console.log(values);
-            const User = await UserCredential(values).unwrap();
-            if(User.success){
-                toast.success(User.message);
-                navigate('/NewPassword');
-            }else{
-                toast.error(User.message)
+            const user = await Adminlogin(values).unwrap();
+            if (user.success) {
+                toast.success(user.error);
             }
+            else {
+                toast.error(user.error);
+            }
+            dispatch(setUserInfo(user));
+            navigate("/MyApplications");
         }
     })
 
@@ -56,6 +69,10 @@ function ConfirmPassword() {
         </>)
     }
 
+    if (user && token){
+        return <Navigate to={'/MyApplications'} replace={true}/>
+    }
+
     return (
         <>
             <form action='post' name="LoginForm" onSubmit={handleSubmit} >
@@ -63,7 +80,16 @@ function ConfirmPassword() {
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
                     <br />
                     <div className={styles.LoginHeader}>E-FIR System</div>
-                    <div className={styles.LoginHeader}>Verify Your Identity</div>
+
+                    <Textinput
+                        type="email"
+                        values={values.email}
+                        name="email"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="Enter Email"
+                    />
+                    <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
                     <div className={styles.inputContainer}>
                         <Textinput
                             type={showPassword ? 'text' : 'password'}
@@ -79,8 +105,18 @@ function ConfirmPassword() {
                         </span>
                     </div>
                     <p className="help-block text-danger">{errors.password && touched.password ? errors.password : null}</p>
+                    <div>
+                        <ReCAPTCHA
+                            sitekey='6Ld8c_MpAAAAAB_7pSqPaqem6JbL7pni4x_VfMnp'
+                            name="ReCapcha"
+                            onBlur={handleBlur}
+                            onChange={onFill}
+                        />
+                    </div>
+                    <p className="help-block text-danger">{errors.ReCapcha && touched.ReCapcha ? errors.ReCapcha : null}</p>
+                    <span ><Link to="/ForgetPassword" className={styles.createAccount}>Forget Password</Link></span>
                     <button className={styles.loginButton} type="submit" >
-                        {isLoading ? "Loading..." : "Submit"} </button>
+                        {isLoading ? "Loading..." : "Log In as Admin"}</button>
                 </div>
             </form>
             <ToastContainer />
@@ -89,4 +125,4 @@ function ConfirmPassword() {
 
 }
 
-export default ConfirmPassword;
+export default AdminLogin;

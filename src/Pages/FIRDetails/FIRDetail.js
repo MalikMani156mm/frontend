@@ -14,7 +14,11 @@ function FIRDetail() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [policeStationId, setPoliceStationId] = useState(null);
-    const { data: firData, error: firError, isLoading: firLoading } = useGetFIRByIdQuery(id);
+    const { data: firData, error: firError, isLoading: firLoading , refetch} = useGetFIRByIdQuery(id);
+    console.log(firData);
+    useEffect(() => {
+        refetch();
+    }, [refetch]);
     useEffect(() => {
         if (firData && firData.FIRs) {
             setPoliceStationId(firData.FIRs.PoliceStation);
@@ -23,8 +27,6 @@ function FIRDetail() {
     const { data: psData, error: psError, isLoading: psLoading } = useGetPoliceStationByIdQuery(policeStationId, {
         skip: !policeStationId,
     });;
-
-    console.log(psData);
     // eslint-disable-next-line 
     const [deleteFIR, { isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteFIRMutation();
     const [deletionError, setDeletionError] = useState(null);
@@ -96,8 +98,8 @@ function FIRDetail() {
                     <div className={styles.buttonBody}>
                         <div className={styles.row6}>
                             <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/ViewFIR/${firData.FIRs._id}`) }}>View Only</button>
-                            <button className="btn btn-primary mx-3 my-2" onClick={null}>View PDF</button>
-                            <button className="btn btn-primary mx-3 my-2" onClick={null}>Download PDF</button>
+                            <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRPDF/${firData.FIRs._id}`) }}>View PDF</button>
+                            <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/DownloadFIRPDF/${firData.FIRs._id}`) }}>Download PDF</button>
                             <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/EditFIR/${firData.FIRs._id}`) }}>Edit FIR</button>
                             <button className="btn btn-danger mx-3 my-2" onClick={handleDelete}>Delete FIR</button>
                         </div>

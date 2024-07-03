@@ -15,7 +15,7 @@ function VehicleVerificationForm() {
 
   const { user } = useSelector(state => state.auth)
   const role = "Admin";
-
+  const Role = "SuperAdmin";
 
 
   const [selectedValue, setSelectedValue] = useState(null);
@@ -653,9 +653,9 @@ function VehicleVerificationForm() {
               </div>
             </div>
 
-            {(user && role === user.role) ? <>
+            {(user && (role=== user.role || Role === user.role)) ? <>
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3"><p>IO Name</p></div>
+                <div className="col-lg-3 col-md-3 col-sm-3"><p>Operator Name</p></div>
                 <div className="col-lg-3 col-md-3 col-sm-3">
                   <input type="text" name="IOName" className="form-control" onChange={handleChange}
                     onBlur={handleBlur} />
