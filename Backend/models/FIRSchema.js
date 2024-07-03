@@ -115,6 +115,9 @@ const FIRsSchema = new Schema(
         FIRNo: {
             type: String,
         },
+        Rank:{
+            type: String,
+        },
         IOName: {
             type: String,
         },
@@ -124,7 +127,7 @@ const FIRsSchema = new Schema(
         Status: {
             type: String,
             default:'pending',
-            enum: ['pending','Approved','filed']
+            enum: ['pending','completed','filed']
         },
     },
     {

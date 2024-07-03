@@ -79,3 +79,32 @@ export const LogoutUser = async function(req,res,next){
         Message: "logged out"
     })
 }
+
+export const ConfirmPassword = async function(req,res,next){
+    try {
+        let {email,password} = req.body;
+
+        if (!email){
+            return next(new Error("Please provide Email"))
+        }
+
+        if (!password){
+            return next(new Error("Please provide Password"))
+        }
+
+        const user = await User.findOne({email:email})
+
+        const isPasswordMatched = await bcrypt.compare(password,user.password);
+
+        if (!isPasswordMatched){
+            return next(new Error("Your password is incorrect"))
+        }
+        res.json({
+            User: user,
+            success: true,
+            message:'Password Match Successfully'
+        })
+    } catch (error) {
+        next(error)
+    }
+}

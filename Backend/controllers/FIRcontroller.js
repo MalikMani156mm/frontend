@@ -51,7 +51,7 @@ export const createNewFIR = async function (req, res, next) {
         const FIRId = r._id.toString();
         const newFIRS = [...policeStation.FIRs, FIRId.toString()]
         policeStation.FIRs = newFIRS;
-        const updatePoliceStation = await PoliceStaion.findByIdAndUpdate( PSId , policeStation);
+        const updatePoliceStation = await PoliceStaion.findByIdAndUpdate(PSId, policeStation);
         res.json({
             FIR: r,
             message: "FIR Submitted Successfully",
@@ -65,11 +65,22 @@ export const createNewFIR = async function (req, res, next) {
 export const updateFIR = async function (req, res, next) {
     const { id } = req.params;
     const data = req.body;
-    const UpdateFIR = await FIR.findByIdAndUpdate(id, data);
-    res.json({
-        message: 'FIR is Updated',
-        success: true
-    })
+    try {
+        const UpdateFIR = await FIR.findByIdAndUpdate(id, data,{ new: true });
+        if (!UpdateFIR) {
+            return res.json({
+                message: 'FIR not found',
+                success: false
+            });
+        }
+        res.json({
+            uf:UpdateFIR,
+            message: 'FIR is Updated',
+            success: true
+        })
+    } catch (error) {
+        next(error); 
+    }
 }
 
 export const deleteFIR = async function (req, res, next) {
