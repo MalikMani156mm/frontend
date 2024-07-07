@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useGetFIRByIdQuery } from "../../Redux/Features/FIR/FIRApi";
 import QR from "../../images/QR.jpg"
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 
 
@@ -26,7 +27,7 @@ function FIRPDF() {
   };
 
   if (firLoading || (!policeStationId && psLoading)) {
-    return <div>Loading...</div>;
+    return <div><LoadingSpinner/></div>;
   }
 
   if (firError || psError) {

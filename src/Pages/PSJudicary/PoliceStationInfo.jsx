@@ -2,6 +2,7 @@ import { Navigate, useParams } from "react-router-dom";
 import React, { useEffect } from "react";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import styles from './PSJudicary.module.css';
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 function PoliceStationInfo() {
 
@@ -16,7 +17,7 @@ function PoliceStationInfo() {
       }
 
     if (!data || !data.PSs) {
-        return <div>Loading...</div>;
+        return <div><LoadingSpinner/></div>;
       }
       
     return (

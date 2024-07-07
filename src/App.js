@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { clearUserInfo } from "./Redux/Features/Auth/AuthSlice";
 import CustomAlert from "./Components/CustomAlert/CustomAlert";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -43,7 +42,6 @@ function App() {
   return (
     <div className={styles.container}>
       <RouterProvider router={router} /> 
-      <ToastContainer/>
       {showSessionExpiryAlert && (
         <CustomAlert
           message="Your session has expired. Please log in again."

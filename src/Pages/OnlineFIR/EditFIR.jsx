@@ -8,6 +8,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
 import { useGetAllPoliceStationsQuery, useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 
 function EditFIR() {
@@ -20,25 +21,26 @@ function EditFIR() {
   const [policeStationId, setPoliceStationId] = useState(null);
   const [fileInputs, setFileInputs] = useState([{ id: 1 }]);
   const { id } = useParams();
-  //eslint-disable-next-line
   const [updateFIR, { isLoading, error }] = useUpdateFIRMutation();
   const { data: allPSData } = useGetAllPoliceStationsQuery();
   const { data: firData, error: firError, isLoading: firLoading } = useGetFIRByIdQuery(id);
+  
   useEffect(() => {
     if (firData && firData.FIRs) {
       setPoliceStationId(firData.FIRs.PoliceStation);
     }
   }, [firData]);
+
   const { data: psData, error: psError, isLoading: psLoading } = useGetPoliceStationByIdQuery(policeStationId, {
     skip: !policeStationId,
   });
 
-  if (firError || psError) {
+  if (firError || psError || error) {
     return <Navigate to={'*'} replace={true} />
   }
 
   if (firLoading || (!policeStationId && psLoading)) {
-    return <div>Loading...</div>;
+    return <div><LoadingSpinner/></div>;
   }
 
   if (!firData || !firData.FIRs) {
@@ -46,7 +48,7 @@ function EditFIR() {
   }
 
   if (!firData || !firData.FIRs) {
-    return <div>Loading...</div>;
+    return <div><LoadingSpinner/></div>;
   }
 
 

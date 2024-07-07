@@ -6,11 +6,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useGetPoliceStationByIdQuery, useUpdatePoliceStationMutation } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import { Link, useParams } from "react-router-dom";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 function UpdatePoliceStation() {
 
-    const {id} = useParams();
-    const { data, error:psError } = useGetPoliceStationByIdQuery(id);
+    const { id } = useParams();
+    const { data, error: psError, isLoading:psLoading} = useGetPoliceStationByIdQuery(id);
 
     const [updatePoliceStation, { isLoading, error }] = useUpdatePoliceStationMutation();
 
@@ -42,12 +43,16 @@ function UpdatePoliceStation() {
             const res = await updatePoliceStation({ id, data: values }).unwrap();
             if (res.success) {
                 toast.success(res.message);
-              }
-              else {
+            }
+            else {
                 toast.error(res.message || res.data.error);
-              }
+            }
         }
     })
+
+    if (psLoading) {
+        return <LoadingSpinner />
+    }
 
     if (error || psError) {
         return (<>
@@ -117,7 +122,7 @@ function UpdatePoliceStation() {
                         <div className={styles.column}>
                             <div className={styles.label}>DPO Reader Name</div>
                             <div>
-                                <input type="text" name="DPOReaderName" placeholder={data.PSs.DPOReaderName}  className={styles.formControl} onBlur={handleBlur}
+                                <input type="text" name="DPOReaderName" placeholder={data.PSs.DPOReaderName} className={styles.formControl} onBlur={handleBlur}
                                     onChange={handleChange} />
                             </div>
                         </div>
@@ -193,26 +198,26 @@ function UpdatePoliceStation() {
                             </div>
                         </div>
                         <div className={styles.column}>
-                        <div className={styles.label}>Circle</div>
-                        <div>
-                            <select name="Circle" className={styles.formControl} onBlur={handleBlur}
+                            <div className={styles.label}>Circle</div>
+                            <div>
+                                <select name="Circle" className={styles.formControl} onBlur={handleBlur}
                                     onChange={handleChange}>
-                                <option value="0">Select</option>
-                                <option value="Sabzi Mandi">Sabzi Mandi</option>
-                                <option value="Secretariat">Secretariat</option>
-                                <option value="Kohsar">Kohsar</option>
-                                <option value="Bhara Kahu">Bhara Kahu</option>
-                                <option value="Margalla">Margalla</option>
-                                <option value="Tarnol">Tarnol</option>
-                                <option value="Saddar">Saddar</option>
-                                <option value="Shalimar">Shalimar</option>
-                                <option value="Industrial Area">Industrial Area</option>
-                                <option value="Shehzad Town">Shehzad Town</option>
-                                <option value="Sihala">Sihala</option>
-                                <option value="Koral">Koral</option>
-                            </select>
+                                    <option value="0">Select</option>
+                                    <option value="Sabzi Mandi">Sabzi Mandi</option>
+                                    <option value="Secretariat">Secretariat</option>
+                                    <option value="Kohsar">Kohsar</option>
+                                    <option value="Bhara Kahu">Bhara Kahu</option>
+                                    <option value="Margalla">Margalla</option>
+                                    <option value="Tarnol">Tarnol</option>
+                                    <option value="Saddar">Saddar</option>
+                                    <option value="Shalimar">Shalimar</option>
+                                    <option value="Industrial Area">Industrial Area</option>
+                                    <option value="Shehzad Town">Shehzad Town</option>
+                                    <option value="Sihala">Sihala</option>
+                                    <option value="Koral">Koral</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
                         <div className={styles.column}>
                             <div className={styles.label}>Google Map Location</div>
                             <div>
@@ -222,7 +227,7 @@ function UpdatePoliceStation() {
                             </div>
                         </div>
                     </div>
-                    <div className={styles.Button}>
+                    <div className={styles.buttonDiv}>
                         <button className={styles.SearchButton} type="submit">
                             {isLoading ? "Loading..." : "Submit"}
                         </button>

@@ -218,7 +218,7 @@ function AddPoliceStation() {
                             </div>
                         </div>
                     </div>
-                    <div className={styles.Button}>
+                    <div className={styles.buttonDiv}>
                         <button className={styles.SearchButton} type="submit">
                             {isLoading ? "Loading..." : "Submit"}
                         </button>

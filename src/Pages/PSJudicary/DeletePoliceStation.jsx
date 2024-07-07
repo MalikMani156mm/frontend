@@ -3,6 +3,7 @@ import { Navigate, useParams } from "react-router-dom";
 import styles from './PSJudicary.module.css';
 import { useState } from "react";
 import CustomAlert from "../../Components/CustomAlert/CustomAlert";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 
 function DeletePoliceStation() {
@@ -10,7 +11,7 @@ function DeletePoliceStation() {
   const { id } = useParams();
   console.log(id);
 
-  const { data, error } = useGetAllPoliceStationsQuery();
+  const { data, error, isLoading } = useGetAllPoliceStationsQuery();
 
 // eslint-disable-next-line 
 const [deletePoliceStation, { isLoading: isDeleting, isSuccess: isDeleted }] = useDeletePoliceStationMutation();
@@ -38,6 +39,10 @@ const handleCancelDelete = () => {
 
   if (error || deletionError) {
     return <Navigate to={'*'} replace={true} />
+  }
+
+  if (isLoading) {
+    return <LoadingSpinner />
   }
 
   return (

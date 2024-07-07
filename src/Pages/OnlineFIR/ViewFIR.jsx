@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useGetFIRByIdQuery } from "../../Redux/Features/FIR/FIRApi";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 
 function ViewFIR() {
@@ -28,7 +29,7 @@ function ViewFIR() {
     }
 
     if (isLoading || (!policeStationId && psLoading)) {
-        return <div>Loading...</div>;
+        return <div><LoadingSpinner/></div>;
     }
 
     if (!data || !data.FIRs) {
@@ -36,7 +37,7 @@ function ViewFIR() {
     }
 
     if (!data || !data.FIRs) {
-        return <div>Loading...</div>;
+        return <div><LoadingSpinner/></div>;
     }
 
     if (error) {

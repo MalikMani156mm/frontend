@@ -5,11 +5,16 @@ import { Tooltip } from 'react-tooltip';
 import { useDispatch, useSelector } from "react-redux";
 import { emptyCart, removeFromCart } from "../../Redux/Slices/CartSlice";
 import { updateShowIcon, clearShowIcon } from "./showIconUtil";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import CustomAlert from "../../Components/CustomAlert/CustomAlert";
 
 function PriorityComplaint() {
+
+    const [showConfirmation, setShowConfirmation] = useState(false);
     const { cart } = useSelector(state => state.cart);
     const dispatch = useDispatch();
-
+    const navigate = useNavigate();
 
     const handleRemove = (FIRData) => {
         dispatch(removeFromCart(FIRData));
@@ -17,9 +22,19 @@ function PriorityComplaint() {
     }
 
     const handleClearAll = () => {
-        dispatch(emptyCart());
-        clearShowIcon()
+        setShowConfirmation(true);
     }
+
+
+    const handleConfirmClearAll = async () => {
+        dispatch(emptyCart());
+        clearShowIcon();
+        setShowConfirmation(false);
+    };
+
+    const handleCancelClearAll = () => {
+        setShowConfirmation(false);
+    };
 
     return (
         <>
@@ -60,19 +75,28 @@ function PriorityComplaint() {
                                 <div className={styles.cell1}>{firs.EntryDate}</div>
                                 <div className={styles.cell1}>{firs.Status}</div>
                                 <div className={`${styles.cell1} ${styles.icon}`}>
-                                    <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" />
-                                    <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" />
-                                    <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" />
+                                    <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
+                                    <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
+                                    <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" onClick={() => { navigate(`/FIRPDF/${firs._id}`) }} />
                                     <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" />
                                     <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" />
-                                    <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" />
+                                    <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
                                     <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
                                     <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
                                 </div>
                             </div>
                         ))
                     }
-                </div></div>
+                </div>
+                </div>
+                {showConfirmation && (
+                <CustomAlert
+                    message="Are you sure you want to clear all priority complaints?"
+                    onConfirm={handleConfirmClearAll}
+                    onCancel={handleCancelClearAll}
+                    buttonLabel={"Confirm"}
+                />
+            )}
         </>
 
     );

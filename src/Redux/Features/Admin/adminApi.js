@@ -18,6 +18,20 @@ export const AdminApi = createApi({
         body: data,
       }) 
     }),
+    ConfirmAdminPassword: builder.mutation({
+      query: (data) => ({
+        url : `/auth/confirmAdminPassword`,
+        method: 'POST',
+        body: data,
+      }) 
+    }),
+    ChangeAdminPassword: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/auth/changeAdminPassword/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
     LogoutAdmin: builder.mutation({
       query: () => ({
         url : `/adminAuth/logout`,
@@ -27,4 +41,4 @@ export const AdminApi = createApi({
   })
 })
 
-export const { useRegisterAdminMutation, useLoginAdminMutation, useLogoutAdminMutation  } = AdminApi
+export const { useRegisterAdminMutation, useLoginAdminMutation, useLogoutAdminMutation, useChangeAdminPasswordMutation, useConfirmAdminPasswordMutation  } = AdminApi

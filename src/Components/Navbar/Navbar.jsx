@@ -7,11 +7,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { useLogoutUserMutation } from "../../Redux/Features/Auth/AuthApi";
 import { clearUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 import CustomAlert from "../CustomAlert/CustomAlert";
+import { emptyCart } from "../../Redux/Slices/CartSlice";
+import { clearShowIcon } from "../../Pages/PriorityComplaint/showIconUtil";
 
 
 function Navbar() {
 
-  const { user, token } = useSelector(state => state.auth)
+  const { user, token } = useSelector(state => state.auth);
   const role = "Admin";
   const Role = "SuperAdmin";
 
@@ -26,6 +28,8 @@ function Navbar() {
   const handleConfirmLogout = async () => {
     await logout();
     dispatch(clearUserInfo());
+    dispatch(emptyCart());
+    clearShowIcon();
     setShowConfirmation(false);
   };
 
@@ -54,7 +58,7 @@ function Navbar() {
           <span></span>
         </div>
         <ul className={menuOpen ? styles.open : ""}>
-          {(user && (role=== user.role || Role === user.role)) ? null :
+          {(user && (role === user.role || Role === user.role)) ? null :
             <li><NavLink to="/" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Home</NavLink></li>
           }
           <li>
@@ -77,11 +81,11 @@ function Navbar() {
               My Applications
             </NavLink>
           </li>
-          {(user && role=== user.role ) ?
+          {(user && role === user.role) ?
             <li><NavLink to="Search" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Search</NavLink></li>
             : null
           }
-          {(user && Role === user.role ) ?
+          {(user && Role === user.role) ?
             <li><NavLink to="admin/Search" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Search</NavLink></li>
             : null
           }
@@ -133,13 +137,13 @@ function Navbar() {
       </nav>
       <div className={styles.separator}></div>
       {showConfirmation && (
-                <CustomAlert
-                    message="Are you sure you want to Logout?"
-                    onConfirm={handleConfirmLogout}
-                    onCancel={handleCancelLogout}
-                    buttonLabel={"Confirm"}
-                />
-            )}
+        <CustomAlert
+          message="Are you sure you want to Logout?"
+          onConfirm={handleConfirmLogout}
+          onCancel={handleCancelLogout}
+          buttonLabel={"Confirm"}
+        />
+      )}
     </>
   );
 }

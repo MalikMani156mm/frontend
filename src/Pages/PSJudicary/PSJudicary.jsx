@@ -1,15 +1,18 @@
 import { useGetAllPoliceStationsQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import { useNavigate, Navigate } from "react-router-dom";
 import styles from './PSJudicary.module.css';
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 
 function PSJudicary() {
 
   const navigate = useNavigate();
 
-  const { data, error } = useGetAllPoliceStationsQuery();
+  const { data, error, isLoading } = useGetAllPoliceStationsQuery();
 
-
+  if (isLoading) {
+    return <div><LoadingSpinner/></div>
+  }
 
   if (error) {
     return <Navigate to={'*'} replace={true} />

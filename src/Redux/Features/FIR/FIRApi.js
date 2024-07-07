@@ -9,12 +9,25 @@ export const FIRApi = createApi({
   tagTypes: ['FIRs'],
   endpoints: (builder) => ({
     getAllFIRs: builder.query({
-      query: () => `/FIRs`,
+      query: (url) => `/FIRs/${url}`,
+      providesTags: ['FIRs']
+    }),
+    getPoliceStationFIRs: builder.query({
+      query: (url) => `/PoliceStationFIRs/${url}`,
+      providesTags: ['FIRs']
+    }),
+    getCitizensFIRs: builder.query({
+      query: (url) => `/CitizenFIRs/${url}`,
+      providesTags: ['FIRs']
+    }),
+    getSearchFIRs: builder.query({
+      query: (url) => `/SearchFIRs/${url}`,
       providesTags: ['FIRs']
     }),
     getFIRById: builder.query({
       query: (id) => `/FIR/${id}`,
-      providesTags: (result, error, id) => [{ type: 'FIRs', id }],    }),
+      providesTags: (result, error, id) => [{ type: 'FIRs', id }],
+    }),
     addNewFIR: builder.mutation({
       query: (data) => ({
         url: `/new/FIR`,
@@ -38,8 +51,8 @@ export const FIRApi = createApi({
         body: data,
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'FIRs' }],
-        }),
+    }),
   }),
 })
 
-export const { useGetAllFIRsQuery, useAddNewFIRMutation, useGetFIRByIdQuery, useDeleteFIRMutation, useUpdateFIRMutation } = FIRApi
+export const { useGetAllFIRsQuery, useGetCitizensFIRsQuery, useGetPoliceStationFIRsQuery, useAddNewFIRMutation, useGetFIRByIdQuery, useDeleteFIRMutation, useUpdateFIRMutation,useGetSearchFIRsQuery } = FIRApi

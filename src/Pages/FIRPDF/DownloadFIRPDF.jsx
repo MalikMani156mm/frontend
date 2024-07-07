@@ -6,6 +6,7 @@ import styles from "./FIRPDF.module.css"
 import html2canvas from "html2canvas"
 import jspdf from "jspdf";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 function DownloadFIRPDF() {
 
@@ -27,7 +28,7 @@ function DownloadFIRPDF() {
   };
 
   if (firLoading || (!policeStationId && psLoading)) {
-    return <div>Loading...</div>;
+    return <div><LoadingSpinner/></div>;
   }
 
   if (firError || psError) {

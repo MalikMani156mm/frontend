@@ -7,6 +7,7 @@ import logo from "../../images/Logo.png";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAddNewCategoryMutation } from "../../Redux/Features/Category/CategoryApi";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 function AddCategory() {
 
@@ -35,7 +36,7 @@ function AddCategory() {
     })
 
     if (cLoading) {
-        return <div>Loading...</div>;
+        return <div><LoadingSpinner/></div>;
     }
 
     if (cError) {

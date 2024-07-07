@@ -8,18 +8,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useChangePasswordMutation } from "../../Redux/Features/Auth/AuthApi";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useChangeAdminPasswordMutation } from "../../Redux/Features/Admin/adminApi";
 
 
-function NewPassword() {
+function AdminNewPassword() {
 
     const { user } = useSelector(state => state.auth);
     const id = user._id;
     const [showPassword, setShowPassword] = useState(false);
     const [showCPassword, setShowCPassword] = useState(false);
-    const [changePassword, { isLoading, error }] = useChangePasswordMutation();
+    const [changeAdminPassword, { isLoading, error }] = useChangeAdminPasswordMutation();
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -49,7 +49,7 @@ function NewPassword() {
         onSubmit: async (values) => {
             delete values.confirmpassword;
             console.log(values);
-            const res = await changePassword({ id, data: values }).unwrap();
+            const res = await changeAdminPassword({ id, data: values }).unwrap();
             if (res.success) {
                 toast.success(res.message);
             }
@@ -116,4 +116,4 @@ function NewPassword() {
 
 }
 
-export default NewPassword;
+export default AdminNewPassword;

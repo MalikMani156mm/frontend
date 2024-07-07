@@ -6,6 +6,7 @@ import CustomAlert from "../../Components/CustomAlert/CustomAlert";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 
 
@@ -39,7 +40,7 @@ function FIRDetail() {
     const handleConfirmDelete = async () => {
         try {
             await deleteFIR(id).unwrap();
-            navigate("/MyApplications");
+            navigate("/MyApplications").replace(true);
         } catch (err) {
             setDeletionError(err);
         }
@@ -55,7 +56,7 @@ function FIRDetail() {
     }
 
     if (firLoading || (!policeStationId && psLoading)) {
-        return <div>Loading...</div>;
+        return <div><LoadingSpinner/></div>;
     }
 
     if (!firData || !firData.FIRs) {

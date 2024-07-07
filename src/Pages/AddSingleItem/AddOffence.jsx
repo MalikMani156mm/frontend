@@ -7,6 +7,7 @@ import logo from "../../images/Logo.png";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAddNewOffenceMutation } from "../../Redux/Features/Offence/OffenceApi";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 function AddOffence() {
 
@@ -36,7 +37,7 @@ function AddOffence() {
     })
 
     if (oLoading) {
-        return <div>Loading...</div>;
+        return <div><LoadingSpinner/></div>;
     }
 
     if (oError) {

@@ -1,6 +1,6 @@
 import styles from "./OnlineFIR.module.css";
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useAddNewFIRMutation } from '../../Redux/Features/FIR/FIRApi';
 import * as yup from 'yup';
@@ -14,13 +14,12 @@ function OnlineFIR() {
 
   //eslint-disable-next-line
   const [addFIR, { isLoading, error }] = useAddNewFIRMutation();
-  //eslint-disable-next-line
   const { data } = useGetAllPoliceStationsQuery();
   const { user } = useSelector(state => state.auth);
   const role = "Admin";
   const Role = "SuperAdmin"
 
-
+  const [state, setState] = useState(true);
   const [fileInputs, setFileInputs] = useState([{ id: 1 }]);
 
   const addMoreFile = () => {
@@ -31,7 +30,11 @@ function OnlineFIR() {
   const [selectedValue, setSelectedValue] = useState(null);
   const [selectedValue2, setSelectedValue2] = useState(null);
 
-
+  useEffect(() => {
+    if (role === user.role || Role === user.role) {
+      setState(false);
+    }
+  }, [Role, role, user.role]);
   const handleRadioClick = (value) => {
     if (selectedValue === value) {
       setSelectedValue(null);
@@ -54,12 +57,12 @@ function OnlineFIR() {
 
   const getCurrentDateTimeLocal = () => {
     const current = new Date();
-    const options = { 
-      year: 'numeric', 
-      month: '2-digit', 
-      day: '2-digit', 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
     };
     return new Intl.DateTimeFormat('default', options).format(current);
   };
@@ -274,7 +277,7 @@ function OnlineFIR() {
                 <p className="help-block text-danger">{errors.PoliceStation && touched.PoliceStation ? errors.PoliceStation : null}</p>
               </div>
             </div>
-            {(user && (role=== user.role || Role === user.role)) ? <>
+            {(user && (role === user.role || Role === user.role)) ? <>
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-3 col-sm-3"><p>Beat/Moza No.</p></div>
                 <div className="col-lg-3 col-md-3 col-sm-3">
@@ -304,18 +307,17 @@ function OnlineFIR() {
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>CNIC (without dashes)</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
-                <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange}
+                <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange} disabled={state}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
-
             </div>
 
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-3 col-sm-3"><p>Name</p></div>
               <div className="col-lg-3 col-md-3 col-sm-3">
                 <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange}
-                  onBlur={handleBlur} />
+                  disabled={state} onBlur={handleBlur}  />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
               <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
@@ -370,10 +372,11 @@ function OnlineFIR() {
                 <input
                   type="number"
                   name="ContactNumber"
-                  placeholder={user.phonenumber}
+                  placeholder={`0${user.phonenumber}`}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  disabled={state}
                 />
                 <p className="help-block text-danger">{errors.ContactNumber && touched.ContactNumber ? errors.ContactNumber : null}</p>
               </div>
@@ -601,7 +604,7 @@ function OnlineFIR() {
                 <p className="help-block text-danger">{errors.Offence && touched.Offence ? errors.Offence : null}</p>
               </div>
             </div>
-            {(user && (role=== user.role || Role === user.role)) ? <>
+            {(user && (role === user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-3 col-sm-3">
@@ -686,7 +689,7 @@ function OnlineFIR() {
                   onBlur={handleBlur} />
               </div>
             </div>
-            {(user && (role=== user.role || Role === user.role)) ? <>
+            {(user && (role === user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-3 col-sm-3"><p>IO Name</p></div>
