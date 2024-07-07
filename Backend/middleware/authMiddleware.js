@@ -1,18 +1,29 @@
 import jwt from "jsonwebtoken";
 import 'dotenv/config'
+import User from "../models/UserSchema.js";
 
 
 export const isAuthenticatedUser = async (req, res, next) => {
 
     try {
         // console.log('Cookies:', req.cookies);
-        const token = req.cookies.token;
-        // console.log(token);
-        if (token) {
-            return next(new Error("Please Login again to access this resource"))
+        const token = req.cookies.jwt;
+        if (!token) {
+            return next(new Error("Unauthentic user , no token provided"))
         }
-        const {payload} = jwt.verify(token, process.env.JWT_SECRET)
-        req.user = payload;
+        
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        
+        if (!decoded) {
+            return next(new Error("Unauthentic , invalid token provided"))
+        }
+        
+        const user = await User.findById(decoded.payload).select("-password");
+        
+        if (!user) {
+            return next(new Error("Authentication failed ,user not found"))
+        }
+        req.user = user;
         next();
     } catch (error) {
         next(error)

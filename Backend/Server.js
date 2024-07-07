@@ -6,6 +6,7 @@ import OffenceRoutes from "./routes/OffenceRoutes.js";
 import CategoryRoutes from "./routes/CategoryRoutes.js"
 import CCRoutes from "./routes/CCroute.js";
 import VVRoutes from "./routes/VVroutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 import PoliceStationRoutes from "./routes/PoliceStationRoutes.js"
 import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
@@ -20,9 +21,9 @@ cloudinaryConfig();
 app.use(bodyParser.json({limit:'50mb'}))
 app.use(cookieParser())
 
-app.use(cors('http://localhost:3000'));
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 
-app.use('/api', FIRRoutes, AuthRoutes, CCRoutes, VVRoutes, PoliceStationRoutes, AdminRoutes, OffenceRoutes, CategoryRoutes )
+app.use('/api', FIRRoutes, AuthRoutes, CCRoutes, VVRoutes, PoliceStationRoutes, AdminRoutes, OffenceRoutes, CategoryRoutes, messageRoutes )
 
 app.use(errors)
 

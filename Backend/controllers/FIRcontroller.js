@@ -1,12 +1,350 @@
+import mongoose from 'mongoose';
 import FIR from "../models/FIRSchema.js";
 import PoliceStaion from "../models/PoliceStationSchema.js"
 import { imageUploading } from "../Utils/Utils.js";
 
 
 export const getAllFIRs = async function (req, res, next) {
-    const FIRs = await FIR.find({});
-    res.json(FIRs);
-}
+
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    // let sort = req.query.sort || "_id";
+    // req.query.sort ? (sort=req.query.sort.split(",")) : (sort=[sort])
+
+    // let sortBy = {};
+    // if(sort[1]){
+    //     sortBy[sort[0]] = sort[1]
+    // }else{
+    //     sortBy[sort[0]] = "asc"
+    // }
+
+    try {
+        //Fetch FIRs with search criteria
+        let FIRs = await FIR.aggregate([
+            {
+                $addFields: {
+                    CNICStr: { $toString: "$CNIC" },
+                    ContactNumberStr: { $toString: "$ContactNumber" }
+                }
+            },
+            {
+                $match: {
+                    "$or": [
+                        { ComplaintNumber: { $regex: search, $options: "i" } },
+                        { Name: { $regex: search, $options: "i" } },
+                        { CNICStr: { $regex: search } },
+                        { ContactNumberStr: { $regex: search} },
+                        { Category: { $regex: search, $options: "i" } },
+                        { Offence: { $regex: search, $options: "i" } },
+                        { EntryDate: { $regex: search, $options: "i" } },
+                        { Status: { $regex: search, $options: "i" } },
+                    ]
+                }
+            },
+            { $skip: page * limit },
+            { $limit: limit }
+        ]);
+
+        // Total count with search criteria
+        let totalResult = await FIR.aggregate([
+            {
+                $addFields: {
+                    CNICStr: { $toString: "$CNIC" },
+                    ContactNumberStr: { $toString: "$ContactNumber" }
+                }
+            },
+            {
+                $match: {
+                    "$or": [
+                        { ComplaintNumber: { $regex: search, $options: "i" } },
+                        { Name: { $regex: search, $options: "i" } },
+                        { CNICStr: { $regex: search } },
+                        { ContactNumberStr: { $regex: search} },
+                        { Category: { $regex: search, $options: "i" } },
+                        { Offence: { $regex: search, $options: "i" } },
+                        { EntryDate: { $regex: search, $options: "i" } },
+                        { Status: { $regex: search, $options: "i" } },
+                    ]
+                }
+            },
+            { $count: "total" }
+        ]);
+
+        let total = totalResult.length > 0 ? totalResult[0].total : 0;
+        let pageCount = Math.ceil(total / limit);
+
+        res.json({
+            FIRs,
+            total,
+            pageCount,
+            page: page + 1,
+            limit
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getPoliceStationFIRs = async function (req, res, next) {
+
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    const policeStation = req.query.policeStation|| "";
+    console.log(req.query.policeStation);
+
+    try{
+        let policeStationQuery = {};
+        console.log('inside try');
+        if (policeStation) {
+            policeStationQuery = { PoliceStation: new mongoose.Types.ObjectId(policeStation) };
+        console.log('inside try if');
+        }
+
+        let totalPoliceStaionFIRsResult = await FIR.aggregate([
+            {
+                $addFields: {
+                    CNICStr: { $toString: "$CNIC" },
+                    ContactNumberStr: { $toString: "$ContactNumber" }
+                }
+            },
+            {
+                $match: {
+                    $and: [
+                        policeStationQuery,
+                        {
+                            "$or": [
+                                { ComplaintNumber: { $regex: search, $options: "i" } },
+                                { Name: { $regex: search, $options: "i" } },
+                                { CNICStr: { $regex: search } },
+                                { ContactNumberStr: { $regex: search } },
+                                { Category: { $regex: search, $options: "i" } },
+                                { Offence: { $regex: search, $options: "i" } },
+                                { EntryDate: { $regex: search, $options: "i" } },
+                                { Status: { $regex: search, $options: "i" } },
+                            ]
+                        }
+                    ]
+                }
+            },
+            { $count: "total" }
+        ]);
+
+        let totalPoliceStaionFIRs = totalPoliceStaionFIRsResult.length > 0 ? totalPoliceStaionFIRsResult[0].total : 0;
+
+        let PoliceStaionFIRs = await FIR.aggregate([
+            {
+                $addFields: {
+                    CNICStr: { $toString: "$CNIC" },
+                    ContactNumberStr: { $toString: "$ContactNumber" }
+                }
+            },
+            {
+                $match: {
+                    $and: [
+                        policeStationQuery,
+                        {
+                            "$or": [
+                                { ComplaintNumber: { $regex: search, $options: "i" } },
+                                { Name: { $regex: search, $options: "i" } },
+                                { CNICStr: { $regex: search } },
+                                { ContactNumberStr: { $regex: search } },
+                                { Category: { $regex: search, $options: "i" } },
+                                { Offence: { $regex: search, $options: "i" } },
+                                { EntryDate: { $regex: search, $options: "i" } },
+                                { Status: { $regex: search, $options: "i" } },
+                            ]
+                        }
+                    ]
+                }
+            },
+            { $skip: page * limit },
+            { $limit: limit }
+        ]);
+
+        let PoliceStaionFIRspageCount = Math.ceil(totalPoliceStaionFIRs / limit);
+
+        res.json({
+            PoliceStaionFIRs,
+            totalPoliceStaionFIRs,
+            PoliceStaionFIRspageCount,
+            page: page + 1,
+            limit
+        });
+    }catch (error) {
+        next(error);
+    }
+};
+
+export const getCitizenFIRs = async function (req, res, next) {
+
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || "";
+    const cnic = req.query.cnic|| 0;
+
+    try{
+        let cnicQuery = {};
+
+        if (cnic) {
+            const cnicNumber = Number(cnic);
+            if (!isNaN(cnicNumber)) {
+                cnicQuery = { CNIC: cnicNumber };
+            }
+        }
+
+        let totalCitizenFIRsResult = await FIR.aggregate([
+            {
+                $addFields: {
+                    CNICStr: { $toString: "$CNIC" },
+                    ContactNumberStr: { $toString: "$ContactNumber" }
+                }
+            },
+            {
+                $match: {
+                    $and: [
+                        cnicQuery,
+                        {
+                            "$or": [
+                                { ComplaintNumber: { $regex: search, $options: "i" } },
+                                { Name: { $regex: search, $options: "i" } },
+                                { CNICStr: { $regex: search } },
+                                { ContactNumberStr: { $regex: search } },
+                                { Category: { $regex: search, $options: "i" } },
+                                { Offence: { $regex: search, $options: "i" } },
+                                { EntryDate: { $regex: search, $options: "i" } },
+                                { Status: { $regex: search, $options: "i" } },
+                            ]
+                        }
+                    ]
+                }
+            },
+            { $count: "cnictotal" }
+        ]);
+
+        let totalCitizenFIRs = totalCitizenFIRsResult.length > 0 ? totalCitizenFIRsResult[0].cnictotal : 0;
+
+        let CitizenFIRs = await FIR.aggregate([
+            {
+                $addFields: {
+                    CNICStr: { $toString: "$CNIC" },
+                    ContactNumberStr: { $toString: "$ContactNumber" }
+                }
+            },
+            {
+                $match: {
+                    $and: [
+                        cnicQuery,
+                        {
+                            "$or": [
+                                { ComplaintNumber: { $regex: search, $options: "i" } },
+                                { Name: { $regex: search, $options: "i" } },
+                                { CNICStr: { $regex: search } },
+                                { ContactNumberStr: { $regex: search } },
+                                { Category: { $regex: search, $options: "i" } },
+                                { Offence: { $regex: search, $options: "i" } },
+                                { EntryDate: { $regex: search, $options: "i" } },
+                                { Status: { $regex: search, $options: "i" } },
+                            ]
+                        }
+                    ]
+                }
+            },
+            { $skip: page * limit },
+            { $limit: limit }
+        ]);
+
+        let CitizenFIRspageCount = Math.ceil(totalCitizenFIRs / limit);
+
+        res.json({
+            CitizenFIRs,
+            totalCitizenFIRs,
+            CitizenFIRspageCount,
+            page: page + 1,
+            limit
+        });
+
+    }catch (error) {
+        next(error);
+    }
+};
+
+export const searchFIRs = async function (req, res, next) {
+
+    const page = parseInt(req.query.page) - 1 || 0;
+    const limit = parseInt(req.query.limit) || 10;
+    const year = req.query.year || "";
+    const province = req.query.province || "";
+    const district = req.query.district || "";
+    const division= req.query.division || "";
+    const circle = req.query.circle || "";
+    const policeStation = req.query.policeStation || "";
+    const name = req.query.name || "";
+    const guardianName = req.query.guardianName || "";
+    const cnic = req.query.cnic || "";
+    const contactNumber = req.query.contactNumber || "";
+    const complaintNumber = req.query.complaintNumber || "";
+    const status = req.query.status || "";
+
+    try {
+
+        const matchConditions = {
+            "$and": [
+                year ? { EntryDate: { $regex: year } } : {},
+                province ? { IncidentDetails: { $regex: province, $options: "i" } } : {},
+                complaintNumber ? { ComplaintNumber: { $regex: complaintNumber, $options: "i" } } : {},
+                name ? { Name: { $regex: name, $options: "i" } } : {},
+                cnic ? { CNIC: Number(cnic) } : {},
+                contactNumber ? { ContactNumber: Number(contactNumber) } : {},
+                guardianName ? { GuardianName: { $regex: guardianName, $options: "i" } } : {},
+                status ? { Status: { $regex: status, $options: "i" } } : {},
+                district ? { District: { $regex: district, $options: "i" } } : {},
+                division ? { Division: { $regex: division, $options: "i" } } : {},
+                circle ? { Circle: { $regex: circle, $options: "i" } } : {},
+                policeStation ? { PoliceStation: new mongoose.Types.ObjectId(policeStation) } : {}
+            ].filter(Boolean)
+        };
+        //Fetch FIRs with search criteria
+        let FIRs = await FIR.aggregate([
+            {
+                $addFields: {
+                    CNICStr: { $toString: "$CNIC" },
+                    ContactNumberStr: { $toString: "$ContactNumber" },
+                    PoliceStaionStr: { $toString: "$PoliceStation" }
+                }
+            },
+            { $match: matchConditions },
+            { $skip: page * limit },
+            { $limit: limit }
+        ]);
+
+        // Total count with search criteria
+        let totalResult = await FIR.aggregate([
+            {
+                $addFields: {
+                    CNICStr: { $toString: "$CNIC" },
+                    ContactNumberStr: { $toString: "$ContactNumber" }
+                }
+            },
+            { $match: matchConditions },
+            { $count: "total" }
+        ]);
+
+        let total = totalResult.length > 0 ? totalResult[0].total : 0;
+        let pageCount = Math.ceil(total / limit);
+
+        res.json({
+            FIRs,
+            total,
+            pageCount,
+            page: page + 1,
+            limit
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const getFIRById = async function (req, res, next) {
     const { id } = req.params;
@@ -66,7 +404,7 @@ export const updateFIR = async function (req, res, next) {
     const { id } = req.params;
     const data = req.body;
     try {
-        const UpdateFIR = await FIR.findByIdAndUpdate(id, data,{ new: true });
+        const UpdateFIR = await FIR.findByIdAndUpdate(id, data, { new: true });
         if (!UpdateFIR) {
             return res.json({
                 message: 'FIR not found',
@@ -74,12 +412,12 @@ export const updateFIR = async function (req, res, next) {
             });
         }
         res.json({
-            uf:UpdateFIR,
+            uf: UpdateFIR,
             message: 'FIR is Updated',
             success: true
         })
     } catch (error) {
-        next(error); 
+        next(error);
     }
 }
 
