@@ -28,7 +28,6 @@ export const createNewCategory = async function (req, res, next) {
     try {
         const resp = await Category.create(newCategory);
         res.json({
-            Category: resp,
             message: "Category is stored Successfully",
             success: true
         });

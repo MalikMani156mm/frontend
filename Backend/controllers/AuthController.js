@@ -89,14 +89,6 @@ export const RegisterNewUser = async function (req, res, next) {
 
         newUser.password = await bcrypt.hash(newUser.password, 10);
 
-        const token =  jwt.sign({ payload: newUser }, process.env.JWT_SECRET, { expiresIn: '24h' })
-
-        res.cookie("jwt", token, { expires: new Date(Date.now() + 86400000) , httpOnly:true, sameSite:"strict", secure: process.env.NODE_ENV !== "development" }).status(200).json({
-            newUser,
-            token,
-            success: true,
-            message: 'User Registered Successfully'
-        })
         // await twilioClient.messages.create({
         //     body: `Your mobile otp is ${mobileOTP}`,
         //     to: phoneNumber,
@@ -104,11 +96,13 @@ export const RegisterNewUser = async function (req, res, next) {
         // });
 
         // sendMail(newUser.email, "Welcome to E-FIR System", "", htmlTemplate)
-        // const user = await User.create(req.body);
-        res.json({
-            User: newUser,
-            success: true,
-            message: 'User Registered Successfully'
+        const user = await User.create(req.body);
+        const token = jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' })
+
+        res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV !== "development" }).status(200).json({
+            user,
+            token,
+            success:true
         })
     } catch (error) {
         next(error)
@@ -141,9 +135,10 @@ export const LoginUser = async function (req, res, next) {
 
         const token = await jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' })
 
-        res.cookie("jwt", token, { expires: new Date(Date.now() + 86400000) , httpOnly:true, sameSite:"lax", secure: process.env.NODE_ENV !== "development" }).status(200).json({
+        res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV !== "development" }).status(200).json({
             user,
-            token
+            token,
+            success:true
         })
 
     } catch (error) {
@@ -152,7 +147,7 @@ export const LoginUser = async function (req, res, next) {
 }
 
 export const LogoutUser = async function (req, res, next) {
-    res.cookie("jwt", "", { expires: new Date(Date.now()) }).json({
+    res.cookie("token", "", { expires: new Date(Date.now()) }).json({
         success: true,
         Message: "logged out"
     })
@@ -239,7 +234,7 @@ export const ChangeUsername = async function (req, res, next) {
 export const getUserForSidebar = async function (req, res, next) {
     try {
         const loginUserId = req.user._id;
-        const filteredUsers = await User.find({_id : {$ne: loginUserId}}).select("-password") ;
+        const filteredUsers = await User.find({ _id: { $ne: loginUserId } }).select("-password");
         res.json(filteredUsers);
     } catch (error) {
         next(error)

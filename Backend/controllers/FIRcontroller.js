@@ -92,14 +92,11 @@ export const getPoliceStationFIRs = async function (req, res, next) {
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || "";
     const policeStation = req.query.policeStation|| "";
-    console.log(req.query.policeStation);
 
     try{
         let policeStationQuery = {};
-        console.log('inside try');
         if (policeStation) {
             policeStationQuery = { PoliceStation: new mongoose.Types.ObjectId(policeStation) };
-        console.log('inside try if');
         }
 
         let totalPoliceStaionFIRsResult = await FIR.aggregate([

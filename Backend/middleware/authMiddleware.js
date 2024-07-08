@@ -6,8 +6,8 @@ import User from "../models/UserSchema.js";
 export const isAuthenticatedUser = async (req, res, next) => {
 
     try {
-        // console.log('Cookies:', req.cookies);
-        const token = req.cookies.jwt;
+        const token = req.cookies.token;
+        
         if (!token) {
             return next(new Error("Unauthentic user , no token provided"))
         }

@@ -21,14 +21,10 @@ const UserSchema = new Schema(
             type: Number,
             require:[true, 'Please provide the Phone Number'],
             unique:true,
-            // min:[11, 'At least of 11 number'],
-            // max:[13, 'Maximum limit of 13 number']
         },
         cnic: {
             type: Number,
             require:[true, 'Please provide the CNIC'],
-            // min:[13, 'without dash 13 number'],
-            // max:[15, 'with dash 15 number']
         },
         password: {
             type: String,
