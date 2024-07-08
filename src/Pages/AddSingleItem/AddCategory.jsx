@@ -7,7 +7,6 @@ import logo from "../../images/Logo.png";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAddNewCategoryMutation } from "../../Redux/Features/Category/CategoryApi";
-import LoadingSpinner from "../../Components/Loading/Loading";
 
 function AddCategory() {
 
@@ -25,7 +24,6 @@ function AddCategory() {
         onSubmit: async (values) => {
             console.log(values);
             const res = await addCategory(values).unwrap();
-            console.log(res);
             if (res.success) {
                 toast.success(res.message);
             } else {
@@ -34,10 +32,6 @@ function AddCategory() {
 
         }
     })
-
-    if (cLoading) {
-        return <div><LoadingSpinner/></div>;
-    }
 
     if (cError) {
         return (<>

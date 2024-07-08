@@ -4,7 +4,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 function AuthLayouts(){
 
-    const {token} = useSelector(state=>state.auth)
+    const {token} = useSelector(state=>state.auth);
     if(!token){
         return <Navigate to={'/login'} replace={true}/>
     }

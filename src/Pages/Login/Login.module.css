@@ -13,6 +13,13 @@
     background-color: #f4f4f4; /* Light gray background color */
     border-radius: 15px; /* Rounded corners for the container */
 }
+.Toastify__toast-container {
+    z-index: 9999; /* High z-index to ensure it overlays other elements */
+}
+
+.Toastify__toast {
+    z-index: 9999; /* High z-index to ensure each toast notification overlays other elements */
+}
 .logo{
     padding: 20px;
 }

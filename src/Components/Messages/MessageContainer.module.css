@@ -1,0 +1,132 @@
+/* MessageContainer.module.css */
+.md-min-w-450px {
+    min-width: 80%;
+    max-height: 100vh;
+  }
+  
+  .bg-slate-500 {
+    background-color: #101841 !important; /* Adjust this color to match Tailwind's slate-500 */
+  }
+  
+  .text-gray-900 {
+    color: aliceblue !important; /* Adjust this color to match Tailwind's gray-900 */
+  }
+  
+  .mb-2 {
+    margin-bottom: 0.5rem;
+  }
+
+  .scrollContainer::-webkit-scrollbar-track {
+    background: #555;
+  }
+  
+  .scrollContainer::-webkit-scrollbar-thumb {
+    background: #121212;
+    border-radius: 5px;
+  }
+  
+  .scrollContainer::-webkit-scrollbar-thumb:hover {
+    background: #242424;
+  }  
+/* Messages */
+.flex-1 {
+    flex: 1;
+  }
+  
+  .overflow-auto {
+    overflow: auto;
+  }
+  
+
+
+/* Message */
+.chat {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.chat-end {
+  justify-content: flex;
+  flex-direction: row-reverse;
+}
+
+.chat-image {
+  margin-right: 0.5rem;
+}
+
+.avatar {
+  position: relative;
+
+  width: 3.1rem; /* Ensure width is set */
+  height: 2.8rem; /* Ensure height is set */
+  border-radius: 50%; /* Ensure the container itself is rounded */
+  overflow: hidden; /* Ensure the image inside doesn't overflow */
+}
+
+.w-10 {
+  width: 2.5rem; /* Tailwind's w-10 is 2.5rem */
+}
+
+.rounded-full {
+  border-radius: 50%;
+}
+
+.chat-bubble {
+  background-color: #3b82f6; /* Tailwind's bg-blue-500 */
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  max-width: 60%;
+  word-wrap: break-word;
+}
+
+.chat-footer {
+  opacity: 0.5;
+  font-size: 0.75rem; /* Tailwind's text-xs */
+  display: flex;
+  gap: 0.25rem; /* Tailwind's gap-1 is 0.25rem */
+  align-items: center;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+/* MessageInput */
+.input-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .input-field {
+    background-color: #101841; /* Tailwind's bg-gray-700 */
+    border-color: #101841; /* Tailwind's border-gray-600 */
+    color: black !important;
+    padding: 0.625rem; /* Tailwind's p-2.5 */
+    padding-right: 8%;
+    border-radius: 0.375rem; /* Tailwind's rounded-lg */
+  }
+
+  .input-field::placeholder{
+    color: aliceblue !important;
+  }
+
+  
+  .input-button {
+    background-color: #3b82f6;
+    border: 2px solid #101841;
+    width: 3.1rem; /* Ensure width is set */
+    height: 2.8rem;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    /* right:10%; */
+    right: 0.75rem; 
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  
+  
+  

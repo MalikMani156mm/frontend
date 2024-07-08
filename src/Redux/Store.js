@@ -36,6 +36,7 @@ export const store = configureStore({
   reducer:persistedReducer,
   middleware: (getDefaultMiddleware) =>
   getDefaultMiddleware({
+    immutableCheck: false,
     serializableCheck: false,
   }).concat([FIRApi.middleware , AuthApi.middleware, AdminApi.middleware, CertificateApi.middleware , VVApi.middleware, PoliceStationApi.middleware, OffenceApi.middleware, CategoryApi.middleware]),
 });

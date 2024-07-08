@@ -4,7 +4,8 @@ export const FIRApi = createApi({
   reducerPath: 'FIRApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:5000/api/',
-    mode: 'cors'
+    mode: 'cors',  
+    credentials: 'include'
   }),
   tagTypes: ['FIRs'],
   endpoints: (builder) => ({

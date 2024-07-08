@@ -49,14 +49,15 @@ function Login() {
         onSubmit: async (values) => {
             console.log(values);
             const user = await UserLogin(values).unwrap();
+            console.log(user);
             if (user.success) {
-                toast.success(user.error);
+                toast.success(user.message);
+                dispatch(setUserInfo(user));
+                navigate("/MyApplications");
             }
             else {
-                toast.error(user.error);
+                toast.error(user.message);
             }
-            dispatch(setUserInfo(user));
-            navigate("/MyApplications");
         }
     })
 
@@ -75,6 +76,7 @@ function Login() {
 
     return (
         <>
+        <div className={styles.body}>
             <form action='post' name="LoginForm" onSubmit={handleSubmit} >
                 <div className={styles.LoginWrapper}>
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
@@ -120,7 +122,7 @@ function Login() {
                     <span>Don't have an account? <Link to="/SignUp" className={styles.createAccount}>Sign Up</Link></span>
                     <span><Link to="/AdminLogin" className={styles.createAccount}>Log In as Admin</Link></span>
                 </div>
-            </form>
+            </form></div>
             <ToastContainer />
         </>
     );

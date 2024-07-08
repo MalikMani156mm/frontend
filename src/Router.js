@@ -50,6 +50,7 @@ import AddCategory from "./Pages/AddSingleItem/AddCategory.jsx";
 import ChangeUsername from "./Pages/ChangeUsername/ChangeUsername.jsx";
 import AdminConfirmPassword from "./Pages/Login/AdminConfirmPassword.jsx";
 import AdminNewPassword from "./Pages/Login/AdminNewPassword.jsx";
+import ChatPage from "./Pages/ChatApp/ChatPage.jsx";
 
 export const router = createBrowserRouter(
 
@@ -58,6 +59,7 @@ export const router = createBrowserRouter(
         <Route>
             <Route path="/" element={<div className={styles.layout}><RootLayouts /></div>}>
                 <Route path="/" exact element={<div className={styles.main}><Home /></div>} />
+                <Route path="/chatPage" exact element={<div className={styles.main}><ChatPage /></div>} />
                 <Route path="/UserGuide" exact element={<div className={styles.main}><UserGuide /></div>} />
                 <Route path="/PSJudicary" exact element={<div className={styles.main}><PSJudicary /></div>} />
                 <Route path="/PSJudicary/:id" exact element={<div className={styles.main}><PoliceStationInfo /></div>} />

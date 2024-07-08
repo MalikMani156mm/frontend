@@ -7,7 +7,6 @@ import logo from "../../images/Logo.png";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAddNewOffenceMutation } from "../../Redux/Features/Offence/OffenceApi";
-import LoadingSpinner from "../../Components/Loading/Loading";
 
 function AddOffence() {
 
@@ -25,20 +24,13 @@ function AddOffence() {
         onSubmit: async (values) => {
             console.log(values);
             const res = await addOffence(values).unwrap();
-            console.log(res);
-
-            if (res.success === true) {
+            if (res.success) {
                 toast.success(res.message);
             } else {
-                toast.error(res.message || res.data.error);
+                toast.error(res.message );
             }
-
         }
     })
-
-    if (oLoading) {
-        return <div><LoadingSpinner/></div>;
-    }
 
     if (oError) {
         return (<>
