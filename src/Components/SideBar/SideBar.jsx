@@ -1,13 +1,12 @@
 import React from 'react';
-import SearchInput from  "../../Components/SideBar/SearchInput.jsx";
 import Conversations from "../../Components/SideBar/Conversations.jsx";
 import BackButton from "../../Components/SideBar/BackButton.jsx";
+import styles from "./SideBar.module.css";
+
 
 const SideBar = () => {
   return (
-    <div className="border-end border-secondary p-3 d-flex flex-column">
-      <SearchInput />
-      <div className="my-2 border-top "></div>
+    <div className={`border-end border-secondary p-3 d-flex flex-column ${styles['md-max-h-450px']}`}>
       <Conversations />
       <BackButton />
     </div>

@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const AuthApi = createApi({
   reducerPath: 'AuthApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/' ,  credentials: 'include'}),
+  tagTypes: ['Users'],
   endpoints: (builder) => ({
     RegisterUser: builder.mutation({
       query: (data) => ({
@@ -48,4 +49,4 @@ export const AuthApi = createApi({
   })
 })
 
-export const { useRegisterUserMutation, useLoginUserMutation, useLogoutUserMutation, useConfirmPasswordMutation, useChangePasswordMutation, useChangeUsernameMutation  } = AuthApi
+export const { useRegisterUserMutation, useLoginUserMutation, useLogoutUserMutation, useConfirmPasswordMutation, useChangePasswordMutation, useChangeUsernameMutation } = AuthApi

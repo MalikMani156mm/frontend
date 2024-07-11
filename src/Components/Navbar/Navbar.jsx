@@ -93,7 +93,7 @@ function Navbar() {
             <>
               <li>
                 <NavLink
-                  to="/"
+                  to="/ChatPage"
                   className={`${styles.Mlogo} ${styles.ActivelyStyle}`}
                 >
                   <img src={Message} alt="Messenger unload" height={50} />

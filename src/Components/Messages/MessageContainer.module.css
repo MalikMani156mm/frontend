@@ -1,7 +1,8 @@
 /* MessageContainer.module.css */
 .md-min-w-450px {
     min-width: 80%;
-    max-height: 100vh;
+    min-height: 82vh;
+    max-height: 82vh;
   }
   
   .bg-slate-500 {
@@ -42,13 +43,28 @@
 /* Message */
 .chat {
   display: flex;
-  align-items: flex-end;
   margin-bottom: 1rem;
+  align-items: flex-end;
 }
 
 .chat-end {
-  justify-content: flex;
+  justify-content: flex-start;
   flex-direction: row-reverse;
+}
+
+.chat-start {
+  justify-content: flex-start;
+  flex-direction: row;
+}
+
+.sky-blue{
+  background: #3b82f6;
+  color: black;
+}
+
+.dark-blue{
+  background-color: #101841;
+  color: aliceblue;
 }
 
 .chat-image {
@@ -73,8 +89,6 @@
 }
 
 .chat-bubble {
-  background-color: #3b82f6; /* Tailwind's bg-blue-500 */
-  color: white;
   padding: 0.5rem 1rem;
   border-radius: 1rem;
   max-width: 60%;
@@ -89,6 +103,7 @@
   align-items: center;
   width: 100%;
   justify-content: flex-end;
+  color:white;
 }
 
 /* MessageInput */
@@ -127,6 +142,31 @@
     justify-content: center;
   }
 
+/* MessageSkeleton */
+
+  .skeleton {
+    background: #e0e0e0; /* Example color for the skeleton */
+    border-radius: 4px;
+    animation: skeleton-loading 1.2s infinite;
+  }
   
   
+  @keyframes skeleton-loading {
+    0% {
+      background-color: #e0e0e0;
+    }
+    50% {
+      background-color: #f0f0f0;
+    }
+    100% {
+      background-color: #e0e0e0;
+    }
+  }
   
+
+  @media screen and (max-width: 550px) {
+    .md-min-w-450px {
+      min-width: 100%;
+      max-height: 79.7vh;
+    }
+  }

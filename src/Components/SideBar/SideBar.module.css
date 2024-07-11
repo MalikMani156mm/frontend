@@ -1,62 +1,105 @@
 /* SearchInput.module.css */
-.bg-sky-500 {
-    background-color: #0ea5e9 !important; /* Adjust this color to match Tailwind's sky-500 */
-  }
-  
-  .btn-circle {
-    border-radius: 50% !important;
-    width: 2.5rem !important;
-    height: 2.5rem !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-/* Conversation.module.css */
-.hover-bg-sky-500:hover {
-    background-color: #0ea5e9 !important; /* Adjust this color to match Tailwind's sky-500 */
-  }
-  
-  .avatar-online {
-    position: relative;
-  }
-  
-  .avatar-online::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 10px;
-    height: 10px;
-    background-color: green;
-    border-radius: 50%;
-    border: 2px solid white;
-  }
-  
-  .rounded-full {
-    border-radius: 50% !important;
-  }
 
-  .overflow-auto {
-    overflow: auto;
-  }
+.bg-sky-500 {
+  background-color: #0ea5e9 !important;
+  /* Adjust this color to match Tailwind's sky-500 */
+}
+
+.md-max-h-450px {
+  min-height: 82vh;
+  max-height: 82vh;
+}
+
+.btn-circle {
+  border-radius: 50% !important;
+  width: 2.5rem !important;
+  height: 2.5rem !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Conversation.module.css */
+.noConversations{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
+.divider {
+  height: 1px;
+  margin: 5px;
+  margin-top: 5px;
+  background: linear-gradient(to right, transparent, #9ba3c2, transparent);
+}
+
+.spinnerDiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+}
+
+.hover-bg-sky-500:hover {
+  background-color: #0ea5e9 !important;
+  /* Adjust this color to match Tailwind's sky-500 */
+}
+
+.bg-sky-500:hover {
+  background-color: #0ea5e9 !important;
+  /* Adjust this color to match Tailwind's sky-500 */
+}
+
+.avatar-online {
+  position: relative;
+}
+
+.avatar-online::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: green;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.rounded-full {
+  border-radius: 50% !important;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
 /* LogoutButton.module.css */
 .mt-auto {
-    margin-top: auto;
+  margin-top: auto;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.w-6 {
+  width: 1.5rem;
+  /* Tailwind's w-6 is 1.5rem */
+}
+
+.h-6 {
+  height: 1.5rem;
+  /* Tailwind's h-6 is 1.5rem */
+}
+
+.text-white {
+  color: white !important;
+}
+
+@media screen and (max-width: 550px) {
+  .md-max-h-450px {
+    min-width: 100%;
+    max-height: auto;
   }
-  
-  .cursor-pointer {
-    cursor: pointer;
-  }
-  
-  .w-6 {
-    width: 1.5rem; /* Tailwind's w-6 is 1.5rem */
-  }
-  
-  .h-6 {
-    height: 1.5rem; /* Tailwind's h-6 is 1.5rem */
-  }
-  
-  .text-white {
-    color: white !important;
-  }
-        
+}

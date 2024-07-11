@@ -59,7 +59,6 @@ export const router = createBrowserRouter(
         <Route>
             <Route path="/" element={<div className={styles.layout}><RootLayouts /></div>}>
                 <Route path="/" exact element={<div className={styles.main}><Home /></div>} />
-                <Route path="/chatPage" exact element={<div className={styles.main}><ChatPage /></div>} />
                 <Route path="/UserGuide" exact element={<div className={styles.main}><UserGuide /></div>} />
                 <Route path="/PSJudicary" exact element={<div className={styles.main}><PSJudicary /></div>} />
                 <Route path="/PSJudicary/:id" exact element={<div className={styles.main}><PoliceStationInfo /></div>} />
@@ -76,6 +75,7 @@ export const router = createBrowserRouter(
                 <Route path="/ContactUs" exact element={<div className={styles.main}><ContactUs /></div>} />
                 <Route path="*" element={<div className={styles.main}><Error /></div>} />
                 <Route path="/" element={<div className={styles.layout}><AuthLayouts /></div>}>
+                    <Route path="/chatPage" exact element={<div className={styles.main}><ChatPage /></div>} />
                     <Route path="/OnlineFIR" exact element={<div className={styles.main}><OnlineFIR /></div>} />
                     <Route path="/DownloadFIRPDF/:id" element={<div className={styles.main}><DownloadFIRPDF /></div>} />
                     <Route path="/FIRPDF/:id" exact element={<div className={styles.main}><FIRPDF /></div>} />
@@ -89,7 +89,7 @@ export const router = createBrowserRouter(
                     <Route path="/NewPassword" exact element={<div className={styles.main}>< NewPassword /></div>} />
                     <Route path="/ChangeUsername" exact element={<div className={styles.main}>< ChangeUsername /></div>} />
                 </Route>
-                 <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'Admin'} /></div>}>
+                <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'Admin'} /></div>}>
                     <Route path="/Search" exact element={<div className={styles.main}><Search /></div>} />
                     <Route path="/PriorityComplaint" exact element={<div className={styles.main}><PriorityComplaint /></div>} />
                     <Route path="/UpdatePoliceStation/:id" exact element={<div className={styles.main}><UpdatePoliceStation /></div>} />
