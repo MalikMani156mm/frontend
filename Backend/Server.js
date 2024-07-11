@@ -14,7 +14,7 @@ import { connectDB , cloudinaryConfig } from "./config/config.js";
 import { errors } from './middleware/errors.js';
 import cors from "cors";
 import 'dotenv/config'
-const app = express();
+import {app, server} from "./socket/socket.js";
 connectDB();
 cloudinaryConfig();
 
@@ -27,6 +27,6 @@ app.use('/api', FIRRoutes, AuthRoutes, CCRoutes, VVRoutes, PoliceStationRoutes, 
 
 app.use(errors)
 
-app.listen(process.env.SERVER_PORT, () => {
+server.listen(process.env.SERVER_PORT, () => {
     console.log(`App is listening`)
 })

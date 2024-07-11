@@ -1,4 +1,5 @@
 import User from "../models/UserSchema.js";
+import Admin from "../models/AdminSchema.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import 'dotenv/config'
@@ -102,7 +103,7 @@ export const RegisterNewUser = async function (req, res, next) {
         res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV !== "development" }).status(200).json({
             user,
             token,
-            success:true
+            success: true
         })
     } catch (error) {
         next(error)
@@ -138,7 +139,7 @@ export const LoginUser = async function (req, res, next) {
         res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV !== "development" }).status(200).json({
             user,
             token,
-            success:true
+            success: true
         })
 
     } catch (error) {
@@ -233,9 +234,17 @@ export const ChangeUsername = async function (req, res, next) {
 
 export const getUserForSidebar = async function (req, res, next) {
     try {
-        const loginUserId = req.user._id;
-        const filteredUsers = await User.find({ _id: { $ne: loginUserId } }).select("-password");
-        res.json(filteredUsers);
+        const search = req.query.search || "";
+        let filteredUsers;
+
+        if (req.user.role === "Citizen") {
+            // filteredUsers = await Admin.find({name:{$regex:search, $options:"i"}}).select("-password");
+            filteredUsers = await Admin.find({}).select("-password");
+        } else {
+            filteredUsers = await User.find({name:{$regex:search, $options:"i"}}).select("-password");
+        }
+
+        res.json( filteredUsers );
     } catch (error) {
         next(error)
     }

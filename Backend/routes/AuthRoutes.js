@@ -1,5 +1,5 @@
 import express from 'express';
-import { RegisterNewUser, LoginUser, LogoutUser, ConfirmPassword, ChangePassword, ChangeUsername, getUserForSidebar } from '../controllers/AuthController.js';
+import { RegisterNewUser, LoginUser, LogoutUser, ConfirmPassword, ChangePassword, ChangeUsername, getUserForSidebar} from '../controllers/AuthController.js';
 import { isAuthenticatedUser } from '../middleware/authMiddleware.js';
 const router = express.Router()
 
