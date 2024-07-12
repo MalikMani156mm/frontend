@@ -1,14 +1,14 @@
-import mongoose from "mongoose";
+import mongoose, { get } from "mongoose";
 const { Schema } = mongoose;
 
 
 
-const UserSchema = new Schema(
+const OTPSchema = new Schema(
     { 
         name: {
             type: String,
             require:[true, 'Please provide the Name'],
-            min:[3, 'At least of 3 words'],
+            min:[5, 'At least of 5 words'],
             max:[30, 'Maximum limit of 30 words']
         },
         email: {
@@ -24,6 +24,7 @@ const UserSchema = new Schema(
         cnic: {
             type: Number,
             require:[true, 'Please provide the CNIC'],
+            unique:true,
         },
         password: {
             type: String,
@@ -34,14 +35,24 @@ const UserSchema = new Schema(
             default:'Citizen',
             enum: ['Citizen','Admin']
         },
-        resetToken:{
+        otp:{
+            type: String,
+            require:[true, 'Please provide the otp'],
+        },
+        token:{
             type:String,
             default:'',
+        },
+        otpExpiration:{
+            type:Date,
+            default:Date.now,
+            get: (otpExpiration)=> otpExpiration.getTime(),
+            set: (otpExpiration)=> new Date(otpExpiration)
         }
     },
     {
         timestamps:true
     }
 )
-const User = mongoose.model( 'User', UserSchema );
-export default User;
+const OTP = mongoose.model( 'OTP', OTPSchema );
+export default OTP;

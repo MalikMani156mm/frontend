@@ -1,3 +1,4 @@
+import OTP from "../models/OTPSchema.js";
 import User from "../models/UserSchema.js";
 import Admin from "../models/AdminSchema.js";
 import bcrypt from "bcryptjs";
@@ -5,9 +6,11 @@ import jwt from "jsonwebtoken";
 import 'dotenv/config'
 import CNIC from "../models/CNICSchema.js";
 import { sendMail } from "../middleware/sendEmail.js";
-import emailOtpGenerator from "otp-generator";
 import mobileOtpGenerator from "otp-generator";
 import twilio from "twilio";
+import randomstring from 'randomstring';
+import { generateOtpHtmlTemplate, sendResetPasswordLinkHtmlTemplate } from '../Utils/htmlTemplate.js'
+import {otpValidator} from '../Utils/otpValidator.js';
 const accountSSID = process.env.TWILIO_AUTH_SSID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioClient = new twilio(accountSSID, authToken);
@@ -15,96 +18,135 @@ const twilioClient = new twilio(accountSSID, authToken);
 export const RegisterNewUser = async function (req, res, next) {
 
     try {
-        const emailOTP = emailOtpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false })
+        const randomString = randomstring.generate();
         const mobileOTP = mobileOtpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false })
         let newUser = req.body;
-        const phoneNumber = `+923008337310`;
-        const htmlTemplate = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>OTP Verification</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f4;
-                    margin: 0;
-                    padding: 0;
-                }
-                .container {
-                    max-width: 600px;
-                    margin: 0 auto;
-                    padding: 20px;
-                    background-color: #ffffff;
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                }
-                .header {
-                    text-align: center;
-                    padding: 10px 0;
-                    background-color: #007bff;
-                    color: #ffffff;
-                }
-                .content {
-                    padding: 20px;
-                    line-height: 1.6;
-                }
-                .otp {
-                    font-size: 24px;
-                    font-weight: bold;
-                    color: #007bff;
-                }
-                .footer {
-                    text-align: center;
-                    padding: 10px 0;
-                    font-size: 12px;
-                    color: #777777;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <h1>OTP Verification</h1>
-                </div>
-                <div class="content">
-                    <p>Dear <strong>${newUser.name}</strong>,</p>
-                    <p>Thank you for using our E-FIR system. Please use the following One-Time Password (OTP) to complete your verification process:</p>
-                    <p class="otp">${emailOTP}</p>
-                    <p>This OTP is valid for a limited time. Please do not share it with anyone.</p>
-                    <p>If you did not request this OTP, please ignore this email.</p>
-                    <p>Best regards,<br>Islamabad Police</p>
-                </div>
-                <div class="footer">
-                    <p>&copy; 2024 E-FIR System. All rights reserved.</p>
-                </div>
-            </div>
-        </body>
-        </html>
-        `;
+        const phoneNumber = process.env.PHONE_NUMBER;
+        const htmlTemplate = generateOtpHtmlTemplate(newUser.name, randomString)
+
         const validCNIC = await CNIC.findOne({ cnic: newUser.cnic })
         if (!validCNIC) {
             return next(new Error("Invalid CNIC, please provide Nadra verified CNIC"))
         }
 
+        const validEmail = await User.findOne({ email: newUser.email })
+
+        if (validEmail) {
+            return next(new Error("Duplicate Email Enter"))
+        }
+
+        const validPhoneNumber = await User.findOne({ phonenumber: newUser.phonenumber })
+
+        if (validPhoneNumber) {
+            return next(new Error("Duplicate Phonenumber Enter"))
+        }
+
+        const validcnic = await User.findOne({ cnic: newUser.cnic })
+
+        if (validcnic) {
+            return next(new Error("Duplicate CNIC Enter"))
+        }
+
         newUser.password = await bcrypt.hash(newUser.password, 10);
 
-        // await twilioClient.messages.create({
-        //     body: `Your mobile otp is ${mobileOTP}`,
-        //     to: phoneNumber,
-        //     from: process.env.TWILIO_PHONE_NUMBER
-        // });
+        const currentDate = new Date();
+        const user = await OTP.findOneAndUpdate(
+            { email: newUser.email },
+            {
+                otp: mobileOTP,
+                otpExpiration: new Date(currentDate.getTime()),
+                token: randomString,
+                name: newUser.name,
+                email: newUser.email,
+                phonenumber: newUser.phonenumber,
+                cnic: newUser.cnic,
+                password: newUser.password
+            }, {
+            upsert: true,
+            new: true,
+            setDefaultsOnInsert: true
+        }
+        );
+        await twilioClient.messages.create({
+            body: `Your mobile otp is ${mobileOTP}`,
+            to: phoneNumber,
+            from: process.env.TWILIO_PHONE_NUMBER
+        });
 
-        // sendMail(newUser.email, "Welcome to E-FIR System", "", htmlTemplate)
-        const user = await User.create(req.body);
-        const token = jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' })
+        sendMail(newUser.email, "Welcome to E-FIR System", "", htmlTemplate)
 
-        res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV !== "development" }).status(200).json({
+        res.json({
             user,
-            token,
-            success: true
+            success: true,
+            message: "Confirmation mail is send to your email account and please check it for further processing."
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const VerifySignUp = async function (req, res, next) {
+    try {
+        const { mobileOTP } = req.body;
+        const resetToken = req.query.resetToken;
+        const userData = await OTP.findOne({ token: resetToken });
+        if (!userData) {
+            return next(new Error("You are using fabricated link. Please check it again!"));
+        } else {
+            if (mobileOTP === userData.otp) {
+               const isOTPExpired = await otpValidator(userData.otpExpiration);
+               if (isOTPExpired) {
+                return next(new Error("Your OTP has been expired!"));
+               }
+               const name=userData.name;
+               const email=userData.email;
+               const cnic=userData.cnic;
+               const phonenumber=userData.phonenumber;
+               const password=userData.password;
+               const role = userData.role;
+
+            const user = new User({
+                name,
+                email,
+                cnic,
+                phonenumber,
+                password,
+                role
+            }) ;
+                await user.save();
+                await OTP.findByIdAndDelete(userData._id)
+               const token = jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' });
+               res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV !== "development" }).status(200).json({
+                user,
+                token,
+                success: true,
+                message: 'Your OTP is right!!!'
+            })
+            } else {
+                return next(new Error("Ooops!!! You enter wrong OTP."));
+            }
+
+        }
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const SendOTPAgain = async function (req, res, next) {
+    try {
+        const phoneNumber = process.env.PHONE_NUMBER;
+        const resetToken = req.query.resetToken;
+        const userData = await OTP.findOne({ token: resetToken });
+        if (!userData) {
+            return next(new Error("You are using fabricated link. Please check it again!"));
+        } else {
+            await twilioClient.messages.create({
+                body: `Your mobile otp is ${userData.otp}`,
+                to: phoneNumber,
+                from: process.env.TWILIO_PHONE_NUMBER
+            });
+        }
     } catch (error) {
         next(error)
     }
@@ -152,6 +194,52 @@ export const LogoutUser = async function (req, res, next) {
         success: true,
         Message: "logged out"
     })
+}
+
+export const ForgetPasswordCNICConfirmation = async function (req, res, next) {
+    try {
+        const newUser = req.body;
+        const validUser = await User.findOne({ cnic: newUser.cnic })
+        if (!validUser) {
+            return next(new Error("Invalid CNIC, user with such CNIC does not exist"))
+        } else {
+            const randomString = randomstring.generate();
+            await User.updateOne({ email: validUser.email }, { $set: { resetToken: randomString } })
+            const htmlLinkTemplate = sendResetPasswordLinkHtmlTemplate(validUser.name, randomString);
+            sendMail(validUser.email, "Reset Password Link of E-FIR account", "", htmlLinkTemplate)
+        }
+        res.json({
+            User: validUser,
+            success: true,
+            message: 'We sent a mail to your account please check it and reset your password'
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const ResetPassword = async function (req, res, next) {
+    try {
+        const resetToken = req.query.resetToken;
+        const userData = await User.findOne({ resetToken: resetToken });
+        if (!userData) {
+            return next(new Error("The Link is expired!!!"))
+        } else {
+            const Password = req.body.password;
+            const password = await bcrypt.hash(Password, 10);
+            const user = await User.findByIdAndUpdate({ _id: userData._id }, { $set: { password: password, resetToken: '' } }, { new: true })
+            const token = jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' })
+
+            res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV !== "development" }).status(200).json({
+                user,
+                token,
+                success: true,
+                message: 'Your Password is reset!!!'
+            })
+        }
+    } catch (error) {
+        next(error)
+    }
 }
 
 export const ConfirmPassword = async function (req, res, next) {
@@ -241,10 +329,10 @@ export const getUserForSidebar = async function (req, res, next) {
             // filteredUsers = await Admin.find({name:{$regex:search, $options:"i"}}).select("-password");
             filteredUsers = await Admin.find({}).select("-password");
         } else {
-            filteredUsers = await User.find({name:{$regex:search, $options:"i"}}).select("-password");
+            filteredUsers = await User.find({ name: { $regex: search, $options: "i" } }).select("-password");
         }
 
-        res.json( filteredUsers );
+        res.json(filteredUsers);
     } catch (error) {
         next(error)
     }
