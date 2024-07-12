@@ -2,62 +2,66 @@ import styles from "./Login.module.css";
 import Textinput from "../../Components/Textinput/Textinput"
 import { useFormik } from "formik";
 import * as yup from 'yup';
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../images/Logo.png";
-import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useLoginAdminMutation } from "../../Redux/Features/Admin/adminApi";
+import { useResetPasswordMutation } from "../../Redux/Features/Auth/AuthApi";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 
+function ResetPassword() {
 
-function AdminLogin() {
-
+    const { user, token } = useSelector(state => state.auth);
+    
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const resetToken = queryParams.get('resetToken');
     
     const [showPassword, setShowPassword] = useState(false);
-    // eslint-disable-next-line
-    const [ReCapchaValue, setReCapchaValue] = useState(false);
-
-
-    const onFill = (value) => {
-        setReCapchaValue(value);
-        setFieldValue('ReCapcha', value);
-    }
+    const [showCPassword, setShowCPassword] = useState(false);
+    const [resetPassword, { isLoading, error }] = useResetPasswordMutation();
+    
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     }
-    const { user, token } = useSelector(state => state.auth);
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    // eslint-disable-next-line
-    const [Adminlogin, { isLoading, error, data }] = useLoginAdminMutation();
+    
+    const toggleShowCPassword = () => {
+        setShowCPassword(!showCPassword);
+    }
+    
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
+    const errorMessage = 'Use lowercase, uppercase and digits';
+    
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, errors, handleSubmit, setFieldValue } = useFormik({
         initialValues: {
-            email: '',
             password: '',
-            ReCapcha: ''
+            confirmpassword: ''
         },
         validationSchema: yup.object().shape({
-            email: yup.string().email('Enter a valid Email').required('Email is Required'),
-            password: yup.string().min(8).max(20).required('Password is Required'),
-            ReCapcha: yup.string().required('Captcha must be filled')
+            password: yup.string().min(8).max(20).matches(passwordPattern, { message: errorMessage }).required('Password is Required'),
+            confirmpassword: yup.string().oneOf([yup.ref('password')], 'passwords must match').required('Confirm Password is Required'),
         }),
         onSubmit: async (values) => {
+            delete values.confirmpassword;
             console.log(values);
-            const user = await Adminlogin(values).unwrap();
-            if (user.success) {
-                toast.success(user.error);
+            const url = `?resetToken=${resetToken}`
+            const resp = await resetPassword({ url, data: values }).unwrap();
+            console.log(resp);
+            if (resp.success) {
+                dispatch(setUserInfo(resp));
+                navigate("/MyApplications");
+                toast.success(resp.message);
             }
             else {
-                toast.error(user.error);
+                toast.error(resp.message);
             }
-            dispatch(setUserInfo(user));
-            navigate("/MyApplications");
         }
     })
     
@@ -68,13 +72,12 @@ function AdminLogin() {
             <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
             <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
         </>)
-   
     }
-
+    
     if (user && token) {
         return <Navigate to={'/MyApplications'} replace={true} />
     }
-
+    
     return (
         <>
             <form action='post' name="LoginForm" onSubmit={handleSubmit} >
@@ -82,16 +85,7 @@ function AdminLogin() {
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
                     <br />
                     <div className={styles.LoginHeader}>E-FIR System</div>
-
-                    <Textinput
-                        type="email"
-                        values={values.email}
-                        name="email"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        placeholder="Enter Email"
-                    />
-                    <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
+                    <div className={styles.LoginHeader}>Change Password</div>
                     <div className={styles.inputContainer}>
                         <Textinput
                             type={showPassword ? 'text' : 'password'}
@@ -99,7 +93,7 @@ function AdminLogin() {
                             name="password"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            placeholder="Enter password"
+                            placeholder="Enter New Password"
                             className={styles.inputPassword}
                         />
                         <span className={styles.eye} onClick={toggleShowPassword}>
@@ -107,18 +101,22 @@ function AdminLogin() {
                         </span>
                     </div>
                     <p className="help-block text-danger">{errors.password && touched.password ? errors.password : null}</p>
-                    <div>
-                        <ReCAPTCHA
-                            sitekey='6Ld8c_MpAAAAAB_7pSqPaqem6JbL7pni4x_VfMnp'
-                            name="ReCapcha"
+                    <div className={styles.inputContainer}>
+                        <Textinput
+                            type={showCPassword ? 'text' : 'password'}
+                            values={values.confirmpassword}
+                            name="confirmpassword"
                             onBlur={handleBlur}
-                            onChange={onFill}
+                            onChange={handleChange}
+                            placeholder="Confirm New Password"
                         />
+                        <span className={styles.eye} onClick={toggleShowCPassword}>
+                            <FontAwesomeIcon icon={showCPassword ? faEyeSlash : faEye} />
+                        </span>
                     </div>
-                    <p className="help-block text-danger">{errors.ReCapcha && touched.ReCapcha ? errors.ReCapcha : null}</p>
-                    <span ><Link to="/ForgetPassword" className={styles.createAccount}>Forget Password</Link></span>
+                    <p className="help-block text-danger">{errors.confirmpassword && touched.confirmpassword ? errors.confirmpassword : null}</p>
                     <button className={styles.loginButton} type="submit" >
-                        {isLoading ? "Loading..." : "Log In as Admin"}</button>
+                        {isLoading ? "Loading..." : "Submit"}</button>
                 </div>
             </form>
             <ToastContainer />
@@ -127,4 +125,4 @@ function AdminLogin() {
 
 }
 
-export default AdminLogin;
+export default ResetPassword;

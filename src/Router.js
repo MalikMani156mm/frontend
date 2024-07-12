@@ -26,10 +26,6 @@ import AuthAdminLayouts from "./Pages/Layouts/AuthAdminLayout.jsx";
 import ForgetPassword from "./Pages/Login/ForgetPassword.jsx";
 import ConfirmPassword from "./Pages/Login/ConfirmPassword.jsx";
 import NewPassword from "./Pages/Login/NewPassword.jsx";
-import EmailVerification from "./Pages/Login/EmailVerification.jsx";
-import OTPVerification from "./Pages/Signup/OTPVerification.jsx";
-import EmailOTP from "./Pages/Login/EmailOTP.jsx";
-import MobileVerification from "./Pages/Login/MobileVerification.jsx";
 import MobileOTP from "./Pages/Login/MobileOTP.jsx";
 import CharacterCertificateForm from "./Pages/OnlineFIR/CharacterCertificateForm.jsx";
 import VehicleVerificationForm from "./Pages/OnlineFIR/VehicleVerificationForm.jsx";
@@ -51,6 +47,7 @@ import ChangeUsername from "./Pages/ChangeUsername/ChangeUsername.jsx";
 import AdminConfirmPassword from "./Pages/Login/AdminConfirmPassword.jsx";
 import AdminNewPassword from "./Pages/Login/AdminNewPassword.jsx";
 import ChatPage from "./Pages/ChatApp/ChatPage.jsx";
+import ResetPassword from "./Pages/Login/ResetPassword.jsx";
 
 export const router = createBrowserRouter(
 
@@ -113,13 +110,9 @@ export const router = createBrowserRouter(
             <Route path="/LogIn" exact element={<div className={styles.main}><Login /></div>} />
             <Route path="/AdminLogIn" exact element={<div className={styles.main}><AdminLogin /></div>} />
             <Route path="/SignUp" exact element={<div className={styles.main}><SignUp /></div>} />
-            <Route path="/OTPVerification" exact element={<div className={styles.main}><OTPVerification /></div>} />
             <Route path="/ForgetPassword" exact element={<div className={styles.main}>< ForgetPassword /></div>} />
-            <Route path="/EmailVerification" exact element={<div className={styles.main}>< EmailVerification /></div>} />
-            <Route path="/EmailOTP" exact element={<div className={styles.main}>< EmailOTP /></div>} />
-            <Route path="/MobileVerification" exact element={<div className={styles.main}>< MobileVerification /></div>} />
             <Route path="/MobileOTP" exact element={<div className={styles.main}>< MobileOTP /></div>} />
-            <Route path="/setNewPassword" exact element={<div className={styles.main}>< NewPassword /></div>} />
+            <Route path="/setNewPassword" exact element={<div className={styles.main}>< ResetPassword /></div>} />
         </Route>
     )
 )

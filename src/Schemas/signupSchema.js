@@ -4,7 +4,7 @@ const passwordPattern=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,25}$/;
 const errorMessage = 'Use lowercase, uppercase and digits';
 
 const signupSchema = yup.object().shape({
-    name:yup.string().min(5).max(30).required('name is Required'),
+    name:yup.string().min(3).max(30).required('name is Required'),
     email:yup.string().email('enter a valid email').required('Email is Required'),
     cnic: yup.number().min(1111111111111,"Must be atleast 13 digit").max(9999999999999,"Invalid CNIC").required('CNIC is Required'),
     phonenumber: yup.number().min(1111111111,"Must be atleast 11 digit").max(999999999999,"Invalid Number").required('Phone Number is Required'),

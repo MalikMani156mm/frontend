@@ -2,7 +2,7 @@ import styles from "./Signup.module.css";
 import Textinput from "../../Components/Textinput/Textinput"
 import signupSchema from "../../Schemas/signupSchema";
 import { useFormik } from "formik";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import logo from "../../images/Logo.png";
 import { useRegisterUserMutation } from "../../Redux/Features/Auth/AuthApi";
 import { ToastContainer, toast } from 'react-toastify';
@@ -10,26 +10,24 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
+import { useSelector } from "react-redux";
 
 function Signup() {
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-
+    const { user, token } = useSelector(state => state.auth);
+    
     const [showPassword, setShowPassword] = useState(false);
     const [showCPassword, setShowCPassword] = useState(false);
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     }
-
+    
     const toggleShowCPassword = () => {
         setShowCPassword(!showCPassword);
     }
 
-
+    
     const [register, { isLoading, error }] = useRegisterUserMutation();
 
     // eslint-disable-next-line
@@ -50,15 +48,15 @@ function Signup() {
             console.log(user);
             if (user.data.success) {
                 toast.success(user.data.message);
-                dispatch(setUserInfo(user.data));
-                navigate("/MyApplications");
+                // dispatch(setUserInfo(user.data));
+                // navigate("/MyApplications");
             }
             else {
                 toast.error(user.data.message);
             }
         }
     });
-
+    
     if (error) {
         return (<>
             <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
@@ -66,7 +64,11 @@ function Signup() {
             <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
         </>)
     }
-
+    
+    if (user && token) {
+        return <Navigate to={'/MyApplications'} replace={true} />
+    }
+    
     return (
         <>
             <form action='post' name="SignUpForm" onSubmit={handleSubmit} >
