@@ -3,7 +3,7 @@ import Carousel from "react-bootstrap/Carousel";
 import banner from "../img/banner.jpeg";
 import banner1 from "../img/banner1.jpeg";
 import banner3 from "../img/banner3.jpeg";
-import banner4 from "../../images/poster.jfif"
+import banner4 from "../../images/poster.png"
 
 function Banner() {
   return (
