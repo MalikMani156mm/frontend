@@ -129,6 +129,11 @@ const FIRsSchema = new Schema(
             default:'pending',
             enum: ['pending','completed','filed']
         },
+        Rating: {
+            type: Number,
+            default:'0',
+            enum: ['0','1','2','3','4','5']
+        },
     },
     {
         timestamps:true

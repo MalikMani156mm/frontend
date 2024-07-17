@@ -5,10 +5,18 @@ const { Schema } = mongoose;
 
 const AdminSchema = new Schema(
     { 
+        name: {
+            type: String,
+            require:[true, 'Please provide the Name'],
+            min:[3, 'At least of 3 words'],
+            max:[30, 'Maximum limit of 30 words'],
+            unique:true
+        },
         PoliceStation: {
             type:Schema.Types.ObjectId,
             ref:'PoliceStation',
-            require: [true, 'Please provide the Police Station']
+            require: [true, 'Please provide the Police Station'],
+            unique:true
         },
         email: {
             type: String,

@@ -9,15 +9,15 @@ export const getAllFIRs = async function (req, res, next) {
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || "";
-    // let sort = req.query.sort || "_id";
-    // req.query.sort ? (sort=req.query.sort.split(",")) : (sort=[sort])
+    let sort = req.query.sort || "_id";
+    req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort])
 
-    // let sortBy = {};
-    // if(sort[1]){
-    //     sortBy[sort[0]] = sort[1]
-    // }else{
-    //     sortBy[sort[0]] = "asc"
-    // }
+    let sortBy = {};
+    if (sort[1]) {
+        sortBy[sort[0]] = sort[1] === 'desc' ? -1 : 1;
+    } else {
+        sortBy[sort[0]] = 1;
+    }
 
     try {
         //Fetch FIRs with search criteria
@@ -34,7 +34,7 @@ export const getAllFIRs = async function (req, res, next) {
                         { ComplaintNumber: { $regex: search, $options: "i" } },
                         { Name: { $regex: search, $options: "i" } },
                         { CNICStr: { $regex: search } },
-                        { ContactNumberStr: { $regex: search} },
+                        { ContactNumberStr: { $regex: search } },
                         { Category: { $regex: search, $options: "i" } },
                         { Offence: { $regex: search, $options: "i" } },
                         { EntryDate: { $regex: search, $options: "i" } },
@@ -42,6 +42,7 @@ export const getAllFIRs = async function (req, res, next) {
                     ]
                 }
             },
+            { $sort: sortBy },
             { $skip: page * limit },
             { $limit: limit }
         ]);
@@ -60,7 +61,7 @@ export const getAllFIRs = async function (req, res, next) {
                         { ComplaintNumber: { $regex: search, $options: "i" } },
                         { Name: { $regex: search, $options: "i" } },
                         { CNICStr: { $regex: search } },
-                        { ContactNumberStr: { $regex: search} },
+                        { ContactNumberStr: { $regex: search } },
                         { Category: { $regex: search, $options: "i" } },
                         { Offence: { $regex: search, $options: "i" } },
                         { EntryDate: { $regex: search, $options: "i" } },
@@ -91,9 +92,18 @@ export const getPoliceStationFIRs = async function (req, res, next) {
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || "";
-    const policeStation = req.query.policeStation|| "";
+    const policeStation = req.query.policeStation || "";
+    let sort = req.query.sort || "_id";
+    req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort])
 
-    try{
+    let sortBy = {};
+    if (sort[1]) {
+        sortBy[sort[0]] = sort[1] === 'desc' ? -1 : 1;
+    } else {
+        sortBy[sort[0]] = 1;
+    }
+
+    try {
         let policeStationQuery = {};
         if (policeStation) {
             policeStationQuery = { PoliceStation: new mongoose.Types.ObjectId(policeStation) };
@@ -156,6 +166,7 @@ export const getPoliceStationFIRs = async function (req, res, next) {
                     ]
                 }
             },
+            { $sort: sortBy },
             { $skip: page * limit },
             { $limit: limit }
         ]);
@@ -169,7 +180,7 @@ export const getPoliceStationFIRs = async function (req, res, next) {
             page: page + 1,
             limit
         });
-    }catch (error) {
+    } catch (error) {
         next(error);
     }
 };
@@ -179,9 +190,18 @@ export const getCitizenFIRs = async function (req, res, next) {
     const page = parseInt(req.query.page) - 1 || 0;
     const limit = parseInt(req.query.limit) || 10;
     const search = req.query.search || "";
-    const cnic = req.query.cnic|| 0;
+    const cnic = req.query.cnic || 0;
+    let sort = req.query.sort || "_id";
+    req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort])
 
-    try{
+    let sortBy = {};
+    if (sort[1]) {
+        sortBy[sort[0]] = sort[1] === 'desc' ? -1 : 1;
+    } else {
+        sortBy[sort[0]] = 1;
+    }
+
+    try {
         let cnicQuery = {};
 
         if (cnic) {
@@ -248,6 +268,7 @@ export const getCitizenFIRs = async function (req, res, next) {
                     ]
                 }
             },
+            { $sort: sortBy },
             { $skip: page * limit },
             { $limit: limit }
         ]);
@@ -262,7 +283,7 @@ export const getCitizenFIRs = async function (req, res, next) {
             limit
         });
 
-    }catch (error) {
+    } catch (error) {
         next(error);
     }
 };
@@ -274,7 +295,7 @@ export const searchFIRs = async function (req, res, next) {
     const year = req.query.year || "";
     const province = req.query.province || "";
     const district = req.query.district || "";
-    const division= req.query.division || "";
+    const division = req.query.division || "";
     const circle = req.query.circle || "";
     const policeStation = req.query.policeStation || "";
     const name = req.query.name || "";
@@ -283,6 +304,15 @@ export const searchFIRs = async function (req, res, next) {
     const contactNumber = req.query.contactNumber || "";
     const complaintNumber = req.query.complaintNumber || "";
     const status = req.query.status || "";
+    let sort = req.query.sort || "_id";
+    req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort])
+
+    let sortBy = {};
+    if (sort[1]) {
+        sortBy[sort[0]] = sort[1] === 'desc' ? -1 : 1;
+    } else {
+        sortBy[sort[0]] = 1;
+    }
 
     try {
 
@@ -312,6 +342,7 @@ export const searchFIRs = async function (req, res, next) {
                 }
             },
             { $match: matchConditions },
+            { $sort: sortBy },
             { $skip: page * limit },
             { $limit: limit }
         ]);
@@ -342,6 +373,235 @@ export const searchFIRs = async function (req, res, next) {
         next(error);
     }
 };
+
+export const getAllFIRCount = async function (req, res, next) {
+    try {
+        const pending = "pending";
+        const filed = "filed";
+        const completed = "completed";
+
+        let totalResult = await FIR.aggregate([
+            { $count: "total" }
+        ]);
+
+        let total = totalResult.length > 0 ? totalResult[0].total : 0;
+
+        let totalpending = await FIR.aggregate([
+            {
+                $match:
+                    { Status: { $regex: pending, $options: "i" } }
+            },
+            { $count: "totalpending" }
+        ]);
+
+        let totalPending = totalpending.length > 0 ? totalpending[0].totalpending : 0;
+
+        let totalfiled = await FIR.aggregate([
+            {
+                $match: { Status: { $regex: filed, $options: "i" } }
+            },
+            { $count: "totalfiled" }
+        ]);
+
+        let totalFiled = totalfiled.length > 0 ? totalfiled[0].totalfiled : 0;
+
+        let totalcompleted = await FIR.aggregate([
+            {
+                $match: { Status: { $regex: completed, $options: "i" } }
+            },
+            { $count: "totalcompleted" }
+        ]);
+
+        let totalCompleted = totalcompleted.length > 0 ? totalcompleted[0].totalcompleted : 0;
+
+        res.json({
+            total,
+            totalPending,
+            totalFiled,
+            totalCompleted,
+        })
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getPoliceStationFIRCount = async function (req, res, next) {
+    const pending = "pending";
+    const filed = "filed";
+    const completed = "completed";
+    const policeStation = req.query.policeStation || "";
+    try {
+        let policeStationQuery = {};
+        if (policeStation) {
+            policeStationQuery = { PoliceStation: new mongoose.Types.ObjectId(policeStation) };
+        }
+
+        let totalPoliceStaionFIRsResult = await FIR.aggregate([
+            { $match: policeStationQuery },
+            { $count: "total" }
+        ]);
+
+        let totalPoliceStaionFIRs = totalPoliceStaionFIRsResult.length > 0 ? totalPoliceStaionFIRsResult[0].total : 0;
+
+        let totalPoliceStaionPendingFIRsResult = await FIR.aggregate([
+            {
+                $match:
+                {
+                    $and: [
+                        policeStationQuery,
+                        {
+                            "$or": [{ Status: { $regex: pending, $options: "i" } }],
+
+                        }
+                    ]
+                }
+
+            },
+            { $count: "totalPending" }
+        ]);
+
+        let totalPoliceStaionPendingFIRsTotal = totalPoliceStaionPendingFIRsResult.length > 0 ? totalPoliceStaionPendingFIRsResult[0].totalPending : 0;
+
+        let totalPoliceStaionFiledFIRsResult = await FIR.aggregate([
+            {
+                $match:
+                {
+                    $and: [
+                        policeStationQuery,
+                        {
+                            "$or": [{ Status: { $regex: filed, $options: "i" } }],
+
+                        }
+                    ]
+                }
+
+            },
+            { $count: "totalFiled" }
+        ]);
+
+        let totalPoliceStaionFiledFIRsTotal = totalPoliceStaionFiledFIRsResult.length > 0 ? totalPoliceStaionFiledFIRsResult[0].totalFiled : 0;
+
+        let totalPoliceStaionCompletedFIRsResult = await FIR.aggregate([
+            {
+                $match:
+                {
+                    $and: [
+                        policeStationQuery,
+                        {
+                            "$or": [{ Status: { $regex: completed, $options: "i" } }],
+
+                        }
+                    ]
+                }
+
+            },
+            { $count: "totalCompleted" }
+        ]);
+
+        let totalPoliceStaionCompletedFIRsTotal = totalPoliceStaionCompletedFIRsResult.length > 0 ? totalPoliceStaionCompletedFIRsResult[0].totalCompleted : 0;
+
+        res.json({
+            totalPoliceStaionFIRs,
+            totalPoliceStaionPendingFIRsTotal,
+            totalPoliceStaionFiledFIRsTotal,
+            totalPoliceStaionCompletedFIRsTotal
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getCitizenFIRCount = async function (req, res, next) {
+    const pending = "pending";
+    const filed = "filed";
+    const completed = "completed";
+    const cnic = req.query.cnic || 0;
+    try {
+        let cnicQuery = {};
+
+        if (cnic) {
+            const cnicNumber = Number(cnic);
+            if (!isNaN(cnicNumber)) {
+                cnicQuery = { CNIC: cnicNumber };
+            }
+        }
+
+        let totalCitizenFIRsResult = await FIR.aggregate([
+            { $match: cnicQuery },
+            { $count: "total" }
+        ]);
+
+        let totalCitizenFIRs = totalCitizenFIRsResult.length > 0 ? totalCitizenFIRsResult[0].total : 0;
+
+        let totalCitizenPendingFIRsResult = await FIR.aggregate([
+            {
+                $match:
+                {
+                    $and: [
+                        cnicQuery,
+                        {
+                            "$or": [{ Status: { $regex: pending, $options: "i" } }],
+
+                        }
+                    ]
+                }
+
+            },
+            { $count: "totalPending" }
+        ]);
+
+        let totalCitizenPendingFIRsTotal = totalCitizenPendingFIRsResult.length > 0 ? totalCitizenPendingFIRsResult[0].totalPending : 0;
+
+        let totalCitizenFiledFIRsResult = await FIR.aggregate([
+            {
+                $match:
+                {
+                    $and: [
+                        cnicQuery,
+                        {
+                            "$or": [{ Status: { $regex: filed, $options: "i" } }],
+
+                        }
+                    ]
+                }
+
+            },
+            { $count: "totalFiled" }
+        ]);
+
+        let totalCitizenFiledFIRsTotal = totalCitizenFiledFIRsResult.length > 0 ? totalCitizenFiledFIRsResult[0].totalFiled : 0;
+
+        let totalCitizenCompletedFIRsResult = await FIR.aggregate([
+            {
+                $match:
+                {
+                    $and: [
+                        cnicQuery,
+                        {
+                            "$or": [{ Status: { $regex: completed, $options: "i" } }],
+
+                        }
+                    ]
+                }
+
+            },
+            { $count: "totalCompleted" }
+        ]);
+
+        let totalCitizenCompletedFIRsTotal = totalCitizenCompletedFIRsResult.length > 0 ? totalCitizenCompletedFIRsResult[0].totalCompleted : 0;
+
+        res.json({
+            totalCitizenFIRs,
+            totalCitizenPendingFIRsTotal,
+            totalCitizenFiledFIRsTotal,
+            totalCitizenCompletedFIRsTotal
+        })
+
+    } catch (error) {
+        next(error);
+    }
+}
 
 export const getFIRById = async function (req, res, next) {
     const { id } = req.params;
@@ -394,6 +654,72 @@ export const createNewFIR = async function (req, res, next) {
         });
     } catch (error) {
         next(error);
+    }
+}
+
+export const changeFIRStatus = async function (req, res, next) {
+    const { id } = req.params;
+    const { Status }  = req.body;
+    try {
+        const changeStatus = await FIR.findOneAndUpdate({ _id: id }, { Status }, { new: true });
+        if (!changeStatus) {
+            return res.json({
+                message: 'FIR not found',
+                success: false
+            });
+        }
+        res.json({
+            changeStatus,
+            message: 'Status is updated successfully',
+            success: true
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const updateFIRRating = async function (req, res, next) {
+    const { id } = req.params;
+    const { Rating }  = req.body;
+    try {
+        const changeRating = await FIR.findOneAndUpdate({ _id: id }, { Rating }, { new: true });
+        if (!changeRating) {
+            return res.json({
+                message: 'FIR not found',
+                success: false
+            });
+        }
+        res.json({
+            changeRating,
+            message: 'Rating is updated successfully',
+            success: true
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const changeFIRPoliceStation = async function (req, res, next) {
+    const { id } = req.params;
+    const { PoliceStation }  = req.body;
+    try {
+        const changeRating = await FIR.findOneAndUpdate({ _id: id }, { PoliceStation }, { new: true });
+        if (!changeRating) {
+            return res.json({
+                message: 'FIR not found',
+                success: false
+            });
+        }
+        res.json({
+            changeRating,
+            message: 'The FIR is transfered successfully',
+            success: true
+        })
+
+    } catch (error) {
+        next(error)
     }
 }
 
