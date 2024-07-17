@@ -45,11 +45,8 @@ function Signup() {
             delete values.confirmpassword;
             console.log(values);
             const user = await register(values);
-            console.log(user);
             if (user.data.success) {
                 toast.success(user.data.message);
-                // dispatch(setUserInfo(user.data));
-                // navigate("/MyApplications");
             }
             else {
                 toast.error(user.data.message);

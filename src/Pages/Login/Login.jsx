@@ -32,8 +32,7 @@ function Login() {
     const { user, token } = useSelector(state => state.auth);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    // eslint-disable-next-line
-    const [UserLogin, { isLoading, error, data }] = useLoginUserMutation();
+    const [UserLogin, { isLoading, error}] = useLoginUserMutation();
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, errors, handleSubmit, setFieldValue } = useFormik({
         initialValues: {

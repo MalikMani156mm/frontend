@@ -2,15 +2,16 @@ import React, { useState } from "react";
 import styles from "./Search.module.css";
 import { useFormik } from "formik";
 import ReactPaginate from "react-paginate";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useGetAllPoliceStationsQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import LoadingSpinner from "../../Components/Loading/Loading";
 import { useGetSearchFIRsQuery } from "../../Redux/Features/FIR/FIRApi";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown19, faArrowDownAZ, faArrowUp91, faArrowUpZA } from "@fortawesome/free-solid-svg-icons";
 
 function Search() {
 
     const { data: psdata, error: psError, isLoading: psLoading } = useGetAllPoliceStationsQuery();
-    const navigate = useNavigate();
     const [visible, setVisible] = useState(false);
     const [page, setPage] = useState(1);
     const [year, setYear] = useState("");
@@ -25,11 +26,19 @@ function Search() {
     const [contactNumber, setContactNumber] = useState(null);
     const [complaintNumber, setComplaintNumber] = useState("");
     const [status, setStatus] = useState("");
-    let Url = `?page=${page}&year=${year}&province=${province}&district=${district}&division=${division}&circle=${circle}&policeStation=${policeStation}&name=${name}&guardianName=${guardianName}&cnic=${cnic}&contactNumber=${contactNumber}&complaintNumber=${complaintNumber}&status=${status}`;
+    const [sort, setSort] = useState({ sort: "EntryDate", order: "desc" })
+    let Url = `?sort=${sort.sort},${sort.order}&page=${page}&year=${year}&province=${province}&district=${district}&division=${division}&circle=${circle}&policeStation=${policeStation}&name=${name}&guardianName=${guardianName}&cnic=${cnic}&contactNumber=${contactNumber}&complaintNumber=${complaintNumber}&status=${status}`;
     const { isLoading, data, error } = useGetSearchFIRsQuery(Url);
 
     const handlePageChange = (e) => {
         setPage(e.selected + 1);
+    };
+
+    const handleSort = (field) => {
+        setSort(prevSort => ({
+            sort: field,
+            order: prevSort.order === "asc" ? "desc" : "asc"
+        }));
     };
 
     // eslint-disable-next-line
@@ -274,24 +283,6 @@ function Search() {
                             </div>
                         </div>
                     </div>
-                    {/* <div className={styles.row1}>
-                        <div className={styles.column}>
-                            <div className={styles.label}>Filed Reason</div>
-                            <div>
-                                <select name="FiledReason" className={styles.formControl}>
-                                    <option value="1">Select</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className={styles.column}>
-                            <div className={styles.label}>Is complaint satisfied</div>
-                            <div>
-                                <select name="ICS" className={styles.formControl}>
-                                    <option value="1">Select</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div> */}
                     <div className={styles.buttonDiv}>
                         <button className={styles.SearchButton} type="submit">
                             {isLoading ? "Loading..." : "Search"}
@@ -300,55 +291,78 @@ function Search() {
                 </form >
             </div>
             {visible ? <>
-            {data.FIRs && data.FIRs.length === 0 ? 
-            <h3>
-                No FIR Found...
-            </h3>
-                : <>
-                    <div className={styles.container4}>
-                        <div className={styles.row4}>
-                            <div className={styles.cell1}>Complaint No</div>
-                            <div className={styles.cell1}>Category</div>
-                            <div className={styles.cell1}>Offence</div>
-                            <div className={styles.cell1}>Date</div>
-                            <div className={styles.cell1}>Status</div>
+                {data.FIRs && data.FIRs.length === 0 ?
+                    <h3>
+                        No FIR Found...
+                    </h3>
+                    : <>
+                        <div className={styles.container4}>
+                            <div className={styles.row4}>
+                                <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
+                                <div className={styles.cell}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />}</div>
+                                <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
+                                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
+                                <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
+                                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+                                <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
+                                <div className={styles.cell}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
+                                <div className={styles.cell}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
+                                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
+                                <div className={styles.cell}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
+                            </div>
+                            {
+                                data.FIRs && data.FIRs.map(firs => (
+                                    <>
+                                        <div className={styles.row4} key={firs._id}>
+                                            <div className={styles.cell}>{firs.ComplaintNumber}</div>
+                                            <div className={styles.cell}>{firs.Name}</div>
+                                            <div className={styles.cell}>{`0${firs.ContactNumber}`}</div>
+                                            <div className={styles.cell}>{firs.CNIC}</div>
+                                            <div className={styles.cell}>{firs.Category}</div>
+                                            <div className={styles.cell}>{firs.Offence}</div>
+                                            <div className={styles.cell}>{firs.EntryDate}</div>
+                                            <div className={styles.cell}>{firs.Status}</div>
+                                        </div>
+                                    </>
+                                ))
+                            }
                         </div>
-                        {
-                            data.FIRs && data.FIRs.map(firs => (
-                                <>
-                                    <div className={styles.row4} key={firs._id}>
-                                        <div className={styles.cell1}>{firs.ComplaintNumber}</div>
-                                        <div className={styles.cell1}>{firs.Category}</div>
-                                        <div className={styles.cell1}>{firs.Offence}</div>
-                                        <div className={styles.cell1}>{firs.EntryDate}</div>
-                                        <div className={styles.cell1}>{firs.Status}</div>
-                                        <div><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
-                                    </div>
-                                </>
-                            ))
-                        }
-                    </div>
-                    <ReactPaginate
-                        breakLabel={"..."} // break Label
-                        nextLabel={"next"} // Next Page Button & label
-                        previousLabel={"previous"} // Previous Page Button & label
-                        pageCount={data.pageCount} Sets Page Counts
-                        marginPagesDisplayed={1} // Sets Ending pages range
-                        pageRangeDisplayed={5} // Sets Starting pages range
-                        onPageChange={(e) => handlePageChange(e)}
+                        <ReactPaginate
+                            breakLabel={"..."} // break Label
+                            nextLabel={"next"} // Next Page Button & label
+                            previousLabel={"previous"} // Previous Page Button & label
+                            pageCount={data.pageCount} Sets Page Counts
+                            marginPagesDisplayed={1} // Sets Ending pages range
+                            pageRangeDisplayed={5} // Sets Starting pages range
+                            onPageChange={(e) => handlePageChange(e)}
 
-                        containerClassName="pagination justify-content-center"
-                        pageClassName="page-item"
-                        previousClassName="page-item"
-                        nextClassName="page-item"
-                        pageLinkClassName="page-link"
-                        previousLinkClassName="page-link"
-                        nextLinkClassName="page-link"
-                        breakClassName="page-item"
-                        breakLinkClassName="page-link"
-                        activeClassName="active"
-                    /></>}
-                   </> : null}
+                            containerClassName="pagination justify-content-center"
+                            pageClassName="page-item"
+                            previousClassName="page-item"
+                            nextClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousLinkClassName="page-link"
+                            nextLinkClassName="page-link"
+                            breakClassName="page-item"
+                            breakLinkClassName="page-link"
+                            activeClassName="active"
+                        />
+                        <h2>{data.total} Records Found</h2>
+                    </>}
+            </> : null}
         </div>
     );
 }

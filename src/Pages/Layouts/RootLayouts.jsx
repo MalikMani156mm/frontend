@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../../Components/Navbar/Navbar";
 import Footer from "../../Components/Footer/Footer";
 import ScrollToTop from "../../ScrollToTop";
@@ -11,13 +11,14 @@ function RootLayouts() {
     const { user } = useSelector(state => state.auth)
     const role = "Admin";
     const Role = "SuperAdmin";
+    const location = useLocation();
 
     return (
         <div>
             <Navbar />
             <ScrollToTop />
             <Outlet />
-            {(user && (role=== user.role || Role === user.role)) ? <PriorBar /> : null}
+            {(user && (role=== user.role || Role === user.role) && location.pathname !== '/ChatPage') ? <PriorBar /> : null}
             <Footer />
         </div>
     );

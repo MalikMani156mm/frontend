@@ -11,13 +11,9 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useGetAllPoliceStationsQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import { useRegisterAdminMutation } from "../../Redux/Features/Admin/adminApi";
-// import { useDispatch } from "react-redux";
-// import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 
 function AddAdmin() {
 
-    // const dispatch = useDispatch();
-    // const navigate = useNavigate();
 
     const { data } = useGetAllPoliceStationsQuery();
     const [showPassword, setShowPassword] = useState(false);
@@ -39,12 +35,14 @@ function AddAdmin() {
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
         initialValues: {
+            name: "",
             email: '',
             PoliceStation: '',
             password: '',
             confirmpassword: ''
         },
         validationSchema: yup.object().shape({
+            name: yup.string().min(3).max(30).required('Name is Required'),
             PoliceStation: yup.string().required('Please Assign Police Station!'),
             email: yup.string().email('Enter a valid email').required('Email is Required'),
             password: yup.string().min(8).max(20).matches(passwordPattern, { message: errorMessage }).required('Password is Required'),
@@ -54,13 +52,11 @@ function AddAdmin() {
             delete values.confirmpassword;
             console.log(values);
             const user = await register(values);
-            // dispatch(setUserInfo(user));
-            // navigate("/MyApplications")
-            if (user.success) {
-                toast.success(user.message);
+            if (user.data.success) {
+                toast.success(user.data.message);
             }
             else {
-                toast.info(user.data.message);
+                toast.error(user.data.message);
             }
         }
     });
@@ -81,6 +77,16 @@ function AddAdmin() {
                     <br />
                     <div className={styles.SignupHeader}>E-FIR System</div>
                     <div className={styles.SignupHeader}>Create an Admin</div>
+
+                    <Textinput
+                        type="text"
+                        values={values.name}
+                        name="name"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        placeholder="Enter Name"
+                    />
+                    <p className="help-block text-danger">{errors.name && touched.name ? errors.name : null}</p>
 
                     <select className={styles.SelectOption} name="PoliceStation"
                         onChange={handleChange}

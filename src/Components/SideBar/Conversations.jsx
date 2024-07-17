@@ -18,7 +18,7 @@ const Conversations = () => {
     if (!submitted) {
       const delayDebounceFn = setTimeout(() => {
         setQuery(`?search=${search}`);
-      }, 300);
+      }, 500);
       return () => clearTimeout(delayDebounceFn);
     }
   }, [search, submitted]);

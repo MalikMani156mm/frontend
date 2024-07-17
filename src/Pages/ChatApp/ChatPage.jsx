@@ -4,7 +4,7 @@ import MessageContainer from "../../Components/Messages/MessageContainer.jsx";
 
 const ChatPage = () => {
   return (
-    <div className={`d-flex rounded overflow-hidden bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0`}>
+    <div className={`d-flex h-100 rounded overflow-hidden bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0`}>
       <SideBar/>
       <MessageContainer />
     </div>

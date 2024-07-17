@@ -226,6 +226,9 @@ flex-direction: column;
   font-weight: bold;
   background-color: white;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .cell1{
@@ -233,7 +236,10 @@ flex-direction: column;
   background-color: aliceblue;
 }
 
-
+.select {
+  border: none; 
+  font-weight: bold; 
+}
 
   .formControl,
   .formControl1,

@@ -32,6 +32,13 @@ export const AdminApi = createApi({
         body: data,
       }),
     }),
+    SendMeetingMessage: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/meetingNotification/send/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
     LogoutAdmin: builder.mutation({
       query: () => ({
         url : `/adminAuth/logout`,
@@ -41,4 +48,4 @@ export const AdminApi = createApi({
   })
 })
 
-export const { useRegisterAdminMutation, useLoginAdminMutation, useLogoutAdminMutation, useChangeAdminPasswordMutation, useConfirmAdminPasswordMutation  } = AdminApi
+export const { useRegisterAdminMutation, useLoginAdminMutation, useLogoutAdminMutation, useChangeAdminPasswordMutation, useConfirmAdminPasswordMutation,useSendMeetingMessageMutation  } = AdminApi

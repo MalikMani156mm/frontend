@@ -17,18 +17,6 @@
     margin-bottom: 0.5rem;
   }
 
-  .scrollContainer::-webkit-scrollbar-track {
-    background: #555;
-  }
-  
-  .scrollContainer::-webkit-scrollbar-thumb {
-    background: #121212;
-    border-radius: 5px;
-  }
-  
-  .scrollContainer::-webkit-scrollbar-thumb:hover {
-    background: #242424;
-  }  
 /* Messages */
 .flex-1 {
     flex: 1;

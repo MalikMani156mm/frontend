@@ -25,6 +25,18 @@ export const FIRApi = createApi({
       query: (url) => `/SearchFIRs/${url}`,
       providesTags: ['FIRs']
     }),
+    getAllFIRcount: builder.query({
+      query: (url) => `/FIRs/count/${url}`,
+      providesTags: ['FIRs']
+    }),
+    getPoliceStationFIRcount: builder.query({
+      query: (url) => `/PoliceStationFIRs/count/${url}`,
+      providesTags: ['FIRs']
+    }),
+    getCitizensFIRcount: builder.query({
+      query: (url) => `/CitizenFIRs/count/${url}`,
+      providesTags: ['FIRs']
+    }),
     getFIRById: builder.query({
       query: (id) => `/FIR/${id}`,
       providesTags: (result, error, id) => [{ type: 'FIRs', id }],
@@ -44,7 +56,30 @@ export const FIRApi = createApi({
       }),
       invalidatesTags: ['FIRs']
     }),
-
+    ChangeFIRStatus: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/updateStatus/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['FIRs']
+    }),
+    ChangeFIRRating: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/updateRating/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['FIRs']
+    }),
+    ChangeFIRPoliceStation: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/updatePoliceStation/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['FIRs']
+    }),
     updateFIR: builder.mutation({
       query: ({ id, data }) => ({
         url: `/update/${id}`,
@@ -56,4 +91,4 @@ export const FIRApi = createApi({
   }),
 })
 
-export const { useGetAllFIRsQuery, useGetCitizensFIRsQuery, useGetPoliceStationFIRsQuery, useAddNewFIRMutation, useGetFIRByIdQuery, useDeleteFIRMutation, useUpdateFIRMutation,useGetSearchFIRsQuery } = FIRApi
+export const { useGetAllFIRsQuery, useGetCitizensFIRsQuery, useGetPoliceStationFIRsQuery, useAddNewFIRMutation, useGetFIRByIdQuery, useDeleteFIRMutation, useUpdateFIRMutation , useChangeFIRStatusMutation , useChangeFIRRatingMutation, useChangeFIRPoliceStationMutation ,useGetSearchFIRsQuery,useGetAllFIRcountQuery,useGetCitizensFIRcountQuery,useGetPoliceStationFIRcountQuery } = FIRApi

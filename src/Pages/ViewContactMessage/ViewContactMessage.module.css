@@ -1,0 +1,50 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    margin: 10px;
+}
+.internalContainer{ 
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.icon{
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 20%
+}
+.email{
+    font-size: 1.5rem;
+    width: 30%;
+    text-align: center;
+
+}
+.message{
+    font-size: 1.5rem;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+@media screen and (max-width: 768px) {
+    .internalContainer{
+        flex-direction: column;
+    }
+    .icon,.email,.message{
+        width: 90%;
+        justify-content: center;
+    }
+    .header{
+        font-size: 2rem;
+    }
+}

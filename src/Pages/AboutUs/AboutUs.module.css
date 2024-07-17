@@ -30,6 +30,14 @@
     line-height: 1.5;
     margin: 0 5px;
   }
+  .points{
+    color: #101841;
+    font-size: 20px;
+    line-height: 1.5;
+    display: flex;
+    text-align: left;
+    padding: 5px 15px;
+  }
   .Team{
     display: flex;
     flex-direction: row;

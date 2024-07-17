@@ -11,6 +11,7 @@ import CartSlice from './Slices/CartSlice';
 import { AdminApi } from './Features/Admin/adminApi';
 import { CategoryApi } from './Features/Category/CategoryApi';
 import { OffenceApi } from './Features/Offence/OffenceApi';
+import { ContactMessageApi } from './Features/ContactMessage/ContactMessage.Api';
 
 const persistConfig = {
   key: 'root',
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
     [PoliceStationApi.reducerPath]: PoliceStationApi.reducer,
     [CategoryApi.reducerPath]: CategoryApi.reducer,
     [OffenceApi.reducerPath]: OffenceApi.reducer,
+    [ContactMessageApi.reducerPath]: ContactMessageApi.reducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -38,7 +40,7 @@ export const store = configureStore({
   getDefaultMiddleware({
     immutableCheck: false,
     serializableCheck: false,
-  }).concat([FIRApi.middleware , AuthApi.middleware, AdminApi.middleware, CertificateApi.middleware , VVApi.middleware, PoliceStationApi.middleware, OffenceApi.middleware, CategoryApi.middleware]),
+  }).concat([FIRApi.middleware , AuthApi.middleware, AdminApi.middleware, CertificateApi.middleware , VVApi.middleware, PoliceStationApi.middleware, OffenceApi.middleware, CategoryApi.middleware, ContactMessageApi.middleware]),
 });
 
 export const persistor = persistStore(store);

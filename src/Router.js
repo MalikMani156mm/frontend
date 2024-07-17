@@ -48,6 +48,7 @@ import AdminConfirmPassword from "./Pages/Login/AdminConfirmPassword.jsx";
 import AdminNewPassword from "./Pages/Login/AdminNewPassword.jsx";
 import ChatPage from "./Pages/ChatApp/ChatPage.jsx";
 import ResetPassword from "./Pages/Login/ResetPassword.jsx";
+import ViewContactMessage from "./Pages/ViewContactMessage/ViewContactMessage.jsx";
 
 export const router = createBrowserRouter(
 
@@ -72,7 +73,7 @@ export const router = createBrowserRouter(
                 <Route path="/ContactUs" exact element={<div className={styles.main}><ContactUs /></div>} />
                 <Route path="*" element={<div className={styles.main}><Error /></div>} />
                 <Route path="/" element={<div className={styles.layout}><AuthLayouts /></div>}>
-                    <Route path="/chatPage" exact element={<div className={styles.main}><ChatPage /></div>} />
+                    <Route path="/ChatPage" exact element={<div className={styles.main}><ChatPage /></div>} />
                     <Route path="/OnlineFIR" exact element={<div className={styles.main}><OnlineFIR /></div>} />
                     <Route path="/DownloadFIRPDF/:id" element={<div className={styles.main}><DownloadFIRPDF /></div>} />
                     <Route path="/FIRPDF/:id" exact element={<div className={styles.main}><FIRPDF /></div>} />
@@ -99,6 +100,7 @@ export const router = createBrowserRouter(
                     <Route path="/AddPoliceStation" exact element={<div className={styles.main}><AddPoliceStation /></div>} />
                     <Route path="/DeletePoliceStation" exact element={<div className={styles.main}><DeletePoliceStation /></div>} />
                     <Route path="/AddAdmin" exact element={<div className={styles.main}><AddAdmin /></div>} />
+                    <Route path="/ViewMessages" exact element={<div className={styles.main}><ViewContactMessage /></div>} />
                     <Route path="/admin/AddOffence" exact element={<div className={styles.main}><AddOffence /></div>} />
                     <Route path="/admin/AddCategory" exact element={<div className={styles.main}><AddCategory /></div>} />
                     <Route path="/admin/Search" exact element={<div className={styles.main}><Search /></div>} />

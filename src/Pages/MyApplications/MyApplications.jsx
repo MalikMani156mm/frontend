@@ -2,15 +2,22 @@ import styles from "./MyApplications.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTh, faPenToSquare, faRightLeft, faHandshake, faFile, faFlag, faStar, faPrint, faRemove } from "@fortawesome/free-solid-svg-icons";
+import { faTh, faPenToSquare, faRightLeft, faHandshake, faFile, faFlag, faPrint, faRemove, faArrowDownAZ, faArrowDown19, faArrowUpZA, faArrowUp91 } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip } from 'react-tooltip';
-import { useGetAllFIRsQuery,useGetCitizensFIRsQuery,useGetPoliceStationFIRsQuery } from "../../Redux/Features/FIR/FIRApi";
+import { useGetAllFIRsQuery, useGetCitizensFIRsQuery, useGetPoliceStationFIRsQuery, useGetAllFIRcountQuery, useGetCitizensFIRcountQuery, useGetPoliceStationFIRcountQuery, useChangeFIRStatusMutation, useChangeFIRPoliceStationMutation } from "../../Redux/Features/FIR/FIRApi";
 import { useDispatch, useSelector } from "react-redux";
 import Filters from "../../Components/Filters/Filters";
 import { addToCart, removeFromCart } from "../../Redux/Slices/CartSlice";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import LoadingSpinner from "../../Components/Loading/Loading";
 import ReactPaginate from 'react-paginate';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Stars from "../../Components/Stars/Stars";
+import TransferAlert from "../../Components/CustomAlert/TransferAlert";
+import MeetingMessageBox from "../../Components/CustomAlert/MeetingMessageBox";
+import { useSendMeetingMessageMutation } from "../../Redux/Features/Admin/adminApi";
+
 
 function formatNumberWithCommas(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -28,67 +35,186 @@ function MyApplications() {
   const Role = "SuperAdmin";
   const cRole = "Citizen";
 
-  // const [sort, setSort] = useState({ sort: "Name", order: "desc" })
+  const [sort, setSort] = useState({ sort: "EntryDate", order: "desc" })
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState("");
-  let url = `?page=${page}&search=${search}&limit=${limit}`;
-  let pUrl = `?page=${page}&search=${search}&limit=${limit}&policeStation=${Id}`;
-  let cUrl = `?page=${page}&search=${search}&limit=${limit}&cnic=${user.cnic}`;
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [showTransferBox, setShowTransferBox] = useState(false);
+  const [showMeetingBox, setShowMeetingBox] = useState(false);
+  const [policeStation, setPoliceStation] = useState("");
+  const [message, setMessage] = useState("");
+  const [id, setId] = useState("");
+  let url = `?sort=${sort.sort},${sort.order}&page=${page}&search=${debouncedSearch}&limit=${limit}`;
+  let pUrl = `?sort=${sort.sort},${sort.order}&page=${page}&search=${debouncedSearch}&limit=${limit}&policeStation=${Id}`;
+  let cUrl = `?sort=${sort.sort},${sort.order}&page=${page}&search=${debouncedSearch}&limit=${limit}&cnic=${user.cnic}`;
+  const dUrl = '';
+  const pcUrl = `?policeStation=${Id}`;
+  const ccUrl = `?cnic=${user.cnic}`;
   const { isLoading, data, error } = useGetAllFIRsQuery(url);
-  const { isLoading:pLoading, data:pData, error:pError } = useGetPoliceStationFIRsQuery(pUrl);
-  const { isLoading:cLoading, data:cData, error:cError } = useGetCitizensFIRsQuery(cUrl);
-  
+  const { isLoading: dLoading, data: dData, error: dError } = useGetAllFIRcountQuery(dUrl);
+  const { isLoading: pLoading, data: pData, error: pError } = useGetPoliceStationFIRsQuery(pUrl);
+  const { isLoading: pcLoading, data: pcData, error: pcError } = useGetPoliceStationFIRcountQuery(pcUrl);
+  const { isLoading: cLoading, data: cData, error: cError } = useGetCitizensFIRsQuery(cUrl);
+  const { isLoading: ccLoading, data: ccData, error: ccError } = useGetCitizensFIRcountQuery(ccUrl);
+  const [updateStatus, { error: csError }] = useChangeFIRStatusMutation();
+  const [updatePoliceStation, { error: upsError }] = useChangeFIRPoliceStationMutation();
+  const [sendMeetingMessage, { error: messageError }] = useSendMeetingMessageMutation();
+
   const [showIcon, setShowIcon] = useState(() => {
     const storedState = localStorage.getItem("showIcon");
     return storedState ? JSON.parse(storedState) : {};
   });
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500); // 500ms debounce delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
+
+  const handleSort = (field) => {
+    setSort(prevSort => ({
+      sort: field,
+      order: prevSort.order === "asc" ? "desc" : "asc"
+    }));
+  };
+
+  const SetStatusHandler = async (id, value) => {
+    const res = await updateStatus({ id, data: { Status: value } }).unwrap();
+    console.log(res);
+    if (res.success) {
+      toast.success(res.message);
+    }
+    else {
+      toast.error(res.message);
+    }
+
+  }
+
+  const handleTransferBox = async (id) => {
+    setId(id);
+    setShowTransferBox(true);
+  };
+
+  const handleConfirmTransferBox = async () => {
+    console.log(id);
+    const res = await updatePoliceStation({ id, data: { PoliceStation: policeStation } }).unwrap();
+    setShowTransferBox(false);
+    if (res.success) {
+      toast.success(res.message);
+    }
+    else {
+      toast.error(res.message);
+    }
+  };
+
+  const handleCancelTransferBox = () => {
+    setShowTransferBox(false);
+  };
+
+  const handleMeetingBox = async (id) => {
+    setId(id);
+    setShowMeetingBox(true);
+  };
+
+  const handleConfirmMeetingBox = async () => {
+    console.log(id);
+    const res = await sendMeetingMessage({ id, data: { message: message } }).unwrap();
+    setShowMeetingBox(false);
+    if (res.success) {
+      toast.success(res.message);
+    }
+    else {
+      toast.error(res.message);
+    }
+  };
+
+  const handleCancelMeetingBox = () => {
+    setShowMeetingBox(false);
+  };
+
   const [count1, setCount1] = useState(0);
   const [count2, setCount2] = useState(0);
   const [count3, setCount3] = useState(0);
   const [count4, setCount4] = useState(0);
   const [target1, setTarget1] = useState(0);
-  const target2 = 0; // Filed
+  const [target2, setTarget2] = useState(0);
   const [target3, setTarget3] = useState(0);
-  const target4 = 0; // Completed
+  const [target4, setTarget4] = useState(0);
 
   useEffect(() => {
     if (user.role === Role) {
-      if (data) {
-        setTarget1(data.total);
+      if (dData) {
+        setTarget1(dData.total);
       }
     } else if (user.role === role) {
-      if (pData) {
-        setTarget1(pData.totalPoliceStaionFIRs);
+      if (pcData) {
+        setTarget1(pcData.totalPoliceStaionFIRs);
       }
     } else {
-      if (cData) {
-      setTarget1(cData.totalCitizenFIRs);
-    }
+      if (ccData) {
+        setTarget1(ccData.totalCitizenFIRs);
+      }
 
     }
-  }, [data,pData,cData, user.role]);
+  }, [dData, pcData, ccData, user.role]);
 
   useEffect(() => {
     if (user.role === Role) {
-      if (data) {
-        setTarget3(data.total);
+      if (dData) {
+        setTarget2(dData.totalFiled);
       }
     } else if (user.role === role) {
-      if (pData) {
-        setTarget3(pData.totalPoliceStaionFIRs);
+      if (pcData) {
+        setTarget2(pcData.totalPoliceStaionFiledFIRsTotal);
       }
     } else {
-      if (cData) {
-      setTarget3(cData?.totalCitizenFIRs);
+      if (ccData) {
+        setTarget2(ccData?.totalCitizenFiledFIRsTotal);
       }
     }
-  }, [data, pData, cData, user.role]);
+  }, [dData, pcData, ccData, user.role]);
+
+  useEffect(() => {
+    if (user.role === Role) {
+      if (dData) {
+        setTarget3(dData.totalPending);
+      }
+    } else if (user.role === role) {
+      if (pcData) {
+        setTarget3(pcData.totalPoliceStaionPendingFIRsTotal);
+      }
+    } else {
+      if (ccData) {
+        setTarget3(ccData?.totalCitizenPendingFIRsTotal);
+      }
+    }
+  }, [dData, pcData, ccData, user.role]);
+
+  useEffect(() => {
+    if (user.role === Role) {
+      if (dData) {
+        setTarget4(dData.totalCompleted);
+      }
+    } else if (user.role === role) {
+      if (pcData) {
+        setTarget4(pcData.totalPoliceStaionCompletedFIRsTotal);
+      }
+    } else {
+      if (ccData) {
+        setTarget4(ccData?.totalCitizenCompletedFIRsTotal);
+      }
+    }
+  }, [dData, pcData, ccData, user.role]);
 
   useEffect(() => {
     const animateCount = (currentCount, targetCount, setter) => {
       const increment = targetCount > currentCount ? 1 : -1;
-      const speed = 2; // milliseconds
+      const speed = 10; // milliseconds
 
       const timer = setInterval(() => {
         if (currentCount === targetCount) {
@@ -111,7 +237,7 @@ function MyApplications() {
     animateCount(count2, target2, setCount2);
     animateCount(count3, target3, setCount3);
     animateCount(count4, target4, setCount4);
-  }, [count1, count2, count3, count4, target1, target3]);
+  }, [count1, count2, count3, count4, target1, target3, target2, target4]);
 
   const handleChangePassword = () => {
     if (user.role === Role) {
@@ -129,6 +255,10 @@ function MyApplications() {
 
   const handleAddPoliceStation = () => {
     navigate("/AddPoliceStation");
+  }
+
+  const handleViewMessages = () => {
+    navigate("/ViewMessages");
   }
 
   const handleUpdatePoliceStation = () => {
@@ -178,24 +308,21 @@ function MyApplications() {
     }));
   }
 
-  const stars = [];
-  for (let i = 0; i < 5; i++) {
-    stars.push(<FontAwesomeIcon key={i} icon={faStar} />);
-  }
+
 
   const handlePageChange = (e) => {
     setPage(e.selected + 1);
   };
 
-  if (error ||cError ||pError || psError) {
+  if (error || cError || pError || psError || dError || ccError || pcError || csError || upsError || messageError) {
     return (<>
-      <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
+      <h1 style={{ textAlign: 'center' }}>Something Wrong Happened</h1>
       <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
       <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
     </>)
   }
 
-  if (isLoading || pLoading || cLoading || psLoading) {
+  if (isLoading || pLoading || cLoading || psLoading || dLoading || pcLoading || ccLoading) {
     return <div><LoadingSpinner /></div>;
   }
 
@@ -212,6 +339,7 @@ function MyApplications() {
                 <li><button className="dropdown-item" type="button" onClick={handleAddPoliceStation}>Add Police Station</button></li>
                 <li><button className="dropdown-item" type="button" onClick={handleDeletePoliceStation}>Delete Police Station</button></li>
                 <li><button className="dropdown-item" type="button" onClick={handleAddAdmin}>Add Admin</button></li>
+                <li><button className="dropdown-item" type="button" onClick={handleViewMessages}>View Messages</button></li>
                 <li><button className="dropdown-item" type="button" onClick={handleAddCategory}>Add Category</button></li>
                 <li><button className="dropdown-item" type="button" onClick={handleAddOffence}>Add Offence</button></li>
               </> : null}
@@ -274,15 +402,15 @@ function MyApplications() {
         <div className={styles.container3}>
           <div className={styles.row5}>
             <div className={styles.row5}>
-                <div className={styles.label}>Show</div>
-                <select name="showEntries" className={styles.formControl2} onChange={(e) => setLimit(e.target.value)}>
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="30">30</option>
-                  <option value="40">40</option>
-                  <option value="50">50</option>
-                </select>
-                <div className={styles.label}>entries</div>
+              <div className={styles.label}>Show</div>
+              <select name="showEntries" className={styles.formControl2} onChange={(e) => setLimit(e.target.value)}>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="40">40</option>
+                <option value="50">50</option>
+              </select>
+              <div className={styles.label}>entries</div>
             </div>
             <div className={styles.row3}>
               <div className={styles.label}>Search:</div>
@@ -293,14 +421,30 @@ function MyApplications() {
         {(user && Role === user.role) ? <>
           <div className={styles.container0}>
             <div className={styles.row4}>
-              <div className={styles.cell}>Complaint No</div>
-              <div className={styles.cell}>Name</div>
-              <div className={styles.cell}>Phone Number</div>
-              <div className={styles.cell}>CNIC</div>
-              <div className={styles.cell}>Category</div>
-              <div className={styles.cell}>Offence</div>
-              <div className={styles.cell}>Date</div>
-              <div className={styles.cell}>Status</div>
+              <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
+              <div className={styles.cell}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />}</div>
+              <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
+                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
+              <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
+                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+              <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
+              <div className={styles.cell}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
+              <div className={styles.cell}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
+                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
+              <div className={styles.cell}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
               <div className={styles.cell}>Actions</div>
             </div>
             {
@@ -313,13 +457,19 @@ function MyApplications() {
                   <div className={styles.cell}>{firs.Category}</div>
                   <div className={styles.cell}>{firs.Offence}</div>
                   <div className={styles.cell}>{firs.EntryDate}</div>
-                  <div className={styles.cell}>{firs.Status}</div>
+                  <div className={styles.cell}>
+                    <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetStatusHandler(firs._id, e.target.value)}>
+                      <option value="pending">Pending</option>
+                      <option value="filed">Filed</option>
+                      <option value="completed">Completed</option>
+                    </select>
+                  </div>
                   <div className={`${styles.cell} ${styles.icon}`}>
                     <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
                     <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
                     <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" onClick={() => { navigate(`/FIRPDF/${firs._id}`) }} />
-                    <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" />
-                    <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" />
+                    <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
+                    <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
                     <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
                     {showIcon[firs._id] ? <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
                       : <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
@@ -354,14 +504,30 @@ function MyApplications() {
 
           <div className={styles.container0}>
             <div className={styles.row4}>
-              <div className={styles.cell}>Complaint No</div>
-              <div className={styles.cell}>Name</div>
-              <div className={styles.cell}>Phone Number</div>
-              <div className={styles.cell}>CNIC</div>
-              <div className={styles.cell}>Category</div>
-              <div className={styles.cell}>Offence</div>
-              <div className={styles.cell}>Date</div>
-              <div className={styles.cell}>Status</div>
+              <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
+              <div className={styles.cell}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />}</div>
+              <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
+                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
+              <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
+                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+              <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
+              <div className={styles.cell}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
+              <div className={styles.cell}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
+                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
+              <div className={styles.cell}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
               <div className={styles.cell}>Actions</div>
             </div>
             {
@@ -374,13 +540,19 @@ function MyApplications() {
                   <div className={styles.cell}>{firs.Category}</div>
                   <div className={styles.cell}>{firs.Offence}</div>
                   <div className={styles.cell}>{firs.EntryDate}</div>
-                  <div className={styles.cell}>{firs.Status}</div>
+                  <div className={styles.cell}>
+                    <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetStatusHandler(firs._id, e.target.value)}>
+                      <option value="pending">Pending</option>
+                      <option value="filed">Filed</option>
+                      <option value="completed">Completed</option>
+                    </select>
+                  </div>
                   <div className={`${styles.cell} ${styles.icon}`}>
                     <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
                     <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
                     <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" onClick={() => { navigate(`/FIRPDF/${firs._id}`) }} />
-                    <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" />
-                    <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" />
+                    <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)}/>
+                    <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
                     <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
                     {showIcon[firs._id] ? <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
                       : <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
@@ -414,11 +586,21 @@ function MyApplications() {
         {(user && cRole === user.role) ? <>
           <div className={styles.container4}>
             <div className={styles.row4}>
-              <div className={styles.cell1}>Complaint No</div>
-              <div className={styles.cell1}>Category</div>
-              <div className={styles.cell1}>Offence</div>
-              <div className={styles.cell1}>Date</div>
-              <div className={styles.cell1}>Status</div>
+              <div className={styles.cell1}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
+              <div className={styles.cell1}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
+              <div className={styles.cell1}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
+              <div className={styles.cell1}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
+                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
+              <div className={styles.cell1}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
               <div className={styles.cell1}>Rating</div>
             </div>
             {
@@ -430,35 +612,50 @@ function MyApplications() {
                     <div className={styles.cell1}>{firs.Offence}</div>
                     <div className={styles.cell1}>{firs.EntryDate}</div>
                     <div className={styles.cell1}>{firs.Status}</div>
-                    <div className={styles.cell1}>{stars}</div>
+                    <div className={styles.cell1}><Stars rating={firs.Rating} /></div>
                     <div><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
                   </div>
                 </>
               ))
             }
           </div>
-            <ReactPaginate
-              breakLabel={"..."} // break Label
-              nextLabel={"next"} // Next Page Button & label
-              previousLabel={"previous"} // Previous Page Button & label
-              pageCount={cData.CitizenFIRspageCount} // Sets Page Counts
-              marginPagesDisplayed={1} // Sets Ending pages range
-              pageRangeDisplayed={5} // Sets Starting pages range
-              onPageChange={(e) => handlePageChange(e)}
+          <ReactPaginate
+            breakLabel={"..."} // break Label
+            nextLabel={"next"} // Next Page Button & label
+            previousLabel={"previous"} // Previous Page Button & label
+            pageCount={cData.CitizenFIRspageCount} // Sets Page Counts
+            marginPagesDisplayed={1} // Sets Ending pages range
+            pageRangeDisplayed={5} // Sets Starting pages range
+            onPageChange={(e) => handlePageChange(e)}
 
-              containerClassName="pagination justify-content-center"
-              pageClassName="page-item"
-              previousClassName="page-item"
-              nextClassName="page-item"
-              pageLinkClassName="page-link"
-              previousLinkClassName="page-link"
-              nextLinkClassName="page-link"
-              breakClassName="page-item"
-              breakLinkClassName="page-link"
-              activeClassName="active"
-            />
+            containerClassName="pagination justify-content-center"
+            pageClassName="page-item"
+            previousClassName="page-item"
+            nextClassName="page-item"
+            pageLinkClassName="page-link"
+            previousLinkClassName="page-link"
+            nextLinkClassName="page-link"
+            breakClassName="page-item"
+            breakLinkClassName="page-link"
+            activeClassName="active"
+          />
         </> : null}
       </div>
+      {showTransferBox && (
+        <TransferAlert
+          onConfirm={handleConfirmTransferBox}
+          onCancel={handleCancelTransferBox}
+          setPoliceStation={setPoliceStation}
+        />
+      )}
+      {showMeetingBox && (
+        <MeetingMessageBox
+          onConfirm={handleConfirmMeetingBox}
+          onCancel={handleCancelMeetingBox}
+          setMessage={setMessage}
+        />
+      )}
+      <ToastContainer />
     </>
   );
 }

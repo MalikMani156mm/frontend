@@ -306,7 +306,7 @@ function ViewFIR() {
                     <button className={styles.SubmitButton} onClick={() => { navigate(`/EditFIR/${data.FIRs._id}`) }}>
                         Edit
                     </button>
-                    <button className={styles.CancelButton} onClick={() => { navigate(`/FIRDetail/${data.FIRs._id}`) }}>
+                    <button type="reset" className={styles.CancelButton} onClick={() => { navigate(-1); }}>
                         Back
                     </button>
                 </div>
