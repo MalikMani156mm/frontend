@@ -31,6 +31,10 @@ const AdminSchema = new Schema(
             type:String,
             default:'Admin',
             enum: ['SuperAdmin','Admin']
+        },
+        resetToken:{
+            type:String,
+            default:'',
         }
     },
     {

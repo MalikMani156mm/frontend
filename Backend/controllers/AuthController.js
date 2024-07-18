@@ -16,41 +16,46 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioClient = new twilio(accountSSID, authToken);
 
 export const RegisterNewUser = async function (req, res, next) {
-
+    
     try {
         const randomString = randomstring.generate();
-        const mobileOTP = mobileOtpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false })
+        const mobileOTP = mobileOtpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
         let newUser = req.body;
         const phoneNumber = process.env.PHONE_NUMBER;
-        const htmlTemplate = generateOtpHtmlTemplate(newUser.name, randomString)
+        const htmlTemplate = generateOtpHtmlTemplate(newUser.name, randomString);
 
-        const validCNIC = await CNIC.findOne({ cnic: newUser.cnic })
+        const [validCNIC, existingUser] = await Promise.all([
+            CNIC.findOne({ cnic: newUser.cnic }),
+            User.findOne({
+                $or: [
+                    { email: newUser.email },
+                    { phonenumber: newUser.phonenumber },
+                    { cnic: newUser.cnic }
+                ]
+            })
+        ]);
+
         if (!validCNIC) {
-            return next(new Error("Invalid CNIC, please provide Nadra verified CNIC"))
+            return next(new Error("Invalid CNIC, please provide Nadra verified CNIC"));
         }
 
-        const validEmail = await User.findOne({ email: newUser.email })
-
-        if (validEmail) {
-            return next(new Error("Duplicate Email Enter"))
-        }
-
-        const validPhoneNumber = await User.findOne({ phonenumber: newUser.phonenumber })
-
-        if (validPhoneNumber) {
-            return next(new Error("Duplicate Phonenumber Enter"))
-        }
-
-        const validcnic = await User.findOne({ cnic: newUser.cnic })
-
-        if (validcnic) {
-            return next(new Error("Duplicate CNIC Enter"))
+        if (existingUser) {
+            if (existingUser.email === newUser.email) {
+                return next(new Error("Duplicate Email Enter"));
+            }
+            if (existingUser.phonenumber === newUser.phonenumber) {
+                return next(new Error("Duplicate Phonenumber Enter"));
+            }
+            if (existingUser.cnic === newUser.cnic) {
+                return next(new Error("Duplicate CNIC Enter"));
+            }
         }
 
         newUser.password = await bcrypt.hash(newUser.password, 10);
 
         const currentDate = new Date();
-        const user = await OTP.findOneAndUpdate(
+
+        const userPromise = OTP.findOneAndUpdate(
             { email: newUser.email },
             {
                 otp: mobileOTP,
@@ -61,27 +66,31 @@ export const RegisterNewUser = async function (req, res, next) {
                 phonenumber: newUser.phonenumber,
                 cnic: newUser.cnic,
                 password: newUser.password
-            }, {
-            upsert: true,
-            new: true,
-            setDefaultsOnInsert: true
-        }
+            },
+            {
+                upsert: true,
+                new: true,
+                setDefaultsOnInsert: true
+            }
         );
-        await twilioClient.messages.create({
+
+        const smsPromise = twilioClient.messages.create({
             body: `Your mobile otp is ${mobileOTP}`,
             to: phoneNumber,
             from: process.env.TWILIO_PHONE_NUMBER
         });
 
-        sendMail(newUser.email, "Welcome to E-FIR System", "", htmlTemplate)
+        const emailPromise = sendMail(newUser.email, "Welcome to E-FIR System", "", htmlTemplate);
+
+        const [user] = await Promise.all([userPromise, smsPromise, emailPromise]);
 
         res.json({
             user,
             success: true,
-            message: "Confirmation mail is send to your email account and please check it for further processing."
-        })
+            message: "Confirmation mail is sent to your email account and please check it for further processing."
+        });
     } catch (error) {
-        next(error)
+        next(error);
     }
 }
 
