@@ -39,6 +39,10 @@ function Navbar() {
 
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
+  };
+
   return (
     <>
       <nav>
@@ -59,7 +63,7 @@ function Navbar() {
         </div>
         <ul className={menuOpen ? styles.open : ""}>
           {(user && (role === user.role || Role === user.role)) ? null :
-            <li><NavLink to="/" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Home</NavLink></li>
+            <li><NavLink to="/" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle} onClick={handleNavLinkClick}>Home</NavLink></li>
           }
           <li>
             <NavLink
@@ -67,6 +71,7 @@ function Navbar() {
               className={({ isActive }) =>
                 isActive ? styles.ActiveStyle : styles.inActiveStyle
               }
+              onClick={handleNavLinkClick}
             >
               Online FIR
             </NavLink>
@@ -77,16 +82,17 @@ function Navbar() {
               className={({ isActive }) =>
                 isActive ? styles.ActiveStyle : styles.inActiveStyle
               }
+              onClick={handleNavLinkClick}
             >
               My Applications
             </NavLink>
           </li>
           {(user && role === user.role) ?
-            <li><NavLink to="Search" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Search</NavLink></li>
+            <li><NavLink to="Search" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle} onClick={handleNavLinkClick}>Search</NavLink></li>
             : null
           }
           {(user && Role === user.role) ?
-            <li><NavLink to="admin/Search" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle}>Search</NavLink></li>
+            <li><NavLink to="admin/Search" className={({ isActive }) => isActive ? styles.ActiveStyle : styles.inActiveStyle} onClick={handleNavLinkClick}>Search</NavLink></li>
             : null
           }
           {user && token ?
@@ -94,7 +100,7 @@ function Navbar() {
               <li>
                 <NavLink
                   to="/ChatPage"
-                  className={`${styles.Mlogo} ${styles.ActivelyStyle}`}
+                  className={`${styles.Mlogo} ${styles.ActivelyStyle}`} onClick={handleNavLinkClick}
                 >
                   <img src={Message} alt="Messenger unload" height={50} />
                 </NavLink>
@@ -117,6 +123,7 @@ function Navbar() {
                   className={({ isActive }) =>
                     isActive ? styles.ActivelyStyle : styles.inActivelyStyle
                   }
+                  onClick={handleNavLinkClick}
                 >
                   <button className={styles.LogInButton}> Log In </button>
                 </NavLink>
@@ -126,7 +133,7 @@ function Navbar() {
                   to="SignUp"
                   className={({ isActive }) =>
                     isActive ? styles.ActivelyStyle : styles.inActivelyStyle
-                  }
+                  } onClick={handleNavLinkClick}
                 >
                   <button className={styles.SignUpButton}>Sign Up</button>
                 </NavLink>

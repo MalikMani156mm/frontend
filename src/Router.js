@@ -49,6 +49,9 @@ import AdminNewPassword from "./Pages/Login/AdminNewPassword.jsx";
 import ChatPage from "./Pages/ChatApp/ChatPage.jsx";
 import ResetPassword from "./Pages/Login/ResetPassword.jsx";
 import ViewContactMessage from "./Pages/ViewContactMessage/ViewContactMessage.jsx";
+import AdminForgetPassword from "./Pages/Login/AdminForgetPassword.jsx";
+import AdminResetPassword from "./Pages/Login/AdminResetPassword.jsx";
+import ChangeAdminName from "./Pages/ChangeUsername/ChangeAdminName.jsx";
 
 export const router = createBrowserRouter(
 
@@ -95,6 +98,7 @@ export const router = createBrowserRouter(
                     <Route path="/AddCategory" exact element={<div className={styles.main}><AddCategory /></div>} />
                     <Route path="/adminConfirmPassword" exact element={<div className={styles.main}>< AdminConfirmPassword /></div>} />
                     <Route path="/adminNewPassword" exact element={<div className={styles.main}>< AdminNewPassword /></div>} />
+                    <Route path="/adminNewName" exact element={<div className={styles.main}>< ChangeAdminName /></div>} />
                 </Route>
                 <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'SuperAdmin'} /></div>}>
                     <Route path="/AddPoliceStation" exact element={<div className={styles.main}><AddPoliceStation /></div>} />
@@ -113,8 +117,10 @@ export const router = createBrowserRouter(
             <Route path="/AdminLogIn" exact element={<div className={styles.main}><AdminLogin /></div>} />
             <Route path="/SignUp" exact element={<div className={styles.main}><SignUp /></div>} />
             <Route path="/ForgetPassword" exact element={<div className={styles.main}>< ForgetPassword /></div>} />
+            <Route path="/AdminForgetPassword" exact element={<div className={styles.main}>< AdminForgetPassword /></div>} />
             <Route path="/MobileOTP" exact element={<div className={styles.main}>< MobileOTP /></div>} />
             <Route path="/setNewPassword" exact element={<div className={styles.main}>< ResetPassword /></div>} />
+            <Route path="/setAdminNewPassword" exact element={<div className={styles.main}>< AdminResetPassword /></div>} />
         </Route>
     )
 )

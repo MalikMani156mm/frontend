@@ -1,8 +1,8 @@
 .SignupWrapper {
-    margin: 20px auto; /* Added margin for better spacing */
+    margin: 5px auto; 
     width: 90%;
-    max-width: 600px; /* Set a maximum width for flexibility */
-    min-height: 60vh;
+    max-width: 600px; 
+    height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,15 +10,14 @@
     background-color: #f4f4f4;
     border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    padding: 20px; /* Added padding for better spacing */
-    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    padding: 20px; 
+    box-sizing: border-box; 
 }
 
 .SignupHeader {
-    font-size: 36px;
+    font-size: 20px;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 20px;
     background-color:#f4f4f4;
 }
 
@@ -27,14 +26,12 @@
     color: aliceblue;
     border: none;
     outline: none;
-    width: 100%; /* Full width button */
+    width: 50%; 
     border-radius: 10px;
-    padding: 15px;
+    padding: 10px;
     cursor: pointer;
     font-weight: bold;
     font-size: 18px;
-    margin-top: 20px; /* Adjusted margin for better spacing */
-    margin-bottom: 20px;
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -44,12 +41,13 @@
 }
 
 .SelectOption{
-    padding: 18px 30px;
+    padding: 9px 30px;
     padding-right: 50px;
-    margin: 15px;
+    margin: 4px;
     outline: none;
     background-color: gainsboro;
     width: 400px;
+    height: 50px;
     color: rgba(0, 0, 0, 0.484);
     border: 1px solid white;
     border-radius: 10px;
@@ -64,7 +62,7 @@
 .login {
     margin-top: 20px;
     color: rgb(1, 1, 179);
-    font-size: 25px;
+    font-size: 20px;
     cursor: pointer;
     outline: none;
     text-decoration: none;
@@ -72,7 +70,7 @@
 }
 
 .login:hover {
-    font-size: 30px;
+    font-size: 25px;
     color: #0d6efd;
 }
 
@@ -97,44 +95,7 @@
     color: #666; 
 }
 
-.countdown{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
 
-.countdown > p{
-    font-size: 13px;
-    font-weight: 400;
-    color: #2d1d35;
-}
-
-.countdown > button{
-    background: #fff;
-    border: none;
-    font-weight: 500;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.otpContainer{
-    width: 60%;
-    margin: 20px auto;
-    display: flex;
-    justify-content: space-between;
-
-    input{
-        width: 50px;
-        padding: 10px;
-        outline: none;
-        text-align: center;
-
-        &:focus{
-            border: 2px solid #0d6efd;
-        }
-    }
-}
 
 @media screen and (max-width: 530px) {
     .SelectOption{
@@ -162,9 +123,6 @@
     .login:hover {
         font-size: 22px;
         color: #0d6efd;
-    }
-    .otpContainer{
-        width: 80%;
-    }    
+    }   
 }
 

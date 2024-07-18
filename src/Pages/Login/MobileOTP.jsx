@@ -1,4 +1,4 @@
-import styles from "../Signup/Signup.module.css";
+import styles from "../Signup/SignupFont.module.css";
 import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import logo from "../../images/Logo.png";
 import { useEffect, useState } from "react";

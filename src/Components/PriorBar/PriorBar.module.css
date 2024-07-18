@@ -1,33 +1,56 @@
-.PriorBar{
-    display:flow-root;
-    flex-direction:row;
-    justify-content: flex-end;
-    width: 21vw;
-    position: sticky;
-    bottom: -4%;
-    z-index: 10;
-    left:80%;
-    background-color: transparent; 
+.PriorBar {
+  display: flow-root;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 21vw;
+  position: sticky;
+  bottom: -4%;
+  z-index: 10;
+  left: 80%;
+  background-color: transparent;
 }
 
-.Button{
-    text-align: center;
-    color: aliceblue;
-    text-decoration: none;
-    background-color: red;
-    border: none;
-    outline: none;
-    height: 8vh;
-    border-radius: 10px;
-    padding: 5px 30px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    margin: 20px 0; 
+.Button {
+  text-align: center;
+  color: aliceblue;
+  text-decoration: none;
+  background-color: red;
+  border: none;
+  outline: none;
+  height: 8vh;
+  border-radius: 10px;
+  padding: 5px 30px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 20px 0;
+}
+
+.Button:hover {
+  background-color: #0d6efd;
+  color: black;
+  font-size: 1.1rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .PriorBar {
+    width: 30vw;
+    left: 70%;
   }
-    
-  .Button:hover{
-    background-color: #0d6efd;
-    color: black;
-    font-size: 1.1rem;
+}
+
+@media screen and (max-width: 768px) {
+  .PriorBar {
+    width: 40vw;
+    left: 60%;
+    bottom: 0;
   }
+}
+
+@media screen and (max-width: 440px) {
+  .PriorBar {
+    width: 60vw;
+    left: 40%;
+    bottom: 0;
+  }
+}

@@ -1,5 +1,4 @@
 import styles from "./Login.module.css";
-import Textinput from "../../Components/Textinput/Textinput"
 import { useFormik } from "formik";
 import * as yup from 'yup';
 import { Link, useNavigate } from "react-router-dom";
@@ -11,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
 import { useConfirmAdminPasswordMutation } from "../../Redux/Features/Admin/adminApi";
+import Textinputs from "../../Components/Textinput/Textinputs";
 
 
 function AdminConfirmPassword() {
@@ -71,7 +71,7 @@ function AdminConfirmPassword() {
                     <div className={styles.LoginHeader}>E-FIR System</div>
                     <div className={styles.LoginHeader}>Verify Your Identity</div>
                     <div className={styles.inputContainer}>
-                        <Textinput
+                        <Textinputs
                             type={showPassword ? 'text' : 'password'}
                             values={values.password}
                             name="password"

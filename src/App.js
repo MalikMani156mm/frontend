@@ -44,7 +44,7 @@ function App() {
       <RouterProvider router={router} /> 
       {showSessionExpiryAlert && (
         <CustomAlert
-          message="Your session has expired. Please log in again."
+          message="Your session is expired. Please log in again."
           onConfirm={handleConfirmSessionExpiry}
           onCancel={handleCancelSessionExpiry}
           buttonLabel={"OK"}

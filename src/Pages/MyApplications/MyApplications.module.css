@@ -187,8 +187,13 @@ flex-direction: row;
 .row6{
   width: 80%;
   display: flex;
+  gap: 10px;
   flex-direction: row;
   align-items: center;
+}
+.row7{
+  display: flex;
+  flex-direction: row;
   justify-content: space-between;
 }
 .buttonBody{
@@ -424,6 +429,10 @@ flex-direction: column;
       .cell,.cell1{
         flex-basis: 50%;
       }  
+      .row6{
+        flex-direction: column;
+        width: 90%;
+      }
   }
   @media screen and (max-width: 440px) {
     .formControl1{

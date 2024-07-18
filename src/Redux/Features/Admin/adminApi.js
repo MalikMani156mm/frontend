@@ -25,9 +25,30 @@ export const AdminApi = createApi({
         body: data,
       }) 
     }),
+    ForgetPasswordEmail: builder.mutation({
+      query: (data) => ({
+        url : `/auth/AdminForgetPassword`,
+        method: 'POST',
+        body: data,
+      }) 
+    }),
+    ResetAdminPassword: builder.mutation({
+      query: ({url,data}) => ({
+        url : `/auth/AdminResetPassword/${url}`,
+        method: 'POST',
+        body: data,
+      }) 
+    }),
     ChangeAdminPassword: builder.mutation({
       query: ({ id, data }) => ({
         url: `/auth/changeAdminPassword/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    ChangeAdminName: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/auth/changeAdminName/${id}`,
         method: 'POST',
         body: data,
       }),
@@ -48,4 +69,4 @@ export const AdminApi = createApi({
   })
 })
 
-export const { useRegisterAdminMutation, useLoginAdminMutation, useLogoutAdminMutation, useChangeAdminPasswordMutation, useConfirmAdminPasswordMutation,useSendMeetingMessageMutation  } = AdminApi
+export const { useRegisterAdminMutation, useLoginAdminMutation, useLogoutAdminMutation,useForgetPasswordEmailMutation,useResetAdminPasswordMutation,useChangeAdminNameMutation, useChangeAdminPasswordMutation, useConfirmAdminPasswordMutation,useSendMeetingMessageMutation  } = AdminApi

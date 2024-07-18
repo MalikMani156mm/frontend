@@ -70,10 +70,10 @@ function Signup() {
         <>
             <form action='post' name="SignUpForm" onSubmit={handleSubmit} >
                 <div className={styles.SignupWrapper}>
-                    <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
-                    <br />
+                    <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={50} width={50} /></Link>
+                    {/* <br /> */}
                     <div className={styles.SignupHeader}>E-FIR System</div>
-                    <div className={styles.SignupHeader}>Create an Account</div>
+                    {/* <div className={styles.SignupHeader}>Create an Account</div> */}
 
                     <Textinput
                         type="text"

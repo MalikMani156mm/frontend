@@ -75,3 +75,27 @@
     color: black;
     font-weight: bolder;
 }
+
+@media screen and (max-width: 870px) {
+    .modal{
+        width: 60%;
+
+    }
+}
+@media screen and (max-width: 589px) {
+    .modal{
+        width: 90%;
+
+    }
+}
+@media screen and (max-width: 400px) {
+    .modal{
+        width: 98%;
+
+    }
+}
+@media screen and (max-width: 355px) {
+    .star{
+        font-size: 40px;
+    }
+}

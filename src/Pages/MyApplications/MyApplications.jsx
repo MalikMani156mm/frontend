@@ -27,7 +27,7 @@ function MyApplications() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user } = useSelector(state => state.auth)
+  const { user } = useSelector(state => state.auth);
   const Id = user.PoliceStation;
   const { isLoading: psLoading, data: psData, error: psError } = useGetPoliceStationByIdQuery(Id);
 
@@ -253,6 +253,10 @@ function MyApplications() {
     navigate("/ChangeUsername");
   }
 
+  const handleChangeAdminName = () => {
+    navigate("/adminNewName");
+  }
+
   const handleAddPoliceStation = () => {
     navigate("/AddPoliceStation");
   }
@@ -347,6 +351,7 @@ function MyApplications() {
                 <li><button className="dropdown-item" type="button" onClick={handleUpdatePoliceStation}>Update Police Station</button></li>
                 <li><button className="dropdown-item" type="button" onClick={handleAddCategory}>Add Category</button></li>
                 <li><button className="dropdown-item" type="button" onClick={handleAddOffence}>Add Offence</button></li>
+                <li><button className="dropdown-item" type="button" onClick={handleChangeAdminName}>Change Username</button></li>
               </> : null}
               {(user && cRole === user.role) ? <>
                 <li><button className="dropdown-item" type="button" onClick={handleChangeUsername}>Change Username</button></li>

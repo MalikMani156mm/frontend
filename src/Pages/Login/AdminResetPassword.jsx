@@ -8,12 +8,12 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useResetPasswordMutation } from "../../Redux/Features/Auth/AuthApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 import Textinputs from "../../Components/Textinput/Textinputs";
+import { useResetAdminPasswordMutation } from "../../Redux/Features/Admin/adminApi";
 
-function ResetPassword() {
+function AdminResetPassword() {
 
     const { user, token } = useSelector(state => state.auth);
     
@@ -25,7 +25,7 @@ function ResetPassword() {
     
     const [showPassword, setShowPassword] = useState(false);
     const [showCPassword, setShowCPassword] = useState(false);
-    const [resetPassword, { isLoading, error }] = useResetPasswordMutation();
+    const [resetPassword, { isLoading, error }] = useResetAdminPasswordMutation();
     
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
@@ -85,7 +85,7 @@ function ResetPassword() {
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
                     <br />
                     <div className={styles.LoginHeader}>E-FIR System</div>
-                    <div className={styles.LoginHeader}>Change Password</div>
+                    <div className={styles.LoginHeader}>Change Admin Password</div>
                     <div className={styles.inputContainer}>
                         <Textinputs
                             type={showPassword ? 'text' : 'password'}
@@ -125,4 +125,4 @@ function ResetPassword() {
 
 }
 
-export default ResetPassword;
+export default AdminResetPassword;

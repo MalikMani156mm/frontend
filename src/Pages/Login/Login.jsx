@@ -79,7 +79,7 @@ function Login() {
             <form action='post' name="LoginForm" onSubmit={handleSubmit} >
                 <div className={styles.LoginWrapper}>
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
-                    <br />
+                    {/* <br /> */}
                     <div className={styles.LoginHeader}>E-FIR System</div>
 
                     <Textinput

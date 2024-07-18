@@ -17,7 +17,7 @@ import { useLoginAdminMutation } from "../../Redux/Features/Admin/adminApi";
 
 function AdminLogin() {
 
-    
+
     const [showPassword, setShowPassword] = useState(false);
     // eslint-disable-next-line
     const [ReCapchaValue, setReCapchaValue] = useState(false);
@@ -60,15 +60,15 @@ function AdminLogin() {
             navigate("/MyApplications");
         }
     })
-    
-    
+
+
     if (error) {
         return (<>
             <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
             <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
             <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
         </>)
-   
+
     }
 
     if (user && token) {
@@ -116,9 +116,11 @@ function AdminLogin() {
                         />
                     </div>
                     <p className="help-block text-danger">{errors.ReCapcha && touched.ReCapcha ? errors.ReCapcha : null}</p>
-                    <span ><Link to="/ForgetPassword" className={styles.createAccount}>Forget Password</Link></span>
+                    <span ><Link to="/AdminForgetPassword" className={styles.createAccount}>Forget Password</Link></span>
                     <button className={styles.loginButton} type="submit" >
-                        {isLoading ? "Loading..." : "Log In as Admin"}</button>
+                        {isLoading ? "Loading..." : "Log In as Admin"}
+                    </button>
+                    <span><Link to="/Login" className={styles.createAccount}>Log In as Citizen</Link></span>
                 </div>
             </form>
             <ToastContainer />

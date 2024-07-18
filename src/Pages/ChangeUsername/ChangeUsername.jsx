@@ -1,5 +1,4 @@
 import styles from "../Login/Login.module.css";
-import Textinput from "../../Components/Textinput/Textinput"
 import { useFormik } from "formik";
 import * as yup from 'yup';
 import { Link } from "react-router-dom";
@@ -8,6 +7,7 @@ import {  useSelector } from "react-redux";
 import { useChangeUsernameMutation } from "../../Redux/Features/Auth/AuthApi";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Textinputs from "../../Components/Textinput/Textinputs";
 
 
 function ChangeUsername() {
@@ -62,7 +62,7 @@ function ChangeUsername() {
                     <div className={styles.LoginHeader}>E-FIR System</div>
                     <div className={styles.LoginHeader}>Change Username</div>
                     <div className={styles.inputContainer}>
-                        <Textinput
+                        <Textinputs
                             type='text'
                             values={values.name}
                             name="name"

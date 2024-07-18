@@ -44,6 +44,16 @@
   cursor: pointer;
 }
 
+.confirmButton:hover {
+  background-color: #67a569;
+  font-weight: bold;
+}
+
+.cancelButton:hover {
+  background-color: #f56b61;
+  font-weight: bold;
+}
+
 .sendButton {
   background-color: #0d6efd;
   color: black;

@@ -5,26 +5,27 @@ import { Link, Navigate } from "react-router-dom";
 import logo from "../../images/Logo.png";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useForgetPasswordCNICMutation } from "../../Redux/Features/Auth/AuthApi";
 import { useSelector } from "react-redux";
 import Textinputs from "../../Components/Textinput/Textinputs";
+import { useForgetPasswordEmailMutation } from "../../Redux/Features/Admin/adminApi";
 
-function ForgetPassword() {
+function AdminForgetPassword() {
 
     const { user, token } = useSelector(state => state.auth);
     
-    const [UserCNIC, { isLoading, error }] = useForgetPasswordCNICMutation();
+    const [UserEmail, { isLoading, error }] = useForgetPasswordEmailMutation();
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, errors, handleSubmit, setFieldValue } = useFormik({
         initialValues: {
-            cnic: '',
+            email: '',
         },
         validationSchema: yup.object().shape({
-            cnic: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('CNIC is Required'),
+            email:yup.string().email('enter a valid email').required('Email is Required'),
         }),
         onSubmit: async (values) => {
             console.log(values);
-            const responce = await UserCNIC(values).unwrap();
+            const responce = await UserEmail(values).unwrap();
+            console.log(responce);
             if (responce.success) {
                 toast.success(responce.message);
             } else {
@@ -54,16 +55,16 @@ function ForgetPassword() {
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
                     <br />
                     <div className={styles.LoginHeader}>E-FIR System</div>
-                    <div className={styles.LoginHeader}>CNIC Verification</div>
+                    <div className={styles.LoginHeader}>Email Verification</div>
                     <Textinputs
-                        type="number"
-                        values={values.cnic}
-                        name="cnic"
+                        type="email"
+                        values={values.email}
+                        name="email"
                         onBlur={handleBlur}
                         onChange={handleChange}
-                        placeholder="Enter CNIC (without dashes)"
+                        placeholder="Enter Email"
                     />
-                    <p className="help-block text-danger">{errors.cnic && touched.cnic ? errors.cnic : null}</p>
+                    <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
                     <button className={styles.loginButton} type="submit" >
                         {isLoading ? "Loading..." : "Submit"}</button>
                 </div>
@@ -74,4 +75,4 @@ function ForgetPassword() {
 
 }
 
-export default ForgetPassword;
+export default AdminForgetPassword;

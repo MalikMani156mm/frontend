@@ -11,11 +11,13 @@ import RatingAlert from "../../Components/CustomAlert/RatingAlert";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Stars from "../../Components/Stars/Stars";
+import { useSelector } from "react-redux";
 
 
 function FIRDetail() {
 
     const navigate = useNavigate();
+    const { user } = useSelector(state => state.auth)
     const { id } = useParams();
     const [policeStationId, setPoliceStationId] = useState(null);
     const { data: firData, error: firError, isLoading: firLoading, refetch } = useGetFIRByIdQuery(id);
@@ -37,6 +39,12 @@ function FIRDetail() {
     const [rating, setRating] = useState(0);
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [showRating, setShowRating] = useState(false);
+
+    useEffect(() => {
+        if (firData && firData.FIRs && firData.FIRs.Status === "completed" && firData.FIRs.Rating === 0) {
+            setShowRating(true);
+        }
+    }, [firData]);
 
     const handleDelete = async () => {
         setShowConfirmation(true);
@@ -75,7 +83,11 @@ function FIRDetail() {
     const handleCancelRating = () => {
         setShowRating(false);
     };
-    
+
+    if(user.role !== "Citizen"){
+        return <Navigate to={'/MyApplications'} replace={true}/>
+    }
+
     if (firError || deletionError || psError || error) {
         return <Navigate to={'*'} replace={true} />
     }
@@ -117,18 +129,24 @@ function FIRDetail() {
                         <div className={styles.cell1}>{firData.FIRs.Offence}</div>
                         <div className={styles.cell1}>{firData.FIRs.EntryDate}</div>
                         <div className={styles.cell1}>{firData.FIRs.Status}</div>
-                        <div className={styles.cell1}><Stars rating={firData.FIRs.Rating}/></div>
+                        <div className={styles.cell1}><Stars rating={firData.FIRs.Rating} /></div>
                     </div>
 
                     <h2 className={styles.actionClass}>Actions</h2>
                     <div className={styles.buttonBody}>
                         <div className={styles.row6}>
-                            <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/ViewFIR/${firData.FIRs._id}`) }}>View Only</button>
-                            <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRPDF/${firData.FIRs._id}`) }}>View PDF</button>
-                            <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/DownloadFIRPDF/${firData.FIRs._id}`) }}>Download PDF</button>
-                            <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/EditFIR/${firData.FIRs._id}`) }}>Edit FIR</button>
-                            <button className="btn btn-danger mx-3 my-2" onClick={handleDelete}>Delete FIR</button>
-                            <button className="btn btn-primary mx-3 my-2" onClick={handleRating}>Give Rating</button>
+                            <div className={styles.row7}>
+                                <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/ViewFIR/${firData.FIRs._id}`) }}>View Only</button>
+                                <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRPDF/${firData.FIRs._id}`) }}>View PDF</button>
+                            </div>
+                            <div className={styles.row7}>
+                                <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/DownloadFIRPDF/${firData.FIRs._id}`) }}>Download PDF</button>
+                                <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/EditFIR/${firData.FIRs._id}`) }}>Edit FIR</button>
+                            </div>
+                            <div className={styles.row7}>
+                                <button className="btn btn-primary mx-3 my-2" onClick={handleDelete}>Delete FIR</button>
+                                <button className="btn btn-primary mx-3 my-2" onClick={handleRating}>Give Rating</button>
+                            </div>
                         </div>
                     </div>
                     <h2 className={styles.actionClass}>Police Station Information</h2>
@@ -170,7 +188,7 @@ function FIRDetail() {
                     setRating={setRating}
                 />
             )}
-            <ToastContainer/>
+            <ToastContainer />
         </>
     );
 }

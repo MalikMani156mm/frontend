@@ -1,5 +1,4 @@
-import styles from "../Login/Login.module.css";
-import Textinput from "../../Components/Textinput/Textinput"
+import styles from "../Login/LoginLargeFont.module.css";
 import { useFormik } from "formik";
 import * as yup from 'yup';
 import { Link } from "react-router-dom";
@@ -7,6 +6,7 @@ import logo from "../../images/Logo.png";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAddNewOffenceMutation } from "../../Redux/Features/Offence/OffenceApi";
+import Textinputs from "../../Components/Textinput/Textinputs";
 
 function AddOffence() {
 
@@ -46,8 +46,8 @@ function AddOffence() {
                 <div className={styles.LoginWrapper}>
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
                     <br />
-                    <div className={styles.LoginHeader}>E-FIR System</div>
-                    <Textinput
+                    <div className={styles.LoginHeader}>Add Offence</div>
+                    <Textinputs
                         type="text"
                         name='Offence'
                         onBlur={handleBlur}

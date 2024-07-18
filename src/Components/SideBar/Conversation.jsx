@@ -16,6 +16,7 @@ const Conversation = ({ conversation, lastIndex }) => {
 
   const handleClick = () => {
     setSelectedConversation(conversation);
+    
   };
 
   return (
