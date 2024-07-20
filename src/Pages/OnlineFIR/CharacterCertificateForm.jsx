@@ -7,11 +7,13 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
 import { useAddNewCertificateMutation } from "../../Redux/Features/Certificates/CertificateAPI";
+import { useGetAllPoliceStationsQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 
 
 function CharacterCertificateForm() {
 
   const [addCertificate, { isLoading, error }] = useAddNewCertificateMutation();
+  const { data } = useGetAllPoliceStationsQuery();
 
   const { user } = useSelector(state => state.auth)
   const role = "Admin";
@@ -98,14 +100,14 @@ function CharacterCertificateForm() {
       SubmitterName: '',
       RelationWithApplicant: '',
       Reason: '',
-      // CNICFront: '',
-      // CNICBack: '',
-      // PassportInfoPic: '',
-      // PassportLastPic: '',
-      // ApplicantPic: '',
-      // AffidavitPic: '',
-      // AuthorityLetterPic: '',
-      // AffidavitPicture: ''
+      CNICFront: '',
+      CNICBack: '',
+      PassportInfoPic: '',
+      PassportLastPic: '',
+      ApplicantPic: '',
+      AffidavitPic: '',
+      AuthorityLetterPic: '',
+      AffidavitPicture: ''
     },
     validationSchema: yup.object().shape({
       EntryDate: yup.date().required('Required'),
@@ -123,13 +125,13 @@ function CharacterCertificateForm() {
       PermanentAddress: yup.string().max(200).required('Required'),
       Category: yup.string().required('Required'),
       Reason: yup.string().max(200).required('Required'),
-      // CNICFront: yup.string().required('Required'),
-      // CNICBack: yup.string().required('Required'),
-      // PassportInfoPic: yup.string().required('Required'),
-      // PassportLastPic: yup.string().required('Required'),
-      // ApplicantPic: yup.string().required('Required'),
-      // AffidavitPicture: yup.string().required('Required'),
-      // AuthorityLetterPic: yup.string().required('Required'),
+      CNICFront: yup.string().required('Required'),
+      CNICBack: yup.string().required('Required'),
+      PassportInfoPic: yup.string().required('Required'),
+      PassportLastPic: yup.string().required('Required'),
+      ApplicantPic: yup.string().required('Required'),
+      AffidavitPicture: yup.string().required('Required'),
+      AuthorityLetterPic: yup.string().required('Required'),
     }),
     onSubmit: async (values) => {
       console.log(values);
@@ -162,8 +164,8 @@ function CharacterCertificateForm() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Date of Apply</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3 ">
+              <div className="col-lg-3 col-md-12 col-sm-12 "><p>Date of Apply</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12 ">
                 <input
                   type="datetime-local"
                   id="datetime"
@@ -174,17 +176,17 @@ function CharacterCertificateForm() {
                 />
                 <p className="help-block text-danger">{errors.EntryDate && touched.EntryDate ? errors.EntryDate : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <p>Source of Application</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="SourceofApplication" placeholder="Online" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} disabled={true} />
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>District</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>District</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="District"
                   onChange={handleChange}
                   onBlur={handleBlur}>
@@ -193,8 +195,8 @@ function CharacterCertificateForm() {
                 </select>
                 <p className="help-block text-danger">{errors.District && touched.District ? errors.District : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Division</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Division</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Division"
                   onChange={handleChange}
                   onBlur={handleBlur}>
@@ -205,8 +207,8 @@ function CharacterCertificateForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Circle</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Circle</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Circle"
                   onChange={handleChange}
                   onBlur={handleBlur}>
@@ -241,39 +243,16 @@ function CharacterCertificateForm() {
                 </select>
                 <p className="help-block text-danger">{errors.Circle && touched.Circle ? errors.Circle : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Police Station</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="PoliceStation"
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Police Station</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
+              <select className="form-control" name="PoliceStation"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="1">PS Sabzi Mandi</option>
-                  <option value="2">PS Secretariat</option>
-                  <option value="3">PS Abpara</option>
-                  <option value="4">PS Kohsar</option>
-                  <option value="5">PS Bhara Kahu</option>
-                  <option value="6">PS Phulgaran</option>
-                  <option value="7">PS Bani Gala</option>
-                  <option value="8">PS Margalla</option>
-                  <option value="9">PS Karachi Company</option>
-                  <option value="10">PS Golra</option>
-                  <option value="11">PS Tarnol</option>
-                  <option value="12">PS Sangjani</option>
-                  <option value="13">PS Sumbal</option>
-                  <option value="14">PS Shalimar</option>
-                  <option value="15">PS Ramna</option>
-                  <option value="16">PS I-9 Industrial Area</option>
-                  <option value="17">PS Noon</option>
-                  <option value="18">PS Shams Colony</option>
-                  <option value="19">PS Shehzad Town</option>
-                  <option value="20">PS Khanna</option>
-                  <option value="21">PS Sihala</option>
-                  <option value="22">PS Humak</option>
-                  <option value="23">PS Lohi Bher</option>
-                  <option value="24">PS Nilore</option>
-                  <option value="25">PS Koral</option>
-                  <option value="26">PS Kirpa</option>
-                  <option value="27">PS Women</option>
+                  {
+                    data && data.map(PS => (
+                      <option value={PS._id} key={PS._id}>{PS.PSName}</option>
+                    ))}
                 </select>
                 <p className="help-block text-danger">{errors.PoliceStation && touched.PoliceStation ? errors.PoliceStation : null}</p>
               </div>
@@ -286,16 +265,16 @@ function CharacterCertificateForm() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>CNIC (without dashes)</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>CNIC (without dashes)</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <p>Passport Number</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
+              <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
                   <input type="text" name="PassportNumber" className="form-control" onChange={handleChange}
                     onBlur={handleBlur} />
@@ -305,13 +284,13 @@ function CharacterCertificateForm() {
             </div>
 
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Name</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <div className={styles.radio}>
                   <div className="mx-2">
                     <input type="radio" name="relation" id="son" value="son"
@@ -335,7 +314,7 @@ function CharacterCertificateForm() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="text"
                   name="GuardianName"
@@ -347,8 +326,8 @@ function CharacterCertificateForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Gender</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Gender" onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -358,8 +337,8 @@ function CharacterCertificateForm() {
                 </select>
                 <p className="help-block text-danger">{errors.Gender && touched.Gender ? errors.Gender : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Contact Number</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Contact Number</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="number"
                   name="ContactNumber"
@@ -372,10 +351,10 @@ function CharacterCertificateForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <p>Permanent Address</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <textarea
                   type="text"
                   name="PermanentAddress"
@@ -395,8 +374,8 @@ function CharacterCertificateForm() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Category</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 "><p>Category</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Category"
                   onChange={handleChange}
                   onBlur={handleBlur}>
@@ -413,7 +392,7 @@ function CharacterCertificateForm() {
               <div className="col-lg-4 col-md-4 col-sm-4 mx-2">
                 <p>Submitted by Applicant Himself</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <div className={styles.radio}>
                   <div >
                     <input type="radio" name="SubmitByApplicant" id="Yes" value="Yes"
@@ -432,8 +411,8 @@ function CharacterCertificateForm() {
             </div>
 
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>If No, Name of Submitter</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>If No, Name of Submitter</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="text"
                   name="SubmitterName"
@@ -442,8 +421,8 @@ function CharacterCertificateForm() {
                   onBlur={handleBlur}
                 />
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Relation with Applicant</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Relation with Applicant</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="RelationWithApplicant"
                   onChange={handleChange}
                   onBlur={handleBlur}>
@@ -459,8 +438,8 @@ function CharacterCertificateForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Reason for Apply</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Reason for Apply</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <textarea
                   type="text"
                   rows={3}
@@ -473,8 +452,8 @@ function CharacterCertificateForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>CNIC Picture (Front Side)</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>CNIC Picture (Front Side)</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="file" name="CNICFront" className="form-control" onChange={(event) => {
                   let reader = new FileReader();
                   reader.onloadend = () => {
@@ -487,9 +466,9 @@ function CharacterCertificateForm() {
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNICFront && touched.CNICFront ? errors.CNICFront : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>CNIC Picture (Back Side)</p>
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC Picture (Back Side)</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
+              <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
                   <input type="file" name="CNICBack" className="form-control" onChange={(event) => {
                     let reader = new FileReader();
@@ -506,8 +485,8 @@ function CharacterCertificateForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Passport Info Picture</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Passport Info Picture</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="file" name="PassportInfoPic" className="form-control" onChange={(event) => {
                   let reader = new FileReader();
                   reader.onloadend = () => {
@@ -520,9 +499,9 @@ function CharacterCertificateForm() {
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.PassportInfoPic && touched.PassportInfoPic ? errors.PassportInfoPic : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Passport Last Page Pic</p>
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Passport Last Page Pic</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
+              <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
                   <input type="file" name="PassportLastPic" className="form-control" onChange={(event) => {
                     let reader = new FileReader();
@@ -539,8 +518,8 @@ function CharacterCertificateForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Applicant Picture</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Applicant Picture</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="file" name="ApplicantPic" className="form-control" onChange={(event) => {
                   let reader = new FileReader();
                   reader.onloadend = () => {
@@ -553,9 +532,9 @@ function CharacterCertificateForm() {
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.ApplicantPic && touched.ApplicantPic ? errors.ApplicantPic : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Affidavit Picture (If other then Islamabad Address)</p>
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Affidavit Picture (If other then Islamabad Address)</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
+              <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
                   <input type="file" name="AffidavitPic" className="form-control" onChange={(event) => {
                     let reader = new FileReader();
@@ -571,8 +550,8 @@ function CharacterCertificateForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Authority Letter Picture</p><Link to={"https://islamabadpolice.gov.pk/img/authority-letter.pdf"} style={{ textDecoration: 'none' }}>Download Authority Letter Sample</Link></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Authority Letter Picture</p><Link to={"https://islamabadpolice.gov.pk/img/authority-letter.pdf"} style={{ textDecoration: 'none' }}>Download Authority Letter Sample</Link></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="file" name="AuthorityLetterPic" className="form-control" onChange={(event) => {
                   let reader = new FileReader();
                   reader.onloadend = () => {
@@ -585,9 +564,9 @@ function CharacterCertificateForm() {
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.AuthorityLetterPic && touched.AuthorityLetterPic ? errors.AuthorityLetterPic : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Affidavit Picture</p><Link to={"https://islamabadpolice.gov.pk/img/Affidavit.pdf"} style={{ textDecoration: 'none' }}>Download Affidavit Sample</Link>
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Affidavit Picture</p><Link to={"https://islamabadpolice.gov.pk/img/Affidavit.pdf"} style={{ textDecoration: 'none' }}>Download Affidavit Sample</Link>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
+              <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
                   <input type="file" name="AffidavitPicture" className="form-control" onChange={(event) => {
                     let reader = new FileReader();
@@ -605,8 +584,8 @@ function CharacterCertificateForm() {
             </div>
             {(user && (role === user.role || Role === user.role)) ? <>
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3"><p>Operator Name</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12"><p>Operator Name</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <input type="text" name="IOName" className="form-control" onChange={handleChange}
                     onBlur={handleBlur} />
                 </div>

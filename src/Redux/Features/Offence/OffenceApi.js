@@ -3,13 +3,17 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const OffenceApi = createApi({
   reducerPath: 'OffenceApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/' ,
-    mode:'cors'
+    mode:'cors',  credentials: 'include'
   }),
   tagTypes:['Offence'],
   endpoints: (builder) => ({
     getAllOffences: builder.query({
       query: () => `/Offences`,
       providesTags:['Offence']
+    }),
+    getOffenceById: builder.query({
+      query: (id) => `/Offence/${id}`,
+      providesTags: ['Offence']
     }),
     addNewOffence: builder.mutation({
       query: (data) => ({
@@ -22,4 +26,4 @@ export const OffenceApi = createApi({
   }),
 })
 
-export const { useGetAllOffencesQuery , useAddNewOffenceMutation} = OffenceApi
+export const { useGetAllOffencesQuery ,useGetOffenceByIdQuery, useAddNewOffenceMutation} = OffenceApi

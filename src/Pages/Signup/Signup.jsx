@@ -9,36 +9,38 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 function Signup() {
 
     const { user, token } = useSelector(state => state.auth);
-    
+    const [currentLocation, setCurrentLocation] = useState(null);
+
     const [showPassword, setShowPassword] = useState(false);
     const [showCPassword, setShowCPassword] = useState(false);
 
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     }
-    
+
     const toggleShowCPassword = () => {
         setShowCPassword(!showCPassword);
     }
 
-    
+
     const [register, { isLoading, error }] = useRegisterUserMutation();
 
     // eslint-disable-next-line
-    const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
+    const formik = useFormik({
         initialValues: {
             name: '',
             email: '',
             phonenumber: '',
             cnic: '',
             password: '',
-            confirmpassword: ''
+            confirmpassword: '',
+            Location: currentLocation,
         },
         validationSchema: signupSchema,
         onSubmit: async (values) => {
@@ -53,7 +55,24 @@ function Signup() {
             }
         }
     });
-    
+    const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = formik;
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setCurrentLocation({ lat: latitude, lng: longitude });
+                    setFieldValue('Location', { lat: latitude, lng: longitude });
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                }
+            );
+        } else {
+            alert('Geolocation is not supported by this browser.');
+        }
+    }, [setFieldValue]);
+
     if (error) {
         return (<>
             <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
@@ -61,11 +80,11 @@ function Signup() {
             <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
         </>)
     }
-    
+
     if (user && token) {
         return <Navigate to={'/MyApplications'} replace={true} />
     }
-    
+
     return (
         <>
             <form action='post' name="SignUpForm" onSubmit={handleSubmit} >

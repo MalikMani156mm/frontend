@@ -7,12 +7,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
 import { useAddNewRequestMutation } from "../../Redux/Features/VehicleVerification/VVApi";
+import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 
 
 function VehicleVerificationForm() {
 
   const [addRequest, { isLoading, error }] = useAddNewRequestMutation();
-
+  const id = "669a6ce77bc3e295a8ebc0db";
+  const { data } = useGetPoliceStationByIdQuery(id);
+  console.log(data);
   const { user } = useSelector(state => state.auth)
   const role = "Admin";
   const Role = "SuperAdmin";
@@ -59,7 +62,7 @@ function VehicleVerificationForm() {
   };
 
   function SerialNumberGenerator() {
-    
+
 
     // Get current date in YYYYMMDD format
     const currentDate = new Date();
@@ -73,7 +76,7 @@ function VehicleVerificationForm() {
 
     // Concatenate the parts
     const uniqueIdentifier = `VV-${formattedDate}-${randomNumber}`;
-    
+
     return uniqueIdentifier;
   }
 
@@ -148,14 +151,14 @@ function VehicleVerificationForm() {
     }),
     onSubmit: async (values) => {
       console.log(values);
-      values.RequestNumber=SerialNumberGenerator();
-          const res = await addRequest(values).unwrap();
-          if (res.success) {
-            toast.success(res.message);
-          } 
-          else {
-            toast.error(res.message || res.data.error);
-          }
+      values.RequestNumber = SerialNumberGenerator();
+      const res = await addRequest(values).unwrap();
+      if (res.success) {
+        toast.success(res.message);
+      }
+      else {
+        toast.error(res.message || res.data.error);
+      }
 
     }
   });
@@ -178,8 +181,8 @@ function VehicleVerificationForm() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Date of Apply</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3 ">
+              <div className="col-lg-3 col-md-12 col-sm-12 "><p>Date of Apply</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12 ">
                 <input
                   type="datetime-local"
                   id="datetime"
@@ -190,30 +193,30 @@ function VehicleVerificationForm() {
                 />
                 <p className="help-block text-danger">{errors.EntryDate && touched.EntryDate ? errors.EntryDate : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <p>Request Number</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
+              <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
                   <input type="number" name="RequestNumber" className="form-control" onChange={handleChange} placeholder={SerialNumberGenerator()}
-                    onBlur={handleBlur} disabled={true}/>
+                    onBlur={handleBlur} disabled={true} />
                 </div>
                 <p className="help-block text-danger">{errors.RequestNumber && touched.RequestNumber ? errors.RequestNumber : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Request Deliver to</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 "><p>Request Deliver to</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="RequestTo"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="3">15/Car Cell</option>
+                  <option value={data?.PSs?._id}>{data?.PSs?.PSName}</option>
                 </select>
                 <p className="help-block text-danger">{errors.RequestTo && touched.RequestTo ? errors.RequestTo : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>CNIC (without dashes)</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC (without dashes)</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
@@ -222,13 +225,13 @@ function VehicleVerificationForm() {
             </div>
 
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Name</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <div className={styles.radio}>
                   <div className="mx-2">
                     <input type="radio" name="relation" id="son" value="son"
@@ -252,7 +255,7 @@ function VehicleVerificationForm() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="text"
                   name="GuardianName"
@@ -264,8 +267,8 @@ function VehicleVerificationForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Gender</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Gender" onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -275,8 +278,8 @@ function VehicleVerificationForm() {
                 </select>
                 <p className="help-block text-danger">{errors.Gender && touched.Gender ? errors.Gender : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Contact Number</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Contact Number</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="number"
                   name="ContactNumber"
@@ -289,10 +292,10 @@ function VehicleVerificationForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <p>Permanent Address</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <textarea
                   type="text"
                   name="PermanentAddress"
@@ -312,14 +315,14 @@ function VehicleVerificationForm() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>CNIC (without dashes)</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>CNIC (without dashes)</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="number" name="OCNIC" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.OCNIC && touched.OCNIC ? errors.OCNIC : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>CNIC Picture </p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC Picture </p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="file" name="OCNICPic" className="form-control" onChange={(event) => {
                   let reader = new FileReader();
                   reader.onloadend = () => {
@@ -335,13 +338,13 @@ function VehicleVerificationForm() {
             </div>
 
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Name</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="OName" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.OName && touched.OName ? errors.OName : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <div className={styles.radio}>
                   <div className="mx-2">
                     <input type="radio" name="Orelation" id="son" value="son"
@@ -365,7 +368,7 @@ function VehicleVerificationForm() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="text"
                   name="OGuardianName"
@@ -377,8 +380,8 @@ function VehicleVerificationForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Gender</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="OGender" onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -388,8 +391,8 @@ function VehicleVerificationForm() {
                 </select>
                 <p className="help-block text-danger">{errors.OGender && touched.OGender ? errors.OGender : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Contact Number</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Contact Number</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="number"
                   name="OContactNumber"
@@ -401,10 +404,10 @@ function VehicleVerificationForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <p>Permanent Address</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <textarea
                   type="text"
                   name="OPermanentAddress"
@@ -424,28 +427,28 @@ function VehicleVerificationForm() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Registration Number</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Registration Number</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="RegistrationNumber" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.RegistrationNumber && touched.RegistrationNumber ? errors.RegistrationNumber : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Make</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Make</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="Make" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Make && touched.Make ? errors.Make : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Model</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Model</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="Model" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Model && touched.Model ? errors.Model : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Year of Manufacture</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Year of Manufacture</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select name="YearOfManufacture" className="form-control" onChange={handleChange}
                   onBlur={handleBlur}>
                   <option>Select</option>
@@ -499,22 +502,22 @@ function VehicleVerificationForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Color</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Color</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="Color" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Color && touched.Color ? errors.Color : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Chassis Number</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Chassis Number</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="ChassisNumber" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.ChassisNumber && touched.ChassisNumber ? errors.ChassisNumber : null}</p>
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Engine Number</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 "><p>Engine Number</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="EngineNumber" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.EngineNumber && touched.EngineNumber ? errors.EngineNumber : null}</p>
@@ -522,7 +525,7 @@ function VehicleVerificationForm() {
               <div className="col-lg-4 col-md-4 col-sm-4 mx-2">
                 <p>You buy it?</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <div className={styles.radio}>
                   <div >
                     <input type="radio" name="BuyIt" id="Yes" value="Yes"
@@ -540,8 +543,8 @@ function VehicleVerificationForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Reason for Verification</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Reason for Verification</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <textarea
                   type="text"
                   rows={3}
@@ -554,8 +557,8 @@ function VehicleVerificationForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>CNIC Picture (Front Side)</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>CNIC Picture (Front Side)</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="file" name="CNICFront" className="form-control" onChange={(event) => {
                   let reader = new FileReader();
                   reader.onloadend = () => {
@@ -568,9 +571,9 @@ function VehicleVerificationForm() {
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNICFront && touched.CNICFront ? errors.CNICFront : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>CNIC Picture (Back Side)</p>
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC Picture (Back Side)</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
+              <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
                   <input type="file" name="CNICBack" className="form-control" onChange={(event) => {
                     let reader = new FileReader();
@@ -587,8 +590,8 @@ function VehicleVerificationForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Applicant Picture</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Applicant Picture</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="file" name="ApplicantPic" className="form-control" onChange={(event) => {
                   let reader = new FileReader();
                   reader.onloadend = () => {
@@ -601,9 +604,9 @@ function VehicleVerificationForm() {
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.ApplicantPic && touched.ApplicantPic ? errors.ApplicantPic : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Registration Book Picture</p>
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Registration Book Picture</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
+              <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
                   <input type="file" name="RegistrationBookPic" className="form-control" onChange={(event) => {
                     let reader = new FileReader();
@@ -620,8 +623,8 @@ function VehicleVerificationForm() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Chassis Number Picture</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Chassis Number Picture</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="file" name="ChassisNumberPic" className="form-control" onChange={(event) => {
                   let reader = new FileReader();
                   reader.onloadend = () => {
@@ -634,9 +637,9 @@ function VehicleVerificationForm() {
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.ChassisNumberPic && touched.ChassisNumberPic ? errors.ChassisNumberPic : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Engine Number Picture</p>
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Engine Number Picture</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 " >
+              <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
                   <input type="file" name="EngineNumberPic" className="form-control" onChange={(event) => {
                     let reader = new FileReader();
@@ -653,10 +656,10 @@ function VehicleVerificationForm() {
               </div>
             </div>
 
-            {(user && (role=== user.role || Role === user.role)) ? <>
+            {(user && (role === user.role || Role === user.role)) ? <>
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3"><p>Operator Name</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12"><p>Operator Name</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <input type="text" name="IOName" className="form-control" onChange={handleChange}
                     onBlur={handleBlur} />
                 </div>

@@ -4,7 +4,7 @@ export const PoliceStationApi = createApi({
   reducerPath: 'PoliceStationApi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'http://localhost:5000/api/',
-    mode: 'cors'
+    mode: 'cors',  credentials: 'include'
   }),
   tagTypes: ['PoliceStations'],
   endpoints: (builder) => ({

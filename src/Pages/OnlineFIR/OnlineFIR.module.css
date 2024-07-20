@@ -238,7 +238,7 @@ flex-direction: row;
 
       }   
     
-      @media screen and (max-width: 890px) {
+      @media screen and (max-width: 992px) {
         .alignment{
           display: flex;
           flex-direction: column;
@@ -254,15 +254,17 @@ flex-direction: row;
         .gap{
           margin-left: 0;
         }
+        .fileControl{
+          width: 100%;
         }
-        @media screen and (max-width: 574px) {
-          
-          
+        }
+        @media screen and (max-width: 768px) {
           .fileControl{
             width: 100%;
           }
           .alignment1{
-            align-items: center;
+            align-items: start;
+            gap: 10px;
           }
         }  
  

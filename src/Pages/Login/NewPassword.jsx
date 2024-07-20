@@ -7,14 +7,16 @@ import logo from "../../images/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useChangePasswordMutation } from "../../Redux/Features/Auth/AuthApi";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { setPasswordConfirmed } from "../../Redux/Features/Auth/AuthSlice";
 
 
 function NewPassword() {
 
+    const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
     const id = user._id;
     const [showPassword, setShowPassword] = useState(false);
@@ -52,6 +54,7 @@ function NewPassword() {
             const res = await changePassword({ id, data: values }).unwrap();
             if (res.success) {
                 toast.success(res.message);
+                dispatch(setPasswordConfirmed(false));
             }
             else {
                 toast.error(res.message || res.data.error);

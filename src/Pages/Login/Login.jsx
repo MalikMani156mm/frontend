@@ -115,11 +115,13 @@ function Login() {
                         />
                     </div>
                     <p className="help-block text-danger">{errors.ReCapcha && touched.ReCapcha ? errors.ReCapcha : null}</p>
+                    <div className={styles.linkDiv}>
                     <span ><Link to="/ForgetPassword" className={styles.createAccount}>Forget Password</Link></span>
+                    <span><Link to="/AdminLogin" className={styles.createAccount}>Log In as Admin</Link></span>
+                    </div>
                     <button className={styles.loginButton} type="submit" >
                         {isLoading ? "Loading..." : "Log In"}</button>
-                    <span>Don't have an account? <Link to="/SignUp" className={styles.createAccount}>Sign Up</Link></span>
-                    <span><Link to="/AdminLogin" className={styles.createAccount}>Log In as Admin</Link></span>
+                    <span>Don't have an account? <Link to="/SignUp" className={styles.createAccounts}>Sign Up</Link></span>
                 </div>
             </form></div>
             <ToastContainer />

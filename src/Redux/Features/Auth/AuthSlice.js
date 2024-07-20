@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = { 
     user:null,
-    token:null
+    token:null,
+    isPasswordConfirmed: false,
  }
 
  const AuthSlice = createSlice({
@@ -16,9 +17,13 @@ const initialState = {
     clearUserInfo(state) {
       state.user = null;
       state.token = null;
+      state.isPasswordConfirmed = false;
+  },
+  setPasswordConfirmed(state, action) {
+      state.isPasswordConfirmed = action.payload;
   },
   },
 })
 
-export const { setUserInfo , clearUserInfo } = AuthSlice.actions
-export default AuthSlice.reducer
+export const { setUserInfo , clearUserInfo, setPasswordConfirmed } = AuthSlice.actions
+export default AuthSlice.reducer 

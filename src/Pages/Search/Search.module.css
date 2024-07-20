@@ -109,6 +109,10 @@
   width: 230px;
 }
 
+.resprow {
+  display: none;
+}
+
 .formControl {
   display: block;
   width: 230px;
@@ -177,6 +181,46 @@
 
 }
 
+@media screen and (max-width: 1068px) {
+  /* .formControl1 {
+    width: 190px;
+  } */
+
+  .fullrow {
+    display: none;
+  }
+
+  .resprow,
+  .datarow {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .table {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cell,
+  .cell1 {
+    width: 100%;
+    height: 23px;
+  }
+
+  .select {
+    padding: 0;
+    height: 23px;
+  }
+  .respButtonfull{
+    display: none;
+  }
+  .respButton{
+    display: flex;
+    justify-content: center;
+  }
+}
 
 @media screen and (max-width : 878px) {
   .row1 {
@@ -218,6 +262,12 @@
 
   .column>div>select {
     width: 275px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .cell,.cell1{
+    font-size: small;
   }
 }
 

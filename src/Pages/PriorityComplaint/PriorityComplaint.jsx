@@ -52,7 +52,7 @@ function PriorityComplaint() {
                     <h1>Priority Complaints</h1>
                 </div>
                 <div className={styles.container0}>
-                    <div className={styles.row4}>
+                    <div className={`${styles.row4} ${styles.fullrow}`}>
                         <div className={styles.cell}>Complaint No</div>
                         <div className={styles.cell}>Name</div>
                         <div className={styles.cell}>Phone Number</div>
@@ -65,31 +65,43 @@ function PriorityComplaint() {
                     </div>
                     {
                         cart && cart.map(firs => (
-                            <div className={styles.row4} key={firs._id}>
-                                <div className={styles.cell1}>{firs.ComplaintNumber}</div>
-                                <div className={styles.cell1}>{firs.Name}</div>
-                                <div className={styles.cell1}>{firs.ContactNumber}</div>
-                                <div className={styles.cell1}>{firs.CNIC}</div>
-                                <div className={styles.cell1}>{firs.Category}</div>
-                                <div className={styles.cell1}>{firs.Offence}</div>
-                                <div className={styles.cell1}>{firs.EntryDate}</div>
-                                <div className={styles.cell1}>{firs.Status}</div>
-                                <div className={`${styles.cell1} ${styles.icon}`}>
-                                    <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
-                                    <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
-                                    <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" onClick={() => { navigate(`/FIRPDF/${firs._id}`) }} />
-                                    <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" />
-                                    <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" />
-                                    <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
-                                    <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
-                                    <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
+                            <div className={styles.table}>
+                                <div className={` ${styles.resprow}`}>
+                                    <div className={styles.cell}>Complaint No</div>
+                                    <div className={styles.cell}>Name</div>
+                                    <div className={styles.cell}>Phone Number</div>
+                                    <div className={styles.cell}>CNIC</div>
+                                    <div className={styles.cell}>Category</div>
+                                    <div className={styles.cell}>Offence</div>
+                                    <div className={styles.cell}>Date</div>
+                                    <div className={styles.cell}>Status</div>
+                                    <div className={styles.cell}>Actions</div>
                                 </div>
-                            </div>
-                        ))
+                                <div className={`${styles.row4} ${styles.datarow}`} key={firs._id}>
+                                    <div className={styles.cell1}>{firs.ComplaintNumber}</div>
+                                    <div className={styles.cell1}>{firs.Name}</div>
+                                    <div className={styles.cell1}>{firs.ContactNumber}</div>
+                                    <div className={styles.cell1}>{firs.CNIC}</div>
+                                    <div className={styles.cell1}>{firs.Category}</div>
+                                    <div className={styles.cell1}>{firs.Offence}</div>
+                                    <div className={styles.cell1}>{firs.EntryDate}</div>
+                                    <div className={styles.cell1}>{firs.Status}</div>
+                                    <div className={`${styles.cell1} ${styles.icon}`}>
+                                        <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
+                                        <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
+                                        <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" onClick={() => { navigate(`/FIRPDF/${firs._id}`) }} />
+                                        <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" />
+                                        <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" />
+                                        <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
+                                        <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
+                                        <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
+                                    </div>
+                                </div>
+                            </div>))
                     }
                 </div>
-                </div>
-                {showConfirmation && (
+            </div>
+            {showConfirmation && (
                 <CustomAlert
                     message="Are you sure you want to clear all priority complaints?"
                     onConfirm={handleConfirmClearAll}

@@ -8,14 +8,16 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useConfirmPasswordMutation } from "../../Redux/Features/Auth/AuthApi";
 import Textinputs from "../../Components/Textinput/Textinputs";
+import { setPasswordConfirmed } from "../../Redux/Features/Auth/AuthSlice";
 
 
 function ConfirmPassword() {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
     console.log(user);
     const [showPassword, setShowPassword] = useState(false);
@@ -40,8 +42,9 @@ function ConfirmPassword() {
             console.log(values);
             const User = await UserCredential(values).unwrap();
             if(User.success){
-                toast.success(User.message);
+                dispatch(setPasswordConfirmed(true));
                 navigate('/NewPassword');
+                toast.success(User.message);
             }else{
                 toast.error(User.message)
             }

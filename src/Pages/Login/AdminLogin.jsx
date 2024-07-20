@@ -51,13 +51,13 @@ function AdminLogin() {
             console.log(values);
             const user = await Adminlogin(values).unwrap();
             if (user.success) {
-                toast.success(user.error);
+                toast.success(user.message);
+                dispatch(setUserInfo(user));
+                navigate("/MyApplications");
             }
             else {
-                toast.error(user.error);
+                toast.error(user.message);
             }
-            dispatch(setUserInfo(user));
-            navigate("/MyApplications");
         }
     })
 
@@ -116,11 +116,13 @@ function AdminLogin() {
                         />
                     </div>
                     <p className="help-block text-danger">{errors.ReCapcha && touched.ReCapcha ? errors.ReCapcha : null}</p>
-                    <span ><Link to="/AdminForgetPassword" className={styles.createAccount}>Forget Password</Link></span>
+                    <div className={styles.linkDiv}>
+                        <span ><Link to="/AdminForgetPassword" className={styles.createAccount}>Forget Password</Link></span>
+                        <span><Link to="/Login" className={styles.createAccount}>Log In as Citizen</Link></span>
+                    </div>
                     <button className={styles.loginButton} type="submit" >
                         {isLoading ? "Loading..." : "Log In as Admin"}
                     </button>
-                    <span><Link to="/Login" className={styles.createAccount}>Log In as Citizen</Link></span>
                 </div>
             </form>
             <ToastContainer />

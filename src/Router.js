@@ -52,6 +52,7 @@ import ViewContactMessage from "./Pages/ViewContactMessage/ViewContactMessage.js
 import AdminForgetPassword from "./Pages/Login/AdminForgetPassword.jsx";
 import AdminResetPassword from "./Pages/Login/AdminResetPassword.jsx";
 import ChangeAdminName from "./Pages/ChangeUsername/ChangeAdminName.jsx";
+import PrivateRoute from "./Pages/Layouts/PrivateRoute.jsx";
 
 export const router = createBrowserRouter(
 
@@ -87,7 +88,7 @@ export const router = createBrowserRouter(
                     <Route path="/CharacterCertificateForm" exact element={<div className={styles.main}><CharacterCertificateForm /></div>} />
                     <Route path="/VehicleVerificationForm" exact element={<div className={styles.main}><VehicleVerificationForm /></div>} />
                     <Route path="/ConfirmPassword" exact element={<div className={styles.main}>< ConfirmPassword /></div>} />
-                    <Route path="/NewPassword" exact element={<div className={styles.main}>< NewPassword /></div>} />
+                    <Route path="/NewPassword" exact element={<div className={styles.main}><PrivateRoute><NewPassword /></PrivateRoute> </div>} />
                     <Route path="/ChangeUsername" exact element={<div className={styles.main}>< ChangeUsername /></div>} />
                 </Route>
                 <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'Admin'} /></div>}>
@@ -97,7 +98,7 @@ export const router = createBrowserRouter(
                     <Route path="/AddOffence" exact element={<div className={styles.main}><AddOffence /></div>} />
                     <Route path="/AddCategory" exact element={<div className={styles.main}><AddCategory /></div>} />
                     <Route path="/adminConfirmPassword" exact element={<div className={styles.main}>< AdminConfirmPassword /></div>} />
-                    <Route path="/adminNewPassword" exact element={<div className={styles.main}>< AdminNewPassword /></div>} />
+                    <Route path="/adminNewPassword" exact element={<div className={styles.main}><PrivateRoute>< AdminNewPassword /></PrivateRoute></div>} />
                     <Route path="/adminNewName" exact element={<div className={styles.main}>< ChangeAdminName /></div>} />
                 </Route>
                 <Route path="/" element={<div className={styles.layout}><AuthAdminLayouts role={'SuperAdmin'} /></div>}>
@@ -110,7 +111,7 @@ export const router = createBrowserRouter(
                     <Route path="/admin/Search" exact element={<div className={styles.main}><Search /></div>} />
                     <Route path="/admin/PriorityComplaint" exact element={<div className={styles.main}><PriorityComplaint /></div>} />
                     <Route path="/admin/ConfirmPassword" exact element={<div className={styles.main}>< AdminConfirmPassword /></div>} />
-                    <Route path="/admin/NewPassword" exact element={<div className={styles.main}>< AdminNewPassword /></div>} />
+                    <Route path="/admin/NewPassword" exact element={<div className={styles.main}><PrivateRoute>< AdminNewPassword /></PrivateRoute></div>} />
                 </Route>
             </Route>
             <Route path="/LogIn" exact element={<div className={styles.main}><Login /></div>} />

@@ -48,7 +48,7 @@ function FIRPDF() {
 
   return (
     <>
-      <div className={styles.body}>
+      <div className={styles.Body}>
         <div className={styles.document}>
           <div className={styles.topHeader}>
             <div className={styles.formGroup}>

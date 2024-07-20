@@ -6,7 +6,6 @@ import { faTh, faPenToSquare, faRightLeft, faHandshake, faFile, faFlag, faPrint,
 import { Tooltip } from 'react-tooltip';
 import { useGetAllFIRsQuery, useGetCitizensFIRsQuery, useGetPoliceStationFIRsQuery, useGetAllFIRcountQuery, useGetCitizensFIRcountQuery, useGetPoliceStationFIRcountQuery, useChangeFIRStatusMutation, useChangeFIRPoliceStationMutation } from "../../Redux/Features/FIR/FIRApi";
 import { useDispatch, useSelector } from "react-redux";
-import Filters from "../../Components/Filters/Filters";
 import { addToCart, removeFromCart } from "../../Redux/Slices/CartSlice";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import LoadingSpinner from "../../Components/Loading/Loading";
@@ -51,12 +50,12 @@ function MyApplications() {
   const dUrl = '';
   const pcUrl = `?policeStation=${Id}`;
   const ccUrl = `?cnic=${user.cnic}`;
-  const { isLoading, data, error } = useGetAllFIRsQuery(url);
-  const { isLoading: dLoading, data: dData, error: dError } = useGetAllFIRcountQuery(dUrl);
-  const { isLoading: pLoading, data: pData, error: pError } = useGetPoliceStationFIRsQuery(pUrl);
-  const { isLoading: pcLoading, data: pcData, error: pcError } = useGetPoliceStationFIRcountQuery(pcUrl);
-  const { isLoading: cLoading, data: cData, error: cError } = useGetCitizensFIRsQuery(cUrl);
-  const { isLoading: ccLoading, data: ccData, error: ccError } = useGetCitizensFIRcountQuery(ccUrl);
+  const { isLoading, data , error , refetch } = useGetAllFIRsQuery(url);
+  const { isLoading: dLoading, data: dData, error: dError ,refetch: dRefetch } = useGetAllFIRcountQuery(dUrl);
+  const { isLoading: pLoading, data: pData, error: pError, refetch: PSRefetch } = useGetPoliceStationFIRsQuery(pUrl);
+  const { isLoading: pcLoading, data: pcData, error: pcError, refetch: PSCRefetch } = useGetPoliceStationFIRcountQuery(pcUrl);
+  const { isLoading: cLoading, data: cData, error: cError, refetch: CRefetch } = useGetCitizensFIRsQuery(cUrl);
+  const { isLoading: ccLoading, data: ccData, error: ccError, refetch: CCRefetch } = useGetCitizensFIRcountQuery(ccUrl);
   const [updateStatus, { error: csError }] = useChangeFIRStatusMutation();
   const [updatePoliceStation, { error: upsError }] = useChangeFIRPoliceStationMutation();
   const [sendMeetingMessage, { error: messageError }] = useSendMeetingMessageMutation();
@@ -65,6 +64,23 @@ function MyApplications() {
     const storedState = localStorage.getItem("showIcon");
     return storedState ? JSON.parse(storedState) : {};
   });
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (user.role === Role) {
+        refetch();
+        dRefetch();
+      }else if (user.role === role) {
+        PSRefetch();
+        PSCRefetch();
+      } else {
+        CRefetch();
+        CCRefetch();
+      }
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [user.role, refetch,dRefetch,PSRefetch, PSCRefetch, CRefetch, CCRefetch]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -369,7 +385,7 @@ function MyApplications() {
               : <div className={styles.avatarCitizen}></div>}
             <div className={styles.infoColumn}>
               {(user && (role === user.role || Role === user.role)) ?
-                <div className={styles.name}>Welcome, {psData && psData.PSs.PSName}</div> :
+                <div className={styles.name}>Welcome, {psData && psData?.PSs?.PSName}</div> :
                 <div className={styles.name}>Hi,{user.name}</div>}
               <div className={styles.email}>{user.email}</div>
               <div className={styles.role}>{user.role}</div>
@@ -401,9 +417,6 @@ function MyApplications() {
             </div>
           </div>
         </div>
-        {(user && (role === user.role || Role === user.role)) ? <>
-          <Filters />
-        </> : null}
         <div className={styles.container3}>
           <div className={styles.row5}>
             <div className={styles.row5}>
@@ -425,7 +438,7 @@ function MyApplications() {
         </div>
         {(user && Role === user.role) ? <>
           <div className={styles.container0}>
-            <div className={styles.row4}>
+            <div className={`${styles.row4} ${styles.fullrow}`}>
               <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
                 <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
                 <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
@@ -454,32 +467,62 @@ function MyApplications() {
             </div>
             {
               data.FIRs && data.FIRs.map(firs => (
-                <div className={styles.row4} key={firs._id}>
-                  <div className={styles.cell}>{firs.ComplaintNumber}</div>
-                  <div className={styles.cell}>{firs.Name}</div>
-                  <div className={styles.cell}>{`0${firs.ContactNumber}`}</div>
-                  <div className={styles.cell}>{firs.CNIC}</div>
-                  <div className={styles.cell}>{firs.Category}</div>
-                  <div className={styles.cell}>{firs.Offence}</div>
-                  <div className={styles.cell}>{firs.EntryDate}</div>
-                  <div className={styles.cell}>
-                    <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetStatusHandler(firs._id, e.target.value)}>
-                      <option value="pending">Pending</option>
-                      <option value="filed">Filed</option>
-                      <option value="completed">Completed</option>
-                    </select>
+                <div className={styles.table}>
+                  <div className={`${styles.resprow}`}>
+                    <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
+                    <div className={styles.cell}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />}</div>
+                    <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
+                      <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
+                    <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
+                      <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+                    <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
+                    <div className={styles.cell}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
+                    <div className={styles.cell}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
+                      <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
+                    <div className={styles.cell}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
+                    <div className={styles.cell}>Actions</div>
                   </div>
-                  <div className={`${styles.cell} ${styles.icon}`}>
-                    <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
-                    <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
-                    <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" onClick={() => { navigate(`/FIRPDF/${firs._id}`) }} />
-                    <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
-                    <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
-                    <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
-                    {showIcon[firs._id] ? <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
-                      : <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
-                    }
-                    <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
+                  <div className={`${styles.row4} ${styles.datarow}`} key={firs._id}>
+                    <div className={styles.cell}>{firs.ComplaintNumber}</div>
+                    <div className={styles.cell}>{firs.Name}</div>
+                    <div className={styles.cell}>{`0${firs.ContactNumber}`}</div>
+                    <div className={styles.cell}>{firs.CNIC}</div>
+                    <div className={styles.cell}>{firs.Category}</div>
+                    <div className={styles.cell}>{firs.Offence}</div>
+                    <div className={styles.cell}>{firs.EntryDate}</div>
+                    <div className={styles.cell}>
+                      <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetStatusHandler(firs._id, e.target.value)}>
+                        <option value="pending">Pending</option>
+                        <option value="approved">approved</option>
+                        <option value="filed">Filed</option>
+                        <option value="completed">Completed</option>
+                      </select>
+                    </div>
+                    <div className={`${styles.cell} ${styles.icon}`}>
+                      <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
+                      <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
+                      <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" onClick={() => { navigate(`/FIRPDF/${firs._id}`) }} />
+                      <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
+                      <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
+                      <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
+                      {showIcon[firs._id] ? <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
+                        : <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
+                      }
+                      <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
+                    </div>
                   </div>
                 </div>
               ))
@@ -508,7 +551,7 @@ function MyApplications() {
         {(user && role === user.role) ? <>
 
           <div className={styles.container0}>
-            <div className={styles.row4}>
+            <div className={`${styles.row4} ${styles.fullrow}`}>
               <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
                 <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
                 <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
@@ -537,35 +580,64 @@ function MyApplications() {
             </div>
             {
               pData.PoliceStaionFIRs && pData.PoliceStaionFIRs.map(firs => (
-                <div className={styles.row4} key={firs._id}>
-                  <div className={styles.cell}>{firs.ComplaintNumber}</div>
-                  <div className={styles.cell}>{firs.Name}</div>
-                  <div className={styles.cell}>{`0${firs.ContactNumber}`}</div>
-                  <div className={styles.cell}>{firs.CNIC}</div>
-                  <div className={styles.cell}>{firs.Category}</div>
-                  <div className={styles.cell}>{firs.Offence}</div>
-                  <div className={styles.cell}>{firs.EntryDate}</div>
-                  <div className={styles.cell}>
-                    <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetStatusHandler(firs._id, e.target.value)}>
-                      <option value="pending">Pending</option>
-                      <option value="filed">Filed</option>
-                      <option value="completed">Completed</option>
-                    </select>
+                <div className={styles.table}>
+                  <div className={`${styles.resprow}`}>
+                    <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
+                    <div className={styles.cell}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />}</div>
+                    <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
+                      <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
+                    <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
+                      <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+                    <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
+                    <div className={styles.cell}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
+                    <div className={styles.cell}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
+                      <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
+                    <div className={styles.cell}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
+                    <div className={styles.cell}>Actions</div>
                   </div>
-                  <div className={`${styles.cell} ${styles.icon}`}>
-                    <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
-                    <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
-                    <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" onClick={() => { navigate(`/FIRPDF/${firs._id}`) }} />
-                    <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)}/>
-                    <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
-                    <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
-                    {showIcon[firs._id] ? <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
-                      : <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
-                    }
-                    <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
+                  <div className={`${styles.row4} ${styles.datarow}`} key={firs._id}>
+                    <div className={styles.cell}>{firs.ComplaintNumber}</div>
+                    <div className={styles.cell}>{firs.Name}</div>
+                    <div className={styles.cell}>{`0${firs.ContactNumber}`}</div>
+                    <div className={styles.cell}>{firs.CNIC}</div>
+                    <div className={styles.cell}>{firs.Category}</div>
+                    <div className={styles.cell}>{firs.Offence}</div>
+                    <div className={styles.cell}>{firs.EntryDate}</div>
+                    <div className={styles.cell}>
+                      <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetStatusHandler(firs._id, e.target.value)}>
+                        <option value="pending">Pending</option>
+                        <option value="approved">approved</option>
+                        <option value="filed">Filed</option>
+                        <option value="completed">Completed</option>
+                      </select>
+                    </div>
+                    <div className={`${styles.cell} ${styles.icon}`}>
+                      <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
+                      <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
+                      <FontAwesomeIcon icon={faFile} data-tooltip-id="Tooltip" data-tooltip-content="View File Mode" onClick={() => { navigate(`/FIRPDF/${firs._id}`) }} />
+                      <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
+                      <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
+                      <FontAwesomeIcon icon={faPenToSquare} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
+                      {showIcon[firs._id] ? <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
+                        : <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
+                      }
+                      <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
+                    </div>
                   </div>
-                </div>
-              ))
+                </div>))
             }
           </div>
           <ReactPaginate
@@ -590,16 +662,16 @@ function MyApplications() {
           /></> : null}
         {(user && cRole === user.role) ? <>
           <div className={styles.container4}>
-            <div className={styles.row4}>
+            <div className={`${styles.row4} ${styles.fullrow}`}>
               <div className={styles.cell1}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
                 <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
                 <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
-              <div className={styles.cell1}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
-                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
-                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
-              <div className={styles.cell1}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
-                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
-                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
+              <div className={styles.cell1}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />} </div>
+              <div className={styles.cell1}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
+                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("CNIC")} /> :
+                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("CNIC")} />}</div>
               <div className={styles.cell1}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
                 <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
                 <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
@@ -611,15 +683,36 @@ function MyApplications() {
             {
               cData.CitizenFIRs && cData.CitizenFIRs.map(firs => (
                 <>
-                  <div className={styles.row4} key={firs._id}>
-                    <div className={styles.cell1}>{firs.ComplaintNumber}</div>
-                    <div className={styles.cell1}>{firs.Category}</div>
-                    <div className={styles.cell1}>{firs.Offence}</div>
-                    <div className={styles.cell1}>{firs.EntryDate}</div>
-                    <div className={styles.cell1}>{firs.Status}</div>
-                    <div className={styles.cell1}><Stars rating={firs.Rating} /></div>
-                    <div><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
+                  <div className={styles.table}>
+                    <div className={`${styles.resprow}`}>
+                      <div className={styles.cell1}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
+                        <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
+                        <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
+                      <div className={styles.cell1}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
+                        <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
+                        <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />} </div>
+                      <div className={styles.cell1}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
+                        <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("CNIC")} /> :
+                        <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("CNIC")} />}</div>
+                      <div className={styles.cell1}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
+                        <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
+                        <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
+                      <div className={styles.cell1}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
+                        <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
+                        <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
+                      <div className={styles.cell1}>Rating</div>
+                    </div>
+                    <div className={`${styles.row4} ${styles.datarow}`} key={firs._id}>
+                      <div className={styles.cell1}>{firs.ComplaintNumber}</div>
+                      <div className={styles.cell1}>{firs.Name}</div>
+                      <div className={styles.cell1}>{firs.CNIC}</div>
+                      <div className={styles.cell1}>{firs.EntryDate}</div>
+                      <div className={styles.cell1}>{firs.Status}</div>
+                      <div className={styles.cell1}><Stars rating={firs.Rating} /></div>
+                      <div className={styles.respButtonfull}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
+                    </div>
                   </div>
+                  <div className={styles.respButton}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
                 </>
               ))
             }

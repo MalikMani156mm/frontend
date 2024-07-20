@@ -9,6 +9,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
 import { useGetAllPoliceStationsQuery, useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import LoadingSpinner from "../../Components/Loading/Loading";
+import { useGetAllCategoriesQuery, useGetCategoryByIdQuery } from "../../Redux/Features/Category/CategoryApi";
+import { useGetAllOffencesQuery, useGetOffenceByIdQuery } from "../../Redux/Features/Offence/OffenceApi";
 
 
 function EditFIR() {
@@ -19,28 +21,41 @@ function EditFIR() {
   const [selectedValue, setSelectedValue] = useState(null);
   const [selectedValue2, setSelectedValue2] = useState(null);
   const [policeStationId, setPoliceStationId] = useState(null);
+  const [categoryId, setCategoryId] = useState(null);
+  const [offenceId, setOffenceId] = useState(null);
   const [fileInputs, setFileInputs] = useState([{ id: 1 }]);
   const { id } = useParams();
   const [updateFIR, { isLoading, error }] = useUpdateFIRMutation();
   const { data: allPSData } = useGetAllPoliceStationsQuery();
+  const { data: Cdata } = useGetAllCategoriesQuery();
+  const { data: Odata } = useGetAllOffencesQuery();
   const { data: firData, error: firError, isLoading: firLoading } = useGetFIRByIdQuery(id);
-  
+
   useEffect(() => {
     if (firData && firData.FIRs) {
-      setPoliceStationId(firData.FIRs.PoliceStation);
+      setPoliceStationId(firData?.FIRs?.PoliceStation);
+      setCategoryId(firData?.FIRs?.Category);
+      setOffenceId(firData?.FIRs?.Offence);
     }
   }, [firData]);
 
   const { data: psData, error: psError, isLoading: psLoading } = useGetPoliceStationByIdQuery(policeStationId, {
     skip: !policeStationId,
   });
+  const { data: cData, error: cError, isLoading: cLoading } = useGetCategoryByIdQuery(categoryId, {
+    skip: !categoryId,
+  });
+  console.log(cData);
+  const { data: oData, error: oError, isLoading: oLoading } = useGetOffenceByIdQuery(offenceId, {
+    skip: !offenceId,
+  });
 
-  if (firError || psError || error) {
+  if (error || psError || cError || oError || firError) {
     return <Navigate to={'*'} replace={true} />
   }
 
-  if (firLoading || (!policeStationId && psLoading)) {
-    return <div><LoadingSpinner/></div>;
+  if (isLoading || firLoading || (!policeStationId && psLoading) || (!categoryId && cLoading) || (!offenceId && oLoading)) {
+    return <div><LoadingSpinner /></div>;
   }
 
   if (!firData || !firData.FIRs) {
@@ -48,7 +63,7 @@ function EditFIR() {
   }
 
   if (!firData || !firData.FIRs) {
-    return <div><LoadingSpinner/></div>;
+    return <div><LoadingSpinner /></div>;
   }
 
 
@@ -80,7 +95,7 @@ function EditFIR() {
   };
 
 
-  
+
   // eslint-disable-next-line
   const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
     initialValues: {
@@ -149,7 +164,7 @@ function EditFIR() {
 
   const handleIncidentDetailsChange = (event) => {
     setFieldValue('IncidentDetails', event.target.value);
-};
+  };
 
   return (
     <div className={styles.body}>
@@ -160,8 +175,8 @@ function EditFIR() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Entry Date</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3 ">
+              <div className="col-lg-3 col-md-12 col-sm-12 "><p>Entry Date</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12 ">
                 <input
                   type="datetime-local"
                   id="datetime"
@@ -173,17 +188,17 @@ function EditFIR() {
                 />
                 <p className="help-block text-danger">{errors.EntryDate && touched.EntryDate ? errors.EntryDate : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <p>Source of Compliant</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="SourceOfComplaint" placeholder="Online" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} disabled={true} />
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>District</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>District</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="District"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -192,12 +207,12 @@ function EditFIR() {
                 </select>
                 <p className="help-block text-danger">{errors.District && touched.District ? errors.District : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Division</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Division</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Division"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0"disabled selected>{firData.FIRs.Division}</option>
+                  <option value="0" disabled selected>{firData.FIRs.Division}</option>
                   <option value="City">City</option>
                   <option value="Saddar">Saddar</option>
                   <option value="Industrial Area">Industrial Area</option>
@@ -207,12 +222,12 @@ function EditFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Circle</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Circle</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Circle"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0"disabled selected>{firData.FIRs.Circle}</option>
+                  <option value="0" disabled selected>{firData.FIRs.Circle}</option>
                   <option value="Sabzi Mandi">Sabzi Mandi</option>
                   <option value="Secretariat">Secretariat</option>
                   <option value="Abpara">Abpara</option>
@@ -244,29 +259,31 @@ function EditFIR() {
                 </select>
                 <p className="help-block text-danger">{errors.Circle && touched.Circle ? errors.Circle : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Police Station</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Police Station</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="PoliceStation"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0"disabled selected>{psData && psData.PSs.PSName}</option>
+                  <option value="0" disabled selected>{psData && psData.PSs.PSName}</option>
                   {
                     allPSData && allPSData.map(PS => (
                       <option value={PS._id} key={PS._id}>{PS.PSName}</option>
-                    ))}
+                    )
+                    )
+                  }
 
                 </select>
                 <p className="help-block text-danger">{errors.PoliceStation && touched.PoliceStation ? errors.PoliceStation : null}</p>
               </div>
             </div>
-            {(user && (role=== user.role || Role === user.role)) ? <>
+            {(user && (role === user.role || Role === user.role)) ? <>
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3"><p>Beat/Moza No.</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12"><p>Beat/Moza No.</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <select className="form-control" name="BeatMoza"
                     onChange={handleChange}
                     onBlur={handleBlur}>
-                    <option value="0"disabled selected>{firData.FIRs.BeatMoza}</option>
+                    <option value="0" disabled selected>{firData.FIRs.BeatMoza}</option>
                     <option value="1">Beat/Moza-1</option>
                   </select>
                 </div>
@@ -279,15 +296,15 @@ function EditFIR() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 ">
+              <div className="col-lg-3 col-md-12 col-sm-12 ">
                 <p>Compliant Number</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="CompliantNumber" placeholder={firData.FIRs.ComplaintNumber} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} disabled={true} />
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>CNIC (without dashes)</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC (without dashes)</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="number" name="CNIC" placeholder={firData.FIRs.CNIC} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
@@ -296,13 +313,13 @@ function EditFIR() {
             </div>
 
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Name</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="Name" placeholder={firData.FIRs.Name} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <div className={styles.radio}>
                   <div className="mx-2">
                     <input type="radio" name="relation" id="son" value="son"
@@ -326,7 +343,7 @@ function EditFIR() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="text"
                   name="GuardianName"
@@ -339,19 +356,19 @@ function EditFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Gender</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Gender" onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0"disabled selected>{firData.FIRs.Gender}</option>
+                  <option value="0" disabled selected>{firData.FIRs.Gender}</option>
                   <option value="1">Male</option>
                   <option value="2">Female</option>
                   <option value="3">Others</option>
                 </select>
                 <p className="help-block text-danger">{errors.Gender && touched.Gender ? errors.Gender : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Contact Number</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Contact Number</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="number"
                   name="ContactNumber"
@@ -364,10 +381,10 @@ function EditFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <p>Permanent Address</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <textarea
                   type="text"
                   name="PermanentAddress"
@@ -388,10 +405,10 @@ function EditFIR() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <p>Place of Occurance</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="text"
                   name="placeOfOccurance"
@@ -402,8 +419,8 @@ function EditFIR() {
                 />
                 <p className="help-block text-danger">{errors.placeOfOccurance && touched.placeOfOccurance ? errors.placeOfOccurance : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Incident Date</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Incident Date</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="date"
                   id="datetime"
@@ -416,204 +433,59 @@ function EditFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Category</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 "><p>Category</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Category"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0"disabled selected>{firData.FIRs.Category}</option>
-                  <option value="Child Abuse">Child Abuse</option>
-                  <option value="Complaint against Police">Complaint against Police</option>
-                  <option value="Foreigner complaint">Foreigner complaint</option>
-                  <option value="Gender Abuse">Gender Abuse</option>
-                  <option value="Harassment">Harassment</option>
-                  <option value="Human Rights">Human Rights</option>
-                  <option value="Investigation">Investigation</option>
-                  <option value="Loss Report">Loss Report</option>
-                  <option value="Minority Abuse">Minority Abuse</option>
-                  <option value="Non registration of FIR">Non registration of FIR</option>
-                  <option value="Others">Others</option>
-                  <option value="Overseas Pakistan">Overseas Pakistan</option>
-                  <option value="Reporting of Crime">Reporting of Crime</option>
-                  <option value="Traffic Complaint">Traffic Complaint</option>
-                  <option value="Violence Against Transgender Person">Violence Against Transgender Person</option>
-                  <option value="Violence Against Woman">Violence Against Woman</option>
+                  <option value="0" disabled selected>{cData?.category?.Category}</option>
+                  {
+                    Cdata && Cdata.map(C => (
+                      <option value={C._id} key={C._id}>{C.Category}</option>
+                    ))}
                 </select>
                 <p className="help-block text-danger">{errors.Category && touched.Category ? errors.Category : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Offence</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="Offence"
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Offence</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
+              <select className="form-control" name="Offence"
                   onChange={handleChange}
                   onBlur={handleBlur}>
-                  <option value="0"disabled selected>{firData.FIRs.Offence}</option>
-                  <option value="295-A PPC">295-A PPC</option>
-                  <option value="382 PPC">382 PPC</option>
-                  <option value="Access to public place">Access to public place</option>
-                  <option value="Acid Throwing">Acid Throwing</option>
-                  <option value="Anti-Norcotics Act">Anti-Norcotics Act</option>
-                  <option value="Anti-Terrorism Act">Anti-Terrorism Act</option>
-                  <option value="Arm License / Slip">Arm License / Slip</option>
-                  <option value="Arms Ordinance Act">Arms Ordinance Act</option>
-                  <option value="Arrest of innocent persons">Arrest of innocent persons</option>
-                  <option value="ATM Card">ATM Card</option>
-                  <option value="Attack on Govt. Servant">Attack on Govt. Servant</option>
-                  <option value="Attempted Murder">Attempted Murder</option>
-                  <option value="BayForm Loss">BayForm Loss</option>
-                  <option value="Begging Act">Begging Act</option>
-                  <option value="Blind Murder">Blind Murder</option>
-                  <option value="Border Crossing Act">Border Crossing Act</option>
-                  <option value="Breach of trust 406PPC">Breach of trust 406PPC</option>
-                  <option value="Burglary">Burglary</option>
-                  <option value="Canal Cut">Canal Cut</option>
-                  <option value="Cancellation of False FIR">Cancellation of False FIR</option>
-                  <option value="Car Snatching">Car Snatching</option>
-                  <option value="Car Theft">Car Theft</option>
-                  <option value="Character Certificate">Character Certificate</option>
-                  <option value="Cheating">Cheating</option>
-                  <option value="Cheque / Cheque Book">Cheque / Cheque Book</option>
-                  <option value="Cheque Dishonour">Cheque Dishonour</option>
-                  <option value="Child Marriage">Child Marriage</option>
-                  <option value="Child Sexual Abuse">Child Sexual Abuse</option>
-                  <option value="Cigarette Act">Cigarette Act</option>
-                  <option value="CNIC Loss">CNIC Loss</option>
-                  <option value="Commission">Commission</option>
-                  <option value="Complaint against police">Complaint against police</option>
-                  <option value="Copyright Act">Copyright Act</option>
-                  <option value="Corruption">Corruption</option>
-                  <option value="Cyber Crime Act">Cyber Crime Act</option>
-                  <option value="Cycle Theft">Cycle Theft</option>
-                  <option value="Dacoity">Dacoity</option>
-                  <option value="Dacoity/Robbery with Murder">Dacoity/Robbery with Murder</option>
-                  <option value="Defective Investigation">Defective Investigation</option>
-                  <option value="Demand of Illegal Gratification">Demand of Illegal Gratification</option>
-                  <option value="Dengue Act">Dengue Act</option>
-                  <option value="Domestic Violence">Domestic Violence</option>
-                  <option value="Dowry Related Violence">Dowry Related Violence</option>
-                  <option value="Driving License">Driving License</option>
-                  <option value="Educational Documents Loss">Educational Documents Loss</option>
-                  <option value="Electricity Act">Electricity Act</option>
-                  <option value="Fatal Accident">Fatal Accident</option>
-                  <option value="Female Genital Mutilation/Cutting">Female Genital Mutilation/Cutting</option>
-                  <option value="Fight">Fight</option>
-                  <option value="Forced Abortion">Forced Abortion</option>
-                  <option value="Forced Marriage">Forced Marriage</option>
-                  <option value="Freedom of Assembly & Association">Freedom of Assembly & Association</option>
-                  <option value="Freedom of movement">Freedom of movement</option>
-                  <option value="Gambling">Gambling</option>
-                  <option value="Gang Rape">Gang Rape</option>
-                  <option value="Habs e Beja">Habs e Beja</option>
-                  <option value="Harassment">Harassment</option>
-                  <option value="Harassment at workplace">Harassment at workplace</option>
-                  <option value="High Heandedness">High Heandedness</option>
-                  <option value="Honor Killng">Honor Killng</option>
-                  <option value="Hurt (personal feud)">Hurt (personal feud)</option>
-                  <option value="Illegal detention">Illegal detention</option>
-                  <option value="Illegal Extortion">Illegal Extortion</option>
-                  <option value="Illegal Gas Cylinder Act">Illegal Gas Cylinder Act</option>
-                  <option value="Illegal Weapon">Illegal Weapon</option>
-                  <option value="Insurance Claim">Insurance Claim</option>
-                  <option value="Intimate Partner Violence">Intimate Partner Violence</option>
-                  <option value="Investigation – Delay">Investigation – Delay</option>
-                  <option value="Investigation – Faulty / Unfair">Investigation – Faulty / Unfair</option>
-                  <option value="Involvement in Criminal Activity">Involvement in Criminal Activity</option>
-                  <option value="Jewellery Snatching">Jewellery Snatching</option>
-                  <option value="Kidnapping">Kidnapping</option>
-                  <option value="Kidnapping Minors">Kidnapping Minors</option>
-                  <option value="Kite Flying Act">Kite Flying Act</option>
-                  <option value="Laptop theft">Laptop theft</option>
-                  <option value="Local Government Act">Local Government Act</option>
-                  <option value="Loss of Property Document">Loss of Property Document</option>
-                  <option value="Loss of Service Card">Loss of Service Card</option>
-                  <option value="Loss of Utility Meter/ No Plate">Loss of Utility Meter/ No Plate</option>
-                  <option value="Lost Bike Registration book">Lost Bike Registration book</option>
-                  <option value="Loud Speaker Act">Loud Speaker Act</option>
-                  <option value="M/Cycle Snatching">M/Cycle Snatching</option>
-                  <option value="M/Cycle Theft">M/Cycle Theft</option>
-                  <option value="Misappropriation">Misappropriation</option>
-                  <option value="Misbehavior">Misbehavior</option>
-                  <option value="Miscellaneous">Miscellaneous</option>
-                  <option value="Misconduct">Misconduct</option>
-                  <option value="Mobile Phone">Mobile Phone</option>
-                  <option value="Mobile Snatching">Mobile Snatching</option>
-                  <option value="Mobile theft">Mobile theft</option>
-                  <option value="Murder">Murder</option>
-                  <option value="Narcotics">Narcotics</option>
-                  <option value="Non registration of FIR">Non registration of FIR</option>
-                  <option value="Non-Fatal Accident">Non-Fatal Accident</option>
-                  <option value="Non-Registration of FIR">Non-Registration of FIR</option>
-                  <option value="Omission">Omission</option>
-                  <option value="One Wheeling Act">One Wheeling Act</option>
-                  <option value="Original File (Bike/Car)">Original File (Bike/Car)</option>
-                  <option value="Other">Other</option>
-                  <option value="Other Crime">Other Crime</option>
-                  <option value="Other Document">Other Document</option>
-                  <option value="Other Vehicle Snatching">Other Vehicle Snatching</option>
-                  <option value="Other Vehicle Theft">Other Vehicle Theft</option>
-                  <option value="Outraging the Modesty of Women">Outraging the Modesty of Women</option>
-                  <option value="Overspeeding">Overspeeding</option>
-                  <option value="Passport Loss">Passport Loss</option>
-                  <option value="Pay Order">Pay Order</option>
-                  <option value="Pension Book">Pension Book</option>
-                  <option value="Police Encounter">Police Encounter</option>
-                  <option value="Police Order Act">Police Order Act</option>
-                  <option value="Price Control Act">Price Control Act</option>
-                  <option value="Property">Property</option>
-                  <option value="Purse Snatching">Purse Snatching</option>
-                  <option value="Railway Act">Railway Act</option>
-                  <option value="Rape">Rape</option>
-                  <option value="Registration book">Registration book</option>
-                  <option value="Robbery">Robbery</option>
-                  <option value="Saving Certificate">Saving Certificate</option>
-                  <option value="Secretarianism">Secretarianism</option>
-                  <option value="Sexual Assualt">Sexual Assualt</option>
-                  <option value="Slackness in Duty">Slackness in Duty</option>
-                  <option value="Snatching">Snatching</option>
-                  <option value="Stalking">Stalking</option>
-                  <option value="Suicide Attempt">Suicide Attempt</option>
-                  <option value="Telephone Act">Telephone Act</option>
-                  <option value="Theft">Theft</option>
-                  <option value="Threats">Threats</option>
-                  <option value="Threats Via Call Or SMS">Threats Via Call Or SMS</option>
-                  <option value="Torture">Torture</option>
-                  <option value="Touheen Quran Act">Touheen Quran Act</option>
-                  <option value="Tree Theft Act">Tree Theft Act</option>
-                  <option value="Tresspassing">Tresspassing</option>
-                  <option value="Unlawful Marriages">Unlawful Marriages</option>
-                  <option value="Un-Natural Offence">Un-Natural Offence</option>
-                  <option value="Use of Torture">Use of Torture</option>
-                  <option value="Vehicle Checking">Vehicle Checking</option>
-                  <option value="Violence Against Trangender Person">Violence Against Trangender Person</option>
+                  <option value="0" disabled selected>{oData?.offence?.Offence}</option>
+                  {
+                    Odata && Odata.map(O => (
+                      <option value={O._id} key={O._id}>{O.Offence}</option>
+                    ))}
                 </select>
                 <p className="help-block text-danger">{errors.Offence && touched.Offence ? errors.Offence : null}</p>
               </div>
             </div>
-            {(user && (role=== user.role || Role === user.role)) ? <>
+            {(user && (role === user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <p>Offence Subcategory</p>
                 </div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <select className="form-control" name="OffenceSubcategory" onChange={handleChange}
                     onBlur={handleBlur}>
-                    <option value="0"disabled selected>{firData.FIRs.OffenceSubcategory}</option>
+                    <option value="0" disabled selected>{firData.FIRs.OffenceSubcategory}</option>
                     <option value="1">Sub Category</option>
                   </select>
                 </div>
-                <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Assigned To</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Assigned To</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <select className="form-control" name="AssignedTo" onChange={handleChange}
                     onBlur={handleBlur} >
-                    <option value="0"disabled selected>{firData.FIRs.AssignedTo}</option>
+                    <option value="0" disabled selected>{firData.FIRs.AssignedTo}</option>
                     <option value="3">Beat Committee</option>
                     <option value="2">Police Officer</option>
                   </select>
                 </div>
               </div>
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3"><p>Officer Name</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12"><p>Officer Name</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <input
                     type="text"
                     name="OfficerName"
@@ -623,8 +495,8 @@ function EditFIR() {
                     onBlur={handleBlur}
                   />
                 </div>
-                <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Officer Contact Number</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Officer Contact Number</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <input
                     type="number"
                     name="OfficerContact"
@@ -637,14 +509,14 @@ function EditFIR() {
               </div>
             </> : null}
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Incident Details</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Incident Details</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <textarea
                   type="text"
                   rows={3}
                   name="IncidentDetails"
                   placeholder={firData.FIRs.IncidentDetails}
-                  value={values.IncidentDetails} 
+                  value={values.IncidentDetails}
                   onChange={handleIncidentDetailsChange}
                   className={styles.formControl}
                   onBlur={handleBlur}
@@ -653,10 +525,10 @@ function EditFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <p>Is FIR Registered</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <div className={styles.radio}>
                   <div className="mx-2">
                     <input type="radio" name="FIRRegistered" id="Yes" value="Yes"
@@ -672,18 +544,18 @@ function EditFIR() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>FIR No</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>FIR No</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="FIRNo" className="form-control" onChange={handleChange}
-                    placeholder={firData.FIRs.FIRNo}
-                    onBlur={handleBlur} />
+                  placeholder={firData.FIRs.FIRNo}
+                  onBlur={handleBlur} />
               </div>
             </div>
-            {(user && (role=== user.role || Role === user.role)) ? <>
+            {(user && (role === user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3"><p>IO Name</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12"><p>IO Name</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <input type="text" name="IOName" className="form-control" onChange={handleChange}
                     onBlur={handleBlur} />
                 </div>

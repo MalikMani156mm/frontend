@@ -297,7 +297,7 @@ function Search() {
                     </h3>
                     : <>
                         <div className={styles.container4}>
-                            <div className={styles.row4}>
+                            <div className={`${styles.row4} ${styles.fullrow}`}>
                                 <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
                                     <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
                                     <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
@@ -325,8 +325,34 @@ function Search() {
                             </div>
                             {
                                 data.FIRs && data.FIRs.map(firs => (
-                                    <>
-                                        <div className={styles.row4} key={firs._id}>
+                                    <div className={styles.table}>
+                                    <div className={`${styles.resprow}`}>
+                                <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
+                                <div className={styles.cell}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />}</div>
+                                <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
+                                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
+                                <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
+                                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+                                <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
+                                <div className={styles.cell}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
+                                <div className={styles.cell}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
+                                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
+                                <div className={styles.cell}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
+                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
+                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
+                            </div>
+                                        <div className={`${styles.row4} ${styles.datarow}`} key={firs._id}>
                                             <div className={styles.cell}>{firs.ComplaintNumber}</div>
                                             <div className={styles.cell}>{firs.Name}</div>
                                             <div className={styles.cell}>{`0${firs.ContactNumber}`}</div>
@@ -336,7 +362,7 @@ function Search() {
                                             <div className={styles.cell}>{firs.EntryDate}</div>
                                             <div className={styles.cell}>{firs.Status}</div>
                                         </div>
-                                    </>
+                                    </div>
                                 ))
                             }
                         </div>

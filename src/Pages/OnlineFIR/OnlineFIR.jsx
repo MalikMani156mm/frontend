@@ -8,6 +8,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
 import { useGetAllPoliceStationsQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
+import { useGetAllCategoriesQuery } from "../../Redux/Features/Category/CategoryApi";
+import { useGetAllOffencesQuery } from "../../Redux/Features/Offence/OffenceApi";
 
 
 function OnlineFIR() {
@@ -15,11 +17,14 @@ function OnlineFIR() {
   //eslint-disable-next-line
   const [addFIR, { isLoading, error }] = useAddNewFIRMutation();
   const { data } = useGetAllPoliceStationsQuery();
+  const { data: Cdata } = useGetAllCategoriesQuery();
+  const { data: Odata } = useGetAllOffencesQuery();
   const { user } = useSelector(state => state.auth);
   const role = "Admin";
   const Role = "SuperAdmin"
 
   const [state, setState] = useState(true);
+  const [currentLocation, setCurrentLocation] = useState(null);
   const [fileInputs, setFileInputs] = useState([{ id: 1 }]);
 
   const addMoreFile = () => {
@@ -35,16 +40,17 @@ function OnlineFIR() {
       setState(false);
     }
   }, [Role, role, user.role]);
+
   const handleRadioClick = (value) => {
     if (selectedValue === value) {
       setSelectedValue(null);
-
     } else {
       setSelectedValue(value);
       setFieldValue('relation', values.relation === value ? '' : value);
     }
   };
 
+  
   const handleRadioClick2 = (value) => {
     if (selectedValue2 === value) {
       setSelectedValue2(null);
@@ -66,36 +72,31 @@ function OnlineFIR() {
     };
     return new Intl.DateTimeFormat('default', options).format(current);
   };
-
-
+  
+  
   function SerialNumberGenerator(name) {
     let initials;
-
-    // Check if the name consists of only one word
+    
     if (name.trim().indexOf(' ') === -1) {
       initials = name.charAt(0).toUpperCase() + name.slice(1);
     } else {
-      // Extract initials from each word
       initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('');
     }
-
-    // Get current date in YYYYMMDD format
+    
     const currentDate = new Date();
     const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
     const day = String(currentDate.getDate()).padStart(2, '0');
     const formattedDate = `${day}/${month}/${year}`;
 
-    // Generate 6-digit random number
     const randomNumber = Math.floor(100000 + Math.random() * 900000);
-
-    // Concatenate the parts
+    
     const uniqueIdentifier = `${initials}-${formattedDate}-${randomNumber}`;
 
     return uniqueIdentifier;
   }
   // eslint-disable-next-line
-  const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
+  const formik = useFormik({
     initialValues: {
       EntryDate: getCurrentDateTimeLocal(),
       SourceOfComplaint: 'Online',
@@ -107,6 +108,7 @@ function OnlineFIR() {
       BeatMoza: '',
       CNIC: user.cnic,
       Name: user.name,
+      email: user.email,
       relation: '',
       GuardianName: '',
       Gender: '',
@@ -125,26 +127,27 @@ function OnlineFIR() {
       FIRNo: '',
       IOName: '',
       file: '',
+      Location:currentLocation,
     },
     validationSchema: yup.object().shape({
       EntryDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
-      // District: yup.string().required('Required'),
-      // Division: yup.string().required('Required'),
-      // Circle: yup.string().required('Required'),
-      // PoliceStation: yup.string().required('Required'),
-      // CNIC: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('Required'),
-      // Name: yup.string().min(5).max(30).required('Required'),
-      // relation: yup.string().required('Required'),
-      // GuardianName: yup.string().min(5).max(30).required('Required'),
-      // Gender: yup.string().required('Required'),
-      // ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
-      // PermanentAddress: yup.string().max(300).required('Required'),
-      // placeOfOccurance: yup.string().required('Required'),
-      // IncidentDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
-      // FIRRegistered: yup.string().required('Required'),
-      // Category: yup.string().required('Required'),
-      // Offence: yup.string().required('Required'),
-      // IncidentDetails: yup.string().max(2000).required('Required'),
+      District: yup.string().required('Required'),
+      Division: yup.string().required('Required'),
+      Circle: yup.string().required('Required'),
+      PoliceStation: yup.string().required('Required'),
+      CNIC: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('Required'),
+      Name: yup.string().min(5).max(30).required('Required'),
+      relation: yup.string().required('Required'),
+      GuardianName: yup.string().min(5).max(30).required('Required'),
+      Gender: yup.string().required('Required'),
+      ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
+      PermanentAddress: yup.string().max(300).required('Required'),
+      placeOfOccurance: yup.string().required('Required'),
+      IncidentDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
+      FIRRegistered: yup.string().required('Required'),
+      Category: yup.string().required('Required'),
+      Offence: yup.string().required('Required'),
+      IncidentDetails: yup.string().max(2000).required('Required'),
       file: yup.string().required('Required'),
     }),
     onSubmit: async (values) => {
@@ -157,9 +160,26 @@ function OnlineFIR() {
       else {
         toast.error(res.message || res.data.error);
       }
-
     }
   });
+  const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = formik;
+  useEffect(() => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                setCurrentLocation({ lat: latitude, lng: longitude });
+                setFieldValue('Location', { lat: latitude, lng: longitude });
+            },
+            (error) => {
+                console.error('Error getting location:', error);
+            }
+        );
+    } else {
+        alert('Geolocation is not supported by this browser.');
+    }
+}, [setFieldValue]);
+
 
   if (error) {
     return (<>
@@ -179,8 +199,8 @@ function OnlineFIR() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Entry Date</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3 ">
+              <div className="col-lg-3 col-md-12 col-sm-12 "><p>Entry Date</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12 ">
                 <input
                   type="datetime-local"
                   id="datetime"
@@ -191,17 +211,17 @@ function OnlineFIR() {
                 />
                 <p className="help-block text-danger">{errors.EntryDate && touched.EntryDate ? errors.EntryDate : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <p>Source of Compliant</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="SourceOfComplaint" placeholder="Online" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} disabled={true} />
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>District</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>District</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="District"
                   onChange={handleChange}
                   onBlur={handleBlur}>
@@ -210,8 +230,8 @@ function OnlineFIR() {
                 </select>
                 <p className="help-block text-danger">{errors.District && touched.District ? errors.District : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Division</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Division</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Division"
                   onChange={handleChange}
                   onBlur={handleBlur}>
@@ -226,8 +246,8 @@ function OnlineFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Circle</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Circle</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Circle"
                   onChange={handleChange}
                   onBlur={handleBlur}>
@@ -263,8 +283,8 @@ function OnlineFIR() {
                 </select>
                 <p className="help-block text-danger">{errors.Circle && touched.Circle ? errors.Circle : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Police Station</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Police Station</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="PoliceStation"
                   onChange={handleChange}
                   onBlur={handleBlur}>
@@ -279,8 +299,8 @@ function OnlineFIR() {
             </div>
             {(user && (role === user.role || Role === user.role)) ? <>
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3"><p>Beat/Moza No.</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12"><p>Beat/Moza No.</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <select className="form-control" name="BeatMoza"
                     onChange={handleChange}
                     onBlur={handleBlur}>
@@ -298,15 +318,15 @@ function OnlineFIR() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 ">
+              <div className="col-lg-3 col-md-12 col-sm-12 ">
                 <p>Compliant Number</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="CompliantNumber" placeholder={SerialNumberGenerator(values.Circle)} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} disabled={true} />
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>CNIC (without dashes)</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC (without dashes)</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange} disabled={state}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
@@ -314,13 +334,13 @@ function OnlineFIR() {
             </div>
 
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Name</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange}
                   disabled={state} onBlur={handleBlur}  />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
                 <div className={styles.radio}>
                   <div className="mx-2">
                     <input type="radio" name="relation" id="son" value="son"
@@ -344,7 +364,7 @@ function OnlineFIR() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="text"
                   name="GuardianName"
@@ -356,8 +376,8 @@ function OnlineFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Gender</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="Gender" onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -367,8 +387,8 @@ function OnlineFIR() {
                 </select>
                 <p className="help-block text-danger">{errors.Gender && touched.Gender ? errors.Gender : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Contact Number</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Contact Number</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="number"
                   name="ContactNumber"
@@ -382,10 +402,10 @@ function OnlineFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <p>Permanent Address</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <textarea
                   type="text"
                   name="PermanentAddress"
@@ -405,10 +425,10 @@ function OnlineFIR() {
           </div>
           <div className={styles.content}>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <p>Place of Occurance</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="text"
                   name="placeOfOccurance"
@@ -418,8 +438,8 @@ function OnlineFIR() {
                 />
                 <p className="help-block text-danger">{errors.placeOfOccurance && touched.placeOfOccurance ? errors.placeOfOccurance : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Incident Date</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Incident Date</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
                   type="datetime-local"
                   id="datetime"
@@ -432,174 +452,29 @@ function OnlineFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3 "><p>Category</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="Category"
+              <div className="col-lg-3 col-md-12 col-sm-12 "><p>Category</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
+              <select className="form-control" name="Category"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="Child Abuse">Child Abuse</option>
-                  <option value="Complaint against Police">Complaint against Police</option>
-                  <option value="Foreigner complaint">Foreigner complaint</option>
-                  <option value="Gender Abuse">Gender Abuse</option>
-                  <option value="Harassment">Harassment</option>
-                  <option value="Human Rights">Human Rights</option>
-                  <option value="Investigation">Investigation</option>
-                  <option value="Loss Report">Loss Report</option>
-                  <option value="Minority Abuse">Minority Abuse</option>
-                  <option value="Non registration of FIR">Non registration of FIR</option>
-                  <option value="Others">Others</option>
-                  <option value="Overseas Pakistan">Overseas Pakistan</option>
-                  <option value="Reporting of Crime">Reporting of Crime</option>
-                  <option value="Traffic Complaint">Traffic Complaint</option>
-                  <option value="Violence Against Transgender Person">Violence Against Transgender Person</option>
-                  <option value="Violence Against Woman">Violence Against Woman</option>
+                  {
+                    Cdata && Cdata.map(C => (
+                      <option value={C._id} key={C._id}>{C.Category}</option>
+                    ))}
                 </select>
                 <p className="help-block text-danger">{errors.Category && touched.Category ? errors.Category : null}</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Offence</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
-                <select className="form-control" name="Offence"
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Offence</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
+              <select className="form-control" name="Offence"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="295-A PPC">295-A PPC</option>
-                  <option value="382 PPC">382 PPC</option>
-                  <option value="Access to public place">Access to public place</option>
-                  <option value="Acid Throwing">Acid Throwing</option>
-                  <option value="Anti-Norcotics Act">Anti-Norcotics Act</option>
-                  <option value="Anti-Terrorism Act">Anti-Terrorism Act</option>
-                  <option value="Arm License / Slip">Arm License / Slip</option>
-                  <option value="Arms Ordinance Act">Arms Ordinance Act</option>
-                  <option value="Arrest of innocent persons">Arrest of innocent persons</option>
-                  <option value="ATM Card">ATM Card</option>
-                  <option value="Attack on Govt. Servant">Attack on Govt. Servant</option>
-                  <option value="Attempted Murder">Attempted Murder</option>
-                  <option value="BayForm Loss">BayForm Loss</option>
-                  <option value="Begging Act">Begging Act</option>
-                  <option value="Blind Murder">Blind Murder</option>
-                  <option value="Border Crossing Act">Border Crossing Act</option>
-                  <option value="Breach of trust 406PPC">Breach of trust 406PPC</option>
-                  <option value="Burglary">Burglary</option>
-                  <option value="Canal Cut">Canal Cut</option>
-                  <option value="Cancellation of False FIR">Cancellation of False FIR</option>
-                  <option value="Car Snatching">Car Snatching</option>
-                  <option value="Car Theft">Car Theft</option>
-                  <option value="Character Certificate">Character Certificate</option>
-                  <option value="Cheating">Cheating</option>
-                  <option value="Cheque / Cheque Book">Cheque / Cheque Book</option>
-                  <option value="Cheque Dishonour">Cheque Dishonour</option>
-                  <option value="Child Marriage">Child Marriage</option>
-                  <option value="Child Sexual Abuse">Child Sexual Abuse</option>
-                  <option value="Cigarette Act">Cigarette Act</option>
-                  <option value="CNIC Loss">CNIC Loss</option>
-                  <option value="Commission">Commission</option>
-                  <option value="Complaint against police">Complaint against police</option>
-                  <option value="Copyright Act">Copyright Act</option>
-                  <option value="Corruption">Corruption</option>
-                  <option value="Cyber Crime Act">Cyber Crime Act</option>
-                  <option value="Cycle Theft">Cycle Theft</option>
-                  <option value="Dacoity">Dacoity</option>
-                  <option value="Dacoity/Robbery with Murder">Dacoity/Robbery with Murder</option>
-                  <option value="Defective Investigation">Defective Investigation</option>
-                  <option value="Demand of Illegal Gratification">Demand of Illegal Gratification</option>
-                  <option value="Dengue Act">Dengue Act</option>
-                  <option value="Domestic Violence">Domestic Violence</option>
-                  <option value="Dowry Related Violence">Dowry Related Violence</option>
-                  <option value="Driving License">Driving License</option>
-                  <option value="Educational Documents Loss">Educational Documents Loss</option>
-                  <option value="Electricity Act">Electricity Act</option>
-                  <option value="Fatal Accident">Fatal Accident</option>
-                  <option value="Female Genital Mutilation/Cutting">Female Genital Mutilation/Cutting</option>
-                  <option value="Fight">Fight</option>
-                  <option value="Forced Abortion">Forced Abortion</option>
-                  <option value="Forced Marriage">Forced Marriage</option>
-                  <option value="Freedom of Assembly & Association">Freedom of Assembly & Association</option>
-                  <option value="Freedom of movement">Freedom of movement</option>
-                  <option value="Gambling">Gambling</option>
-                  <option value="Gang Rape">Gang Rape</option>
-                  <option value="Habs e Beja">Habs e Beja</option>
-                  <option value="Harassment">Harassment</option>
-                  <option value="Harassment at workplace">Harassment at workplace</option>
-                  <option value="High Heandedness">High Heandedness</option>
-                  <option value="Honor Killng">Honor Killng</option>
-                  <option value="Hurt (personal feud)">Hurt (personal feud)</option>
-                  <option value="Illegal detention">Illegal detention</option>
-                  <option value="Illegal Extortion">Illegal Extortion</option>
-                  <option value="Illegal Gas Cylinder Act">Illegal Gas Cylinder Act</option>
-                  <option value="Illegal Weapon">Illegal Weapon</option>
-                  <option value="Insurance Claim">Insurance Claim</option>
-                  <option value="Intimate Partner Violence">Intimate Partner Violence</option>
-                  <option value="Investigation – Delay">Investigation – Delay</option>
-                  <option value="Investigation – Faulty / Unfair">Investigation – Faulty / Unfair</option>
-                  <option value="Involvement in Criminal Activity">Involvement in Criminal Activity</option>
-                  <option value="Jewellery Snatching">Jewellery Snatching</option>
-                  <option value="Kidnapping">Kidnapping</option>
-                  <option value="Kidnapping Minors">Kidnapping Minors</option>
-                  <option value="Kite Flying Act">Kite Flying Act</option>
-                  <option value="Laptop theft">Laptop theft</option>
-                  <option value="Local Government Act">Local Government Act</option>
-                  <option value="Loss of Property Document">Loss of Property Document</option>
-                  <option value="Loss of Service Card">Loss of Service Card</option>
-                  <option value="Loss of Utility Meter/ No Plate">Loss of Utility Meter/ No Plate</option>
-                  <option value="Lost Bike Registration book">Lost Bike Registration book</option>
-                  <option value="Loud Speaker Act">Loud Speaker Act</option>
-                  <option value="M/Cycle Snatching">M/Cycle Snatching</option>
-                  <option value="M/Cycle Theft">M/Cycle Theft</option>
-                  <option value="Misappropriation">Misappropriation</option>
-                  <option value="Misbehavior">Misbehavior</option>
-                  <option value="Miscellaneous">Miscellaneous</option>
-                  <option value="Misconduct">Misconduct</option>
-                  <option value="Mobile Phone">Mobile Phone</option>
-                  <option value="Mobile Snatching">Mobile Snatching</option>
-                  <option value="Mobile theft">Mobile theft</option>
-                  <option value="Murder">Murder</option>
-                  <option value="Narcotics">Narcotics</option>
-                  <option value="Non registration of FIR">Non registration of FIR</option>
-                  <option value="Non-Fatal Accident">Non-Fatal Accident</option>
-                  <option value="Non-Registration of FIR">Non-Registration of FIR</option>
-                  <option value="Omission">Omission</option>
-                  <option value="One Wheeling Act">One Wheeling Act</option>
-                  <option value="Original File (Bike/Car)">Original File (Bike/Car)</option>
-                  <option value="Other">Other</option>
-                  <option value="Other Crime">Other Crime</option>
-                  <option value="Other Document">Other Document</option>
-                  <option value="Other Vehicle Snatching">Other Vehicle Snatching</option>
-                  <option value="Other Vehicle Theft">Other Vehicle Theft</option>
-                  <option value="Outraging the Modesty of Women">Outraging the Modesty of Women</option>
-                  <option value="Overspeeding">Overspeeding</option>
-                  <option value="Passport Loss">Passport Loss</option>
-                  <option value="Pay Order">Pay Order</option>
-                  <option value="Pension Book">Pension Book</option>
-                  <option value="Police Encounter">Police Encounter</option>
-                  <option value="Police Order Act">Police Order Act</option>
-                  <option value="Price Control Act">Price Control Act</option>
-                  <option value="Property">Property</option>
-                  <option value="Purse Snatching">Purse Snatching</option>
-                  <option value="Railway Act">Railway Act</option>
-                  <option value="Rape">Rape</option>
-                  <option value="Registration book">Registration book</option>
-                  <option value="Robbery">Robbery</option>
-                  <option value="Saving Certificate">Saving Certificate</option>
-                  <option value="Secretarianism">Secretarianism</option>
-                  <option value="Sexual Assualt">Sexual Assualt</option>
-                  <option value="Slackness in Duty">Slackness in Duty</option>
-                  <option value="Snatching">Snatching</option>
-                  <option value="Stalking">Stalking</option>
-                  <option value="Suicide Attempt">Suicide Attempt</option>
-                  <option value="Telephone Act">Telephone Act</option>
-                  <option value="Theft">Theft</option>
-                  <option value="Threats">Threats</option>
-                  <option value="Threats Via Call Or SMS">Threats Via Call Or SMS</option>
-                  <option value="Torture">Torture</option>
-                  <option value="Touheen Quran Act">Touheen Quran Act</option>
-                  <option value="Tree Theft Act">Tree Theft Act</option>
-                  <option value="Tresspassing">Tresspassing</option>
-                  <option value="Unlawful Marriages">Unlawful Marriages</option>
-                  <option value="Un-Natural Offence">Un-Natural Offence</option>
-                  <option value="Use of Torture">Use of Torture</option>
-                  <option value="Vehicle Checking">Vehicle Checking</option>
-                  <option value="Violence Against Trangender Person">Violence Against Trangender Person</option>
+                  {
+                    Odata && Odata.map(O => (
+                      <option value={O._id} key={O._id}>{O.Offence}</option>
+                    ))}
                 </select>
                 <p className="help-block text-danger">{errors.Offence && touched.Offence ? errors.Offence : null}</p>
               </div>
@@ -607,18 +482,18 @@ function OnlineFIR() {
             {(user && (role === user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <p>Offence Subcategory</p>
                 </div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <select className="form-control" name="OffenceSubcategory" onChange={handleChange}
                     onBlur={handleBlur}>
                     <option value="0">Select</option>
                     <option value="1">Sub Category</option>
                   </select>
                 </div>
-                <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Assigned To</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Assigned To</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <select className="form-control" name="AssignedTo" onChange={handleChange}
                     onBlur={handleBlur} >
                     <option value="3">Beat Committee</option>
@@ -627,8 +502,8 @@ function OnlineFIR() {
                 </div>
               </div>
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3"><p>Officer Name</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12"><p>Officer Name</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <input
                     type="text"
                     name="OfficerName"
@@ -637,8 +512,8 @@ function OnlineFIR() {
                     onBlur={handleBlur}
                   />
                 </div>
-                <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>Officer Contact Number</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Officer Contact Number</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <input
                     type="number"
                     name="OfficerContact"
@@ -650,8 +525,8 @@ function OnlineFIR() {
               </div>
             </> : null}
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3"><p>Incident Details</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12"><p>Incident Details</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <textarea
                   type="text"
                   rows={3}
@@ -664,10 +539,10 @@ function OnlineFIR() {
               </div>
             </div>
             <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <p>Is FIR Registered</p>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <div className={styles.radio}>
                   <div className="mx-2">
                     <input type="radio" name="FIRRegistered" id="Yes" value="Yes"
@@ -683,8 +558,8 @@ function OnlineFIR() {
                   </div>
                 </div>
               </div>
-              <div className="col-lg-3 col-md-3 col-sm-3 mx-2"><p>FIR No</p></div>
-              <div className="col-lg-3 col-md-3 col-sm-3">
+              <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>FIR No</p></div>
+              <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="FIRNo" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
               </div>
@@ -692,8 +567,8 @@ function OnlineFIR() {
             {(user && (role === user.role || Role === user.role)) ? <>
 
               <div className={styles.alignment}>
-                <div className="col-lg-3 col-md-3 col-sm-3"><p>IO Name</p></div>
-                <div className="col-lg-3 col-md-3 col-sm-3">
+                <div className="col-lg-3 col-md-12 col-sm-12"><p>IO Name</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
                   <input type="text" name="IOName" className="form-control" onChange={handleChange}
                     onBlur={handleBlur} />
                 </div>

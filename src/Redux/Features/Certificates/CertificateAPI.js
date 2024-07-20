@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 export const CertificateApi = createApi({
   reducerPath: 'CertificateApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/' ,
-    mode:'cors'
+    mode:'cors',  credentials: 'include'
   }),
   tagTypes:['Certificates'],
   endpoints: (builder) => ({

@@ -8,14 +8,16 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useConfirmAdminPasswordMutation } from "../../Redux/Features/Admin/adminApi";
 import Textinputs from "../../Components/Textinput/Textinputs";
+import { setPasswordConfirmed } from "../../Redux/Features/Auth/AuthSlice";
 
 
 function AdminConfirmPassword() {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
     const Role = "SuperAdmin";
     console.log(user);
@@ -42,6 +44,7 @@ function AdminConfirmPassword() {
             const User = await adminCredential(values).unwrap();
             if (User.success) {
                 toast.success(User.message);
+                dispatch(setPasswordConfirmed(true));
                 if (user.role === Role) {
                     navigate("/admin/NewPassword");
                 } else {
