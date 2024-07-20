@@ -18,13 +18,13 @@ import {
 import { isAuthenticatedUser, isAuthorizedUser } from '../middleware/authMiddleware.js';
 const router = express.Router()
 
-router.route('/FIRs').get(isAuthenticatedUser,isAuthorizedUser('SuperAdmin'),getAllFIRs);
-router.route('/CitizenFIRs').get(isAuthenticatedUser,isAuthorizedUser('Citizen'), getCitizenFIRs);
-router.route('/PoliceStationFIRs').get(isAuthenticatedUser,isAuthorizedUser('Admin'),getPoliceStationFIRs);
+router.route('/FIRs').get(getAllFIRs);
+router.route('/CitizenFIRs').get(getCitizenFIRs);
+router.route('/PoliceStationFIRs').get(getPoliceStationFIRs);
 router.route('/SearchFIRs').get(isAuthenticatedUser,isAuthorizedUser('SuperAdmin','Admin'),searchFIRs);
-router.route('/FIRs/count').get(isAuthenticatedUser,isAuthorizedUser('SuperAdmin'),getAllFIRCount);
-router.route('/PoliceStationFIRs/count').get(isAuthenticatedUser,isAuthorizedUser('Admin'),getPoliceStationFIRCount);
-router.route('/CitizenFIRs/count').get(isAuthenticatedUser,isAuthorizedUser('Citizen'),getCitizenFIRCount);
+router.route('/FIRs/count').get(getAllFIRCount);
+router.route('/PoliceStationFIRs/count').get(getPoliceStationFIRCount);
+router.route('/CitizenFIRs/count').get(getCitizenFIRCount);
 router.route('/updateStatus/:id').post(isAuthenticatedUser,isAuthorizedUser('SuperAdmin','Admin'), changeFIRStatus);
 router.route('/updateRating/:id').post(isAuthenticatedUser,isAuthorizedUser('SuperAdmin','Admin'), updateFIRRating);
 router.route('/updatePoliceStation/:id').post(isAuthenticatedUser,isAuthorizedUser('SuperAdmin','Admin'), changeFIRPoliceStation);

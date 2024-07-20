@@ -190,7 +190,7 @@ export const LoginUser = async function (req, res, next) {
 
         const currentDate = new Date();
         const htmlTemplate = LoginHtmlTemplate(user.name,currentDate)
-        sendMail(user.email, "WelcomeBack to E-FIR System", "", htmlTemplate)
+        // sendMail(user.email, "WelcomeBack to E-FIR System", "", htmlTemplate)
 
         const token = await jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' })
 

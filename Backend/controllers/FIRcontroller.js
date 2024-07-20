@@ -711,15 +711,15 @@ export const changeFIRPoliceStation = async function (req, res, next) {
     const { id } = req.params;
     const { PoliceStation }  = req.body;
     try {
-        const changeRating = await FIR.findOneAndUpdate({ _id: id }, { PoliceStation }, { new: true });
-        if (!changeRating) {
+        const changePoliceStation = await FIR.findOneAndUpdate({ _id: id }, { PoliceStation }, { new: true });
+        if (!changePoliceStation) {
             return res.json({
                 message: 'FIR not found',
                 success: false
             });
         }
         res.json({
-            changeRating,
+            changePoliceStation,
             message: 'The FIR is transfered successfully',
             success: true
         })

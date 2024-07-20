@@ -1,15 +1,19 @@
 import express from 'express';
 import { 
-    getAllRequests,
     getRequestById,
     createNewRequest,
     updateRequest,
-    deleteRequest 
+    deleteRequest, 
+    getCitizenRequests,
+    getPoliceStationRequests,
+    changeRequestStatus
     } from '../controllers/VVcontroller.js';
-// import { isAuthenticatedUser, isAuthorizedUser } from '../middleware/authMiddleware.js';
+import { isAuthenticatedUser, isAuthorizedUser } from '../middleware/authMiddleware.js';
 const router = express.Router()
 
-router.route('/Requests').get(getAllRequests);
+router.route('/CitizenRequests').get(getCitizenRequests);
+router.route('/PoliceStationRequests').get(getPoliceStationRequests);
+router.route('/updateRequestStatus/:id').post(isAuthenticatedUser,isAuthorizedUser('SuperAdmin','Admin'), changeRequestStatus);
 router.route('/Request/:id').get(getRequestById);
 router.route('/new/Request').post(createNewRequest);
 router.route('/updateRequest/:id').put( updateRequest);

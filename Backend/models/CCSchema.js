@@ -128,8 +128,13 @@ const CCSchema = new Schema(
         Status: {
             type: String,
             default: 'pending',
-            enum: ['pending', 'Approved', 'filed']
+            enum: ['pending', 'approved', 'rejected']
         },
+        Rating: {
+            type: Number,
+            default:'0',
+            enum: ['0','1','2','3','4','5']
+        }
     },
     {
         timestamps: true
