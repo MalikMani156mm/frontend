@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./Search.module.css";
 import { useFormik } from "formik";
 import ReactPaginate from "react-paginate";
@@ -26,9 +26,40 @@ function Search() {
     const [contactNumber, setContactNumber] = useState(null);
     const [complaintNumber, setComplaintNumber] = useState("");
     const [status, setStatus] = useState("");
+    const [categories, setCategories] = useState([]);
+    const [offences, setOffences] = useState([]);
     const [sort, setSort] = useState({ sort: "EntryDate", order: "desc" })
     let Url = `?sort=${sort.sort},${sort.order}&page=${page}&year=${year}&province=${province}&district=${district}&division=${division}&circle=${circle}&policeStation=${policeStation}&name=${name}&guardianName=${guardianName}&cnic=${cnic}&contactNumber=${contactNumber}&complaintNumber=${complaintNumber}&status=${status}`;
     const { isLoading, data, error } = useGetSearchFIRsQuery(Url);
+
+    useEffect(() => {
+        const fetchCategoriesAndOffences = async () => {
+            try {
+                const categoriesResponse = await fetch('http://localhost:5000/api/Categories');
+                const offencesResponse = await fetch('http://localhost:5000/api/Offences');
+
+                const categoriesData = await categoriesResponse.json();
+                const offencesData = await offencesResponse.json();
+
+                setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+                setOffences(Array.isArray(offencesData) ? offencesData : []);
+            } catch (error) {
+                console.error("Failed to fetch categories and offences", error);
+            }
+        };
+
+        fetchCategoriesAndOffences();
+    }, []);
+
+    const getCategoryNameById = (id) => {
+        const category = categories.find(cat => cat._id === id);
+        return category ? category.Category : '';
+    };
+
+    const getOffenceNameById = (id) => {
+        const offence = offences.find(off => off._id === id);
+        return offence ? offence.Offence : '';
+    };
 
     const handlePageChange = (e) => {
         setPage(e.selected + 1);
@@ -326,39 +357,39 @@ function Search() {
                             {
                                 data.FIRs && data.FIRs.map(firs => (
                                     <div className={styles.table}>
-                                    <div className={`${styles.resprow}`}>
-                                <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
-                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
-                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
-                                <div className={styles.cell}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
-                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
-                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />}</div>
-                                <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
-                                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
-                                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
-                                <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
-                                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
-                                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
-                                <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
-                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
-                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
-                                <div className={styles.cell}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
-                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
-                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
-                                <div className={styles.cell}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
-                                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
-                                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
-                                <div className={styles.cell}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
-                                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
-                                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
-                            </div>
+                                        <div className={`${styles.resprow}`}>
+                                            <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
+                                                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("ComplaintNumber")} /> :
+                                                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("ComplaintNumber")} />} </div>
+                                            <div className={styles.cell}>Name {sort.sort === 'Name' && sort.order === 'asc' ?
+                                                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Name")} /> :
+                                                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Name")} />}</div>
+                                            <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
+                                                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
+                                                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
+                                            <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
+                                                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
+                                                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+                                            <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
+                                                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
+                                                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
+                                            <div className={styles.cell}>Offence {sort.sort === 'Offence' && sort.order === 'asc' ?
+                                                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Offence")} /> :
+                                                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Offence")} />}</div>
+                                            <div className={styles.cell}>Date {sort.sort === 'EntryDate' && sort.order === 'asc' ?
+                                                <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("EntryDate")} /> :
+                                                <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("EntryDate")} />} </div>
+                                            <div className={styles.cell}>Status {sort.sort === 'Status' && sort.order === 'asc' ?
+                                                <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Status")} /> :
+                                                <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Status")} />}</div>
+                                        </div>
                                         <div className={`${styles.row4} ${styles.datarow}`} key={firs._id}>
                                             <div className={styles.cell}>{firs.ComplaintNumber}</div>
                                             <div className={styles.cell}>{firs.Name}</div>
                                             <div className={styles.cell}>{`0${firs.ContactNumber}`}</div>
                                             <div className={styles.cell}>{firs.CNIC}</div>
-                                            <div className={styles.cell}>{firs.Category}</div>
-                                            <div className={styles.cell}>{firs.Offence}</div>
+                                            <div className={styles.cell}>{getCategoryNameById(firs.Category)}</div>
+                                            <div className={styles.cell}>{getOffenceNameById(firs.Offence)}</div>
                                             <div className={styles.cell}>{firs.EntryDate}</div>
                                             <div className={styles.cell}>{firs.Status}</div>
                                         </div>

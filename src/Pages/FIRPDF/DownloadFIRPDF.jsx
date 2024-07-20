@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useGetFIRByIdQuery } from "../../Redux/Features/FIR/FIRApi";
 import QR from "../../images/QR.jpg"
 import styles from "./FIRPDF.module.css"
@@ -7,33 +7,45 @@ import html2canvas from "html2canvas"
 import jspdf from "jspdf";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import LoadingSpinner from "../../Components/Loading/Loading";
+import { useGetCategoryByIdQuery } from "../../Redux/Features/Category/CategoryApi";
+import { useGetOffenceByIdQuery } from "../../Redux/Features/Offence/OffenceApi";
 
 function DownloadFIRPDF() {
 
   const [loader, setLoader] = useState(false);
   const { id } = useParams();
   const [policeStationId, setPoliceStationId] = useState(null);
+  const [categoryId, setCategoryId] = useState(null);
+  const [offenceId, setOffenceId] = useState(null);
   const { data: firData, error: firError, isLoading: firLoading } = useGetFIRByIdQuery(id);
   useEffect(() => {
     if (firData && firData.FIRs) {
       setPoliceStationId(firData.FIRs.PoliceStation);
+      setCategoryId(firData?.FIRs?.Category);
+      setOffenceId(firData?.FIRs?.Offence);
     }
   }, [firData]);
   const { data: psData, error: psError, isLoading: psLoading } = useGetPoliceStationByIdQuery(policeStationId, {
     skip: !policeStationId,
+  });
+  const { data: cData, error: cError, isLoading: cLoading } = useGetCategoryByIdQuery(categoryId, {
+      skip: !categoryId,
+  });
+  const { data: oData, error: oError, isLoading: oLoading } = useGetOffenceByIdQuery(offenceId, {
+      skip: !offenceId,
   });
   const extractNumber = (complaintNumber) => {
     const parts = complaintNumber.split("-");
     return parts[2];
   };
 
-  if (firLoading || (!policeStationId && psLoading)) {
-    return <div><LoadingSpinner/></div>;
-  }
+  if (firError || psError || cError || oError) {
+    return <Navigate to={'*'} replace={true} />
+}
 
-  if (firError || psError) {
-    return <div>Error loading FIR data.</div>;
-  }
+if (firLoading || (!policeStationId && psLoading) || (!categoryId && cLoading) || (!offenceId && oLoading)) {
+    return <div><LoadingSpinner/></div>;
+}
 
   const complaintNumber = firData?.FIRs?.ComplaintNumber;
   const extractedNumber = complaintNumber ? extractNumber(complaintNumber) : null;
@@ -139,7 +151,7 @@ function DownloadFIRPDF() {
           <div className={styles.tableRow}>
             <div className={styles.serialNumber}><p>3</p></div>
             <div className={styles.rowLabel}><p>Offence and Category</p></div>
-            <div className={styles.rowData}><p>{firData?.FIRs?.Category} of {firData?.FIRs?.Offence}</p></div>
+            <div className={styles.rowData}><p>{cData ? cData.category.Category : null} of {oData ? oData.offence.Offence : null}</p></div>
           </div>
           <div className={styles.tableRow}>
             <div className={styles.serialNumber}><p>4</p></div>

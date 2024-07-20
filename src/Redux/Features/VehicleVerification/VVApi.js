@@ -7,9 +7,40 @@ export const VVApi = createApi({
   }),
   tagTypes:['VV'],
   endpoints: (builder) => ({
-    getAllRequests: builder.query({
-      query: () => `/Requests`,
-      providesTags:['VV']
+    getPoliceStationRequests: builder.query({
+      query: (url) => `/PoliceStationRequests/${url}`,
+      providesTags: ['VV']
+    }),
+    getCitizensRequests: builder.query({
+      query: (url) => `/CitizenRequests/${url}`,
+      providesTags: ['VV']
+    }),
+    ChangeRequestStatus: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/updateRequestStatus/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['FIRs']
+    }),
+    getRequestById: builder.query({
+      query: (id) => `/Request/${id}`,
+      providesTags: (result, error, id) => [{ type: 'VV', id }],
+    }),
+    deleteRequest: builder.mutation({
+      query: (id) => ({
+        url: `/deleteRequest/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['VV']
+    }),
+    updateRequest: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/updateRequest/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [{ type: 'VV' }],
     }),
     addNewRequest: builder.mutation({
       query: (data) => ({
@@ -22,4 +53,4 @@ export const VVApi = createApi({
   }),
 })
 
-export const { useGetAllRequestsQuery , useAddNewRequestMutation} = VVApi
+export const { useAddNewRequestMutation, useGetCitizensRequestsQuery, useGetPoliceStationRequestsQuery, useGetRequestByIdQuery,useDeleteRequestMutation, useChangeRequestStatusMutation,useUpdateRequestMutation} = VVApi

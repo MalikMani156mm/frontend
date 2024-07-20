@@ -296,7 +296,7 @@ function FIRDetail() {
                     <div className={style.tableRow}>
                         <div className={style.serialNumber}><p>3</p></div>
                         <div className={style.rowLabel}><p>Offence and Category</p></div>
-                        <div className={style.rowData}><p>{firData?.FIRs?.Category} of {firData?.FIRs?.Offence}</p></div>
+                        <div className={style.rowData}><p>{cData ? cData.category.Category : null} of {oData ? oData.offence.Offence : null}</p></div>
                     </div>
                     <div className={style.tableRow}>
                         <div className={style.serialNumber}><p>4</p></div>

@@ -126,6 +126,7 @@ function OnlineFIR() {
       FIRRegistered: '',
       FIRNo: '',
       IOName: '',
+      Rank:'',
       file: '',
       Location:currentLocation,
     },
@@ -322,7 +323,7 @@ function OnlineFIR() {
                 <p>Compliant Number</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="CompliantNumber" placeholder={SerialNumberGenerator(values.Circle)} className="form-control" onChange={handleChange}
+                <input type="text" name="CompliantNumber" placeholder={"This will allocated automatically"} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} disabled={true} />
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC (without dashes)</p></div>
@@ -392,7 +393,7 @@ function OnlineFIR() {
                 <input
                   type="number"
                   name="ContactNumber"
-                  placeholder={`0${user.phonenumber}`}
+                  placeholder={user.phonenumber ? `0${user.phonenumber}`: null}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -570,6 +571,11 @@ function OnlineFIR() {
                 <div className="col-lg-3 col-md-12 col-sm-12"><p>IO Name</p></div>
                 <div className="col-lg-3 col-md-12 col-sm-12">
                   <input type="text" name="IOName" className="form-control" onChange={handleChange}
+                    onBlur={handleBlur} />
+                </div>
+                <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Rank</p></div>
+                <div className="col-lg-3 col-md-12 col-sm-12">
+                  <input type="text" name="Rank" className="form-control" onChange={handleChange}
                     onBlur={handleBlur} />
                 </div>
               </div>

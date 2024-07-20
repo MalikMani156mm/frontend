@@ -89,7 +89,10 @@ flex-direction: row;
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
-  
+  .formControl:disabled {
+    background-color: #e9ecef;
+    opacity: 1; 
+  }
   .CancelButton {
     background-color: red;
     color: aliceblue;
