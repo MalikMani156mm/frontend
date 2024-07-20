@@ -48,6 +48,13 @@ const OTPSchema = new Schema(
             default:Date.now,
             get: (otpExpiration)=> otpExpiration.getTime(),
             set: (otpExpiration)=> new Date(otpExpiration)
+        },
+        Location: {
+            type: {
+                lat: { type: Number, required: true },
+                lng: { type: Number, required: true }
+            },
+            required: true
         }
     },
     {

@@ -43,7 +43,10 @@ const FIRsSchema = new Schema(
             // min:[13, 'without dash 13 number'],
             // max:[15, 'wit hdash 15 number']
         },
-        
+        email: {
+            type: String,
+            require:[true, 'Please provide the Email'],
+        },
         Name: {
             type: String,
             require: [true, 'Please provide the Name'],
@@ -127,13 +130,20 @@ const FIRsSchema = new Schema(
         Status: {
             type: String,
             default:'pending',
-            enum: ['pending','completed','filed']
+            enum: ['pending','approved','completed','filed']
         },
         Rating: {
             type: Number,
             default:'0',
             enum: ['0','1','2','3','4','5']
         },
+        Location: {
+            type: {
+                lat: { type: Number, required: true },
+                lng: { type: Number, required: true }
+            },
+            required: true
+        }
     },
     {
         timestamps:true

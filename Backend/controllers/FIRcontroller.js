@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import FIR from "../models/FIRSchema.js";
 import PoliceStaion from "../models/PoliceStationSchema.js"
 import { imageUploading } from "../Utils/Utils.js";
+import { FIRStatusHtmlTemplate, FIRSubmitHtmlTemplate } from '../Utils/htmlTemplate.js';
+import { sendMail } from '../middleware/sendEmail.js';
 
 
 export const getAllFIRs = async function (req, res, next) {
@@ -647,6 +649,8 @@ export const createNewFIR = async function (req, res, next) {
         const newFIRS = [...policeStation.FIRs, FIRId.toString()]
         policeStation.FIRs = newFIRS;
         const updatePoliceStation = await PoliceStaion.findByIdAndUpdate(PSId, policeStation);
+        const htmlTemplate = FIRSubmitHtmlTemplate(newFIR.Name,newFIR.ComplaintNumber,newFIR.Circle)
+        sendMail(newFIR.email, `FIR Submitted Successfully!!!`, "", htmlTemplate)
         res.json({
             FIR: r,
             message: "FIR Submitted Successfully",
@@ -668,6 +672,8 @@ export const changeFIRStatus = async function (req, res, next) {
                 success: false
             });
         }
+        const htmlTemplate = FIRStatusHtmlTemplate(changeStatus.Name,changeStatus.ComplaintNumber,changeStatus.Circle,Status)
+        sendMail(changeStatus.email, `FIR Status Updated!!!`, "", htmlTemplate)
         res.json({
             changeStatus,
             message: 'Status is updated successfully',

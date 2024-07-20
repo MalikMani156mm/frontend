@@ -4,6 +4,8 @@ import { getRecieverSocketId } from "../socket/socket.js";
 import { io } from '../socket/socket.js';
 import FIR from "../models/FIRSchema.js";
 import User from "../models/UserSchema.js";
+import { MessagesHtmlTemplate, sendMessageHtmlTemplate } from "../Utils/htmlTemplate.js";
+import { sendMail } from "../middleware/sendEmail.js";
 
 export const sendMessage = async function (req, res, next) {
     try {
@@ -21,6 +23,7 @@ export const sendMessage = async function (req, res, next) {
             })
         }
 
+
         const newMessage = new Message({
             senderId,
             recieverId,
@@ -32,6 +35,12 @@ export const sendMessage = async function (req, res, next) {
         }
 
         await Promise.all([conversation.save(), newMessage.save()]);
+
+        if (req.user.role !== "Citizen") {
+            const reciever = await User.findOne({ _id: recieverId })
+            const htmlTemplate = MessagesHtmlTemplate(reciever.name, message, req.user.name)
+            sendMail(reciever.email, `New Message from ${req.user.name}`, "", htmlTemplate)
+        }
 
         //Socket IO here
         const recieverSocketId = getRecieverSocketId(recieverId);
@@ -46,12 +55,13 @@ export const sendMessage = async function (req, res, next) {
 }
 
 export const sendMeetingNotification = async function (req, res, next) {
+
     try {
+
         const { message } = req.body;
-        console.log(message);
         const { id } = req.params;
         const senderId = req.user._id;
-
+        
         const validFIR = await FIR.findOne({ _id: id });
 
         if (!validFIR) {
@@ -92,6 +102,8 @@ export const sendMeetingNotification = async function (req, res, next) {
         }
 
         await Promise.all([conversation.save(), newMessage.save()]);
+        const htmlTemplate = sendMessageHtmlTemplate(reciever.name, validFIR.ComplaintNumber, message, req.user.name)
+        sendMail(reciever.email, `Meeting Notification from ${req.user.name}`, "", htmlTemplate)
 
         //Socket IO here
         const recieverSocketId = getRecieverSocketId(recieverId);

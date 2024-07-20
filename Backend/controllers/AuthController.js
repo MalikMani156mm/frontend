@@ -9,7 +9,7 @@ import { sendMail } from "../middleware/sendEmail.js";
 import mobileOtpGenerator from "otp-generator";
 import twilio from "twilio";
 import randomstring from 'randomstring';
-import { generateOtpHtmlTemplate, sendResetPasswordLinkHtmlTemplate } from '../Utils/htmlTemplate.js'
+import { generateOtpHtmlTemplate, LoginHtmlTemplate, sendResetPasswordLinkHtmlTemplate } from '../Utils/htmlTemplate.js'
 import {otpValidator} from '../Utils/otpValidator.js';
 const accountSSID = process.env.TWILIO_AUTH_SSID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -65,7 +65,8 @@ export const RegisterNewUser = async function (req, res, next) {
                 email: newUser.email,
                 phonenumber: newUser.phonenumber,
                 cnic: newUser.cnic,
-                password: newUser.password
+                password: newUser.password,
+                Location:newUser.Location
             },
             {
                 upsert: true,
@@ -113,6 +114,7 @@ export const VerifySignUp = async function (req, res, next) {
                const phonenumber=userData.phonenumber;
                const password=userData.password;
                const role = userData.role;
+               const Location = userData.Location;
 
             const user = new User({
                 name,
@@ -120,7 +122,8 @@ export const VerifySignUp = async function (req, res, next) {
                 cnic,
                 phonenumber,
                 password,
-                role
+                role,
+                Location
             }) ;
                 await user.save();
                 await OTP.findByIdAndDelete(userData._id)
@@ -184,6 +187,10 @@ export const LoginUser = async function (req, res, next) {
         if (!isPasswordMatched) {
             return next(new Error("Your password is incorrect"))
         }
+
+        const currentDate = new Date();
+        const htmlTemplate = LoginHtmlTemplate(user.name,currentDate)
+        sendMail(user.email, "WelcomeBack to E-FIR System", "", htmlTemplate)
 
         const token = await jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' })
 

@@ -37,6 +37,13 @@ const UserSchema = new Schema(
         resetToken:{
             type:String,
             default:'',
+        },
+        Location: {
+            type: {
+                lat: { type: Number, required: true },
+                lng: { type: Number, required: true }
+            },
+            required: true
         }
     },
     {

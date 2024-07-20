@@ -54,7 +54,8 @@ export const LoginAdmin = async function(req,res,next){
 
         res.cookie("token", token, {expires: new Date(Date.now() + 86400000)}).status(200).json({
             user,
-            token
+            token,
+            success:true
         })
         
     } catch (error) {
