@@ -1082,7 +1082,7 @@ function MyApplications() {
             breakLabel={"..."} // break Label
             nextLabel={"next"} // Next Page Button & label
             previousLabel={"previous"} // Previous Page Button & label
-            pageCount={cData?.CitizenFIRspageCount} // Sets Page Counts
+            pageCount={(cData?.CitizenFIRspageCount)||(ccerData?.CitizenCertificatespageCount)||(cvvData?.CitizenRequestspageCount) } // Sets Page Counts
             marginPagesDisplayed={1} // Sets Ending pages range
             pageRangeDisplayed={5} // Sets Starting pages range
             onPageChange={(e) => handlePageChange(e)}
