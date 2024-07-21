@@ -1,6 +1,6 @@
 import styles from "./OnlineFIR.module.css";
-import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
@@ -12,6 +12,7 @@ import { useGetAllPoliceStationsQuery } from "../../Redux/Features/PoliceStation
 
 function CharacterCertificateForm() {
 
+  const navigate = useNavigate();
   const [addCertificate, { isLoading, error }] = useAddNewCertificateMutation();
   const { data } = useGetAllPoliceStationsQuery();
 
@@ -19,10 +20,15 @@ function CharacterCertificateForm() {
   const role = "Admin";
   const Role = "SuperAdmin";
 
-
+  const [state, setState] = useState(true);
   const [selectedValue, setSelectedValue] = useState(null);
   const [selectedValue2, setSelectedValue2] = useState(null);
 
+  useEffect(() => {
+    if (role === user.role || Role === user.role) {
+      setState(false);
+    }
+  }, [Role, role, user.role]);
 
   const handleRadioClick = (value) => {
     if (selectedValue === value) {
@@ -46,31 +52,33 @@ function CharacterCertificateForm() {
 
   const getCurrentDateTimeLocal = () => {
     const current = new Date();
-    return current.toISOString().slice(0, 16);
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    return new Intl.DateTimeFormat('default', options).format(current);
   };
 
   function SerialNumberGenerator(name) {
     let initials;
 
-    // Check if the name consists of only one word
     if (name.trim().indexOf(' ') === -1) {
       initials = name.charAt(0).toUpperCase() + name.slice(1);
     } else {
-      // Extract initials from each word
       initials = name.split(' ').map(word => word.charAt(0).toUpperCase()).join('');
     }
 
-    // Get current date in YYYYMMDD format
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
     const day = String(currentDate.getDate()).padStart(2, '0');
     const formattedDate = `${day}/${month}/${year}`;
 
-    // Generate 6-digit random number
     const randomNumber = Math.floor(100000 + Math.random() * 900000);
 
-    // Concatenate the parts
     const uniqueIdentifier = `${initials}-CC-${formattedDate}-${randomNumber}`;
 
     return uniqueIdentifier;
@@ -191,7 +199,7 @@ function CharacterCertificateForm() {
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="1">Islamabad</option>
+                  <option value="Islamabad">Islamabad</option>
                 </select>
                 <p className="help-block text-danger">{errors.District && touched.District ? errors.District : null}</p>
               </div>
@@ -201,7 +209,11 @@ function CharacterCertificateForm() {
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="3">Industrial Area Zone</option>
+                  <option value="City">City</option>
+                  <option value="Saddar">Saddar</option>
+                  <option value="Industrial Area">Industrial Area</option>
+                  <option value="Rural">Rural</option>
+                  <option value="Soan">Soan</option>
                 </select>
                 <p className="help-block text-danger">{errors.Division && touched.Division ? errors.Division : null}</p>
               </div>
@@ -245,7 +257,7 @@ function CharacterCertificateForm() {
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Police Station</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-              <select className="form-control" name="PoliceStation"
+                <select className="form-control" name="PoliceStation"
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -267,7 +279,7 @@ function CharacterCertificateForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>CNIC (without dashes)</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange}
+                <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange} disabled={state}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
@@ -286,7 +298,7 @@ function CharacterCertificateForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange}
+                <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange} disabled={state}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
@@ -331,9 +343,9 @@ function CharacterCertificateForm() {
                 <select className="form-control" name="Gender" onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="1">Male</option>
-                  <option value="2">Female</option>
-                  <option value="3">Others</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Others">Others</option>
                 </select>
                 <p className="help-block text-danger">{errors.Gender && touched.Gender ? errors.Gender : null}</p>
               </div>
@@ -342,8 +354,9 @@ function CharacterCertificateForm() {
                 <input
                   type="number"
                   name="ContactNumber"
-                  placeholder={user.phonenumber}
+                  placeholder={user.phonenumber ? `0${user.phonenumber}`: null}
                   className="form-control"
+                  disabled={state}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -380,12 +393,12 @@ function CharacterCertificateForm() {
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="3">Character Certificate</option>
-                  <option value="18">Police Verification</option>
-                  <option value="8">Servent Registration</option>
-                  <option value="2">Tenant Registration</option>
-                  <option value="14">Volunteer Registration</option>
-                  <option value="9">Foreigner Registration</option>
+                  <option value="Character Certificate">Character Certificate</option>
+                  <option value="Police Verification">Police Verification</option>
+                  <option value="Servent Registration">Servent Registration</option>
+                  <option value="Tenant Registration">Tenant Registration</option>
+                  <option value="Volunteer Registration">Volunteer Registration</option>
+                  <option value="Foreigner Registration">Foreigner Registration</option>
                 </select>
                 <p className="help-block text-danger">{errors.Category && touched.Category ? errors.Category : null}</p>
               </div>
@@ -427,13 +440,13 @@ function CharacterCertificateForm() {
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
-                  <option value="3">Father</option>
-                  <option value="18">Mother</option>
-                  <option value="8">Brother</option>
-                  <option value="2">Sister</option>
-                  <option value="14">Wife</option>
-                  <option value="9">Son</option>
-                  <option value="9">Daughter</option>
+                  <option value="Father">Father</option>
+                  <option value="Mother">Mother</option>
+                  <option value="Brother">Brother</option>
+                  <option value="Sister">Sister</option>
+                  <option value="Wife">Wife</option>
+                  <option value="Son">Son</option>
+                  <option value="Daughter">Daughter</option>
                 </select>
               </div>
             </div>
@@ -594,10 +607,8 @@ function CharacterCertificateForm() {
           </div>
         </div>
         <div className={styles.buttonsalignment}>
-          <button className={styles.CancelButton} type='reset'>
-            <Link to="/" className={styles.Links}>
+          <button className={styles.CancelButton} type='reset' onClick={()=>navigate(-1)}>
               Cancel
-            </Link>
           </button>
           <button className={styles.SubmitButton} type='submit' >
             {isLoading ? "Loading..." : "Submit"}

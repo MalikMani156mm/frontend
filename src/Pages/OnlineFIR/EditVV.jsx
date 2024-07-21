@@ -1,25 +1,25 @@
 import styles from "./OnlineFIR.module.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
-import { useAddNewRequestMutation } from "../../Redux/Features/VehicleVerification/VVApi";
-import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
+import {  useGetRequestByIdQuery, useUpdateRequestMutation } from "../../Redux/Features/VehicleVerification/VVApi";
+import LoadingSpinner from "../../Components/Loading/Loading";
 
 
-function VehicleVerificationForm() {
+function EditVVForm() {
 
   const navigate = useNavigate();
-  const [addRequest, { isLoading, error }] = useAddNewRequestMutation();
-  const id = "669a6ce77bc3e295a8ebc0db";
-  const { data } = useGetPoliceStationByIdQuery(id);
-  console.log(data);
+  const [updateRequest, { isLoading, error }] = useUpdateRequestMutation();
   const { user } = useSelector(state => state.auth)
   const role = "Admin";
   const Role = "SuperAdmin";
+  const { id } = useParams();
+  const { data, error:iError, isLoading:iLoading } = useGetRequestByIdQuery(id);
+  console.log(data);
 
   const [state, setState] = useState(true);
   const [selectedValue, setSelectedValue] = useState(null);
@@ -61,70 +61,43 @@ function VehicleVerificationForm() {
     }
   };
 
-  const getCurrentDateTimeLocal = () => {
-    const current = new Date();
-    const options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    };
-    return new Intl.DateTimeFormat('default', options).format(current);
-  };
-
-  function SerialNumberGenerator() {
-
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Months are 0-based
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    const formattedDate = `${day}/${month}/${year}`;
-
-    const randomNumber = Math.floor(100000 + Math.random() * 900000);
-
-    const uniqueIdentifier = `VV-${formattedDate}-${randomNumber}`;
-
-    return uniqueIdentifier;
-  }
-
   // eslint-disable-next-line
   const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
     initialValues: {
-      EntryDate: getCurrentDateTimeLocal(),
+      EntryDate: data.VVs.EntryDate,
       SourceOfRequest: 'Online',
-      RequestNumber: '',
-      RequestTo: '',
-      CNIC: user.cnic,
-      Name: user.name,
-      relation: '',
-      GuardianName: '',
-      Gender: '',
-      ContactNumber: user.phonenumber,
-      PermanentAddress: '',
-      OCNIC: '',
-      OCNICPic: '',
-      OName: '',
-      Orelation: '',
-      OGuardianName: '',
-      OGender: '',
-      OContactNumber: '',
-      OPermanentAddress: '',
-      RegistrationNumber: '',
-      Make: '',
-      Model: '',
-      YearOfManufacture: '',
-      Color: '',
-      EngineNumber: '',
-      ChassisNumber: '',
-      BuyIt: '',
-      Reason: '',
-      CNICFront: '',
-      CNICBack: '',
-      ApplicantPic: '',
-      RegistrationBookPic: '',
-      ChassisNumberPic: '',
-      EngineNumberPic: ''
+      RequestNumber: data.VVs.RequestNumber,
+      RequestTo: data.VVs.RequestTo,
+      CNIC: data.VVs.CNIC,
+      Name: data.VVs.Name,
+      relation: data.VVs.relation,
+      GuardianName: data.VVs.GuardianName,
+      Gender: data.VVs.Gender,
+      ContactNumber: data.VVs.ContactNumber,
+      PermanentAddress: data.VVs.PermanentAddress,
+      OCNIC: data.VVs.OCNIC,
+      OCNICPic: data.VVs.OCNICPic,
+      OName: data.VVs.OName,
+      Orelation: data.VVs.Orelation,
+      OGuardianName: data.VVs.OGuardianName,
+      OGender: data.VVs.OGender,
+      OContactNumber: data.VVs.OContactNumber,
+      OPermanentAddress: data.VVs.OPermanentAddress,
+      RegistrationNumber: data.VVs.RegistrationNumber,
+      Make: data.VVs.Make,
+      Model: data.VVs.Model,
+      YearOfManufacture: data.VVs.YearOfManufacture,
+      Color: data.VVs.Color,
+      EngineNumber: data.VVs.EngineNumber,
+      ChassisNumber: data.VVs.ChassisNumber,
+      BuyIt: data.VVs.BuyIt,
+      Reason: data.VVs.Reason,
+      CNICFront: data.VVs.CNICFront,
+      CNICBack: data.VVs.CNICBack,
+      ApplicantPic: data.VVs.ApplicantPic,
+      RegistrationBookPic: data.VVs.RegistrationBookPic,
+      ChassisNumberPic: data.VVs.ChassisNumberPic,
+      EngineNumberPic: data.VVs.EngineNumberPic
     },
     validationSchema: yup.object().shape({
       EntryDate: yup.date().required('Required'),
@@ -159,19 +132,22 @@ function VehicleVerificationForm() {
     }),
     onSubmit: async (values) => {
       console.log(values);
-      values.RequestNumber = SerialNumberGenerator();
-      const res = await addRequest(values).unwrap();
-      if (res.success) {
-        toast.success(res.message);
-      }
-      else {
-        toast.error(res.message || res.data.error);
-      }
+    //   const res = await updateRequest(values).unwrap();
+    //   if (res.success) {
+    //     toast.success(res.message);
+    //   }
+    //   else {
+    //     toast.error(res.message || res.data.error);
+    //   }
 
     }
   });
 
-  if (error) {
+  if (iLoading) {
+    return <div><LoadingSpinner /></div>;
+}
+
+  if (error|| iError) {
     return (<>
       <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
       <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
@@ -215,12 +191,7 @@ function VehicleVerificationForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12 "><p>Request Deliver to</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <select className="form-control" name="RequestTo"
-                  onChange={handleChange}
-                  onBlur={handleBlur}>
-                  <option value="0">Select</option>
-                  <option value={data?.PSs?._id}>{data?.PSs?.PSName}</option>
-                </select>
+                <input className="form-control" name="RequestTo" disabled/>
                 <p className="help-block text-danger">{errors.RequestTo && touched.RequestTo ? errors.RequestTo : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC (without dashes)</p></div>
@@ -642,4 +613,4 @@ function VehicleVerificationForm() {
     </div>
   );
 }
-export default VehicleVerificationForm;
+export default EditVVForm;

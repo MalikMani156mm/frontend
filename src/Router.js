@@ -53,6 +53,12 @@ import AdminForgetPassword from "./Pages/Login/AdminForgetPassword.jsx";
 import AdminResetPassword from "./Pages/Login/AdminResetPassword.jsx";
 import ChangeAdminName from "./Pages/ChangeUsername/ChangeAdminName.jsx";
 import PrivateRoute from "./Pages/Layouts/PrivateRoute.jsx";
+import ViewCCForm from "./Pages/OnlineFIR/ViewCC.jsx";
+import ViewVVForm from "./Pages/OnlineFIR/ViewVV.jsx";
+import EditCCForm from "./Pages/OnlineFIR/EditCC.jsx";
+import EditVVForm from "./Pages/OnlineFIR/EditVV.jsx";
+import CertificateDetails from "./Pages/FIRDetails/CertificateDetails.jsx";
+import RequestDetail from "./Pages/FIRDetails/RequestDetail.jsx";
 
 export const router = createBrowserRouter(
 
@@ -82,8 +88,14 @@ export const router = createBrowserRouter(
                     <Route path="/DownloadFIRPDF/:id" element={<div className={styles.main}><DownloadFIRPDF /></div>} />
                     <Route path="/FIRPDF/:id" exact element={<div className={styles.main}><FIRPDF /></div>} />
                     <Route path="/ViewFIR/:id" exact element={<div className={styles.main}><ViewFIR /></div>} />
+                    <Route path="/ViewCertificate/:id" exact element={<div className={styles.main}><ViewCCForm /></div>} />
+                    <Route path="/ViewRequest/:id" exact element={<div className={styles.main}><ViewVVForm /></div>} />
                     <Route path="/EditFIR/:id" exact element={<div className={styles.main}><EditFIR /></div>} />
+                    <Route path="/EditCertificate/:id" exact element={<div className={styles.main}><EditCCForm /></div>} />
+                    <Route path="/EditRequest/:id" exact element={<div className={styles.main}><EditVVForm/></div>} />
                     <Route path="/FIRDetail/:id" exact element={<div className={styles.main}><FIRDetail /></div>} />
+                    <Route path="/CertificateDetail/:id" exact element={<div className={styles.main}><CertificateDetails /></div>} />
+                    <Route path="/RequestDetail/:id" exact element={<div className={styles.main}><RequestDetail /></div>} />
                     <Route path="/MyApplications" exact element={<div className={styles.main}><MyApplications /></div>} />
                     <Route path="/CharacterCertificateForm" exact element={<div className={styles.main}><CharacterCertificateForm /></div>} />
                     <Route path="/VehicleVerificationForm" exact element={<div className={styles.main}><VehicleVerificationForm /></div>} />

@@ -60,8 +60,6 @@ function MyApplications() {
   const { isLoading: ccerLoading, data: ccerData, error: ccerError, refetch: ccerRefetch } = useGetCitizensCertificatesQuery(cUrl);
   const { isLoading: vvLoading, data: vvData, error: vvError, refetch: vvRefetch } = useGetPoliceStationRequestsQuery(url);
   const { isLoading: cvvLoading, data: cvvData, error: cvvError, refetch: cvvRefetch } = useGetCitizensRequestsQuery(cUrl);
-  console.log(ccerData);
-  console.log(cvvData);
   const { isLoading: pcLoading, data: pcData, error: pcError, refetch: PSCRefetch } = useGetPoliceStationFIRcountQuery(pcUrl);
   const { isLoading: cLoading, data: cData, error: cError, refetch: CRefetch } = useGetCitizensFIRsQuery(cUrl);
   const { isLoading: ccLoading, data: ccData, error: ccError, refetch: CCRefetch } = useGetCitizensFIRcountQuery(ccUrl);
@@ -773,7 +771,7 @@ function MyApplications() {
                             </select>
                           </div>
                           <div className={`${styles.cell} ${styles.icon}`}>
-                            <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
+                            <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewRequest/${firs._id}`) }} />
                             <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
                             <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
                             <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
@@ -857,7 +855,7 @@ function MyApplications() {
                             </select>
                           </div>
                           <div className={`${styles.cell} ${styles.icon}`}>
-                            <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
+                            <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewCertificate/${firs._id}`) }} />
                             <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
                             <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
                             <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
@@ -1011,10 +1009,10 @@ function MyApplications() {
                             <div className={styles.cell1}>{firs.EntryDate}</div>
                             <div className={styles.cell1}>{firs.Status}</div>
                             <div className={styles.cell1}><Stars rating={firs.Rating} /></div>
-                            <div className={styles.respButtonfull}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
+                            <div className={styles.respButtonfull}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/CertificateDetail/${firs._id}`) }}>View Details</button></div>
                           </div>
                         </div>
-                        <div className={styles.respButton}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
+                        <div className={styles.respButton}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/CertificateDetail/${firs._id}`) }}>View Details</button></div>
                       </>
                     ))
                   }
@@ -1069,10 +1067,10 @@ function MyApplications() {
                             <div className={styles.cell1}>{firs.EntryDate}</div>
                             <div className={styles.cell1}>{firs.Status}</div>
                             <div className={styles.cell1}><Stars rating={firs.Rating} /></div>
-                            <div className={styles.respButtonfull}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
+                            <div className={styles.respButtonfull}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/RequestDetail/${firs._id}`) }}>View Details</button></div>
                           </div>
                         </div>
-                        <div className={styles.respButton}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/FIRDetail/${firs._id}`) }}>View Details</button></div>
+                        <div className={styles.respButton}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/RequestDetail/${firs._id}`) }}>View Details</button></div>
                       </>
                     ))
                   }

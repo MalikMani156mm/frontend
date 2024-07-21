@@ -1,5 +1,5 @@
 import styles from "./OnlineFIR.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useAddNewFIRMutation } from '../../Redux/Features/FIR/FIRApi';
@@ -14,7 +14,7 @@ import { useGetAllOffencesQuery } from "../../Redux/Features/Offence/OffenceApi"
 
 function OnlineFIR() {
 
-  //eslint-disable-next-line
+  const navigate = useNavigate();
   const [addFIR, { isLoading, error }] = useAddNewFIRMutation();
   const { data } = useGetAllPoliceStationsQuery();
   const { data: Cdata } = useGetAllCategoriesQuery();
@@ -608,10 +608,8 @@ function OnlineFIR() {
           </div>
         </div>
         <div className={styles.buttonsalignment}>
-          <button className={styles.CancelButton} type='reset'>
-            <Link to="/" className={styles.Links}>
+          <button className={styles.CancelButton} type='reset' onClick={()=>navigate(-1)}>
               Cancel
-            </Link>
           </button>
           <button className={styles.SubmitButton} type='submit' disabled={isLoading}>
             {isLoading ? "Loading..." : "Submit"}

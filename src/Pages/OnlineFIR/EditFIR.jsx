@@ -1,5 +1,5 @@
 import styles from "./OnlineFIR.module.css";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { useGetFIRByIdQuery, useUpdateFIRMutation } from '../../Redux/Features/FIR/FIRApi';
@@ -15,6 +15,7 @@ import { useGetAllOffencesQuery, useGetOffenceByIdQuery } from "../../Redux/Feat
 
 function EditFIR() {
 
+  const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
   const role = "Admin";
   const Role = "SuperAdmin";
@@ -589,10 +590,8 @@ function EditFIR() {
           </div>
         </div>
         <div className={styles.buttonsalignment}>
-          <button className={styles.CancelButton} type='reset'>
-            <Link to="/" className={styles.Links}>
+          <button className={styles.CancelButton} type='reset' onClick={()=>navigate(-1)}>
               Cancel
-            </Link>
           </button>
           <button className={styles.SubmitButton} type='submit' disabled={isLoading}>
             {isLoading ? "Loading..." : "Submit"}
