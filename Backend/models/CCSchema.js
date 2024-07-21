@@ -34,9 +34,6 @@ const CCSchema = new Schema(
             ref:'PoliceStation',
             require: [true, 'Please provide the Police Station']
         },
-        BeatMoza: {
-            type: String
-        },
         CNIC: {
             type: Number,
             require: [true, 'Please provide the CNIC'],

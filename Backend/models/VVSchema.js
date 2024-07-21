@@ -59,12 +59,12 @@ const VVSchema = new Schema(
             require: [true, 'Please provide the PermanentAddress'],
             max: [300, 'Maximum limit of 200 words']
         },
-        // OCNIC: {
-        //     type: Number,
-        //     require: [true, 'Please provide the CNIC'],
-        //     // min:[13, 'without dash 13 number'],
-        //     // max:[15, 'wit hdash 15 number']
-        // },
+        OCNIC: {
+            type: Number,
+            require: [true, 'Please provide the CNIC'],
+            // min:[13, 'without dash 13 number'],
+            // max:[15, 'wit hdash 15 number']
+        },
         OCNICPic: {
             type: String,
         },
@@ -112,7 +112,7 @@ const VVSchema = new Schema(
             require: [true, 'Please provide the Category']
         },
         YearOfManufacture: {
-            type: String,
+            type: Number,
             require: [true, 'Please provide the Category']
         },
         Color: {
