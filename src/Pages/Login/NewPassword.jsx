@@ -48,11 +48,12 @@ function NewPassword() {
             password: yup.string().min(8).max(20).matches(passwordPattern, { message: errorMessage }).required('Password is Required'),
             confirmpassword: yup.string().oneOf([yup.ref('password')], 'passwords must match').required('Confirm Password is Required'),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values,{ resetForm }) => {
             delete values.confirmpassword;
             console.log(values);
             const res = await changePassword({ id, data: values }).unwrap();
             if (res.success) {
+                resetForm();
                 toast.success(res.message);
                 dispatch(setPasswordConfirmed(false));
             }
@@ -82,7 +83,7 @@ function NewPassword() {
                     <div className={styles.inputContainer}>
                         <Textinput
                             type={showPassword ? 'text' : 'password'}
-                            values={values.password}
+                            value={values.password}
                             name="password"
                             onBlur={handleBlur}
                             onChange={handleChange}
@@ -97,7 +98,7 @@ function NewPassword() {
                     <div className={styles.inputContainer}>
                         <Textinput
                             type={showCPassword ? 'text' : 'password'}
-                            values={values.confirmpassword}
+                            value={values.confirmpassword}
                             name="confirmpassword"
                             onBlur={handleBlur}
                             onChange={handleChange}

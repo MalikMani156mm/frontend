@@ -59,6 +59,7 @@ import EditCCForm from "./Pages/OnlineFIR/EditCC.jsx";
 import EditVVForm from "./Pages/OnlineFIR/EditVV.jsx";
 import CertificateDetails from "./Pages/FIRDetails/CertificateDetails.jsx";
 import RequestDetail from "./Pages/FIRDetails/RequestDetail.jsx";
+import { CharacterCertificatePDF } from "./Pages/FIRPDF/CharacterCertificatePDF.jsx";
 
 export const router = createBrowserRouter(
 
@@ -87,6 +88,7 @@ export const router = createBrowserRouter(
                     <Route path="/OnlineFIR" exact element={<div className={styles.main}><OnlineFIR /></div>} />
                     <Route path="/DownloadFIRPDF/:id" element={<div className={styles.main}><DownloadFIRPDF /></div>} />
                     <Route path="/FIRPDF/:id" exact element={<div className={styles.main}><FIRPDF /></div>} />
+                    <Route path="/CCPDF/:id" exact element={<div className={styles.main}><CharacterCertificatePDF /></div>} />
                     <Route path="/ViewFIR/:id" exact element={<div className={styles.main}><ViewFIR /></div>} />
                     <Route path="/ViewCertificate/:id" exact element={<div className={styles.main}><ViewCCForm /></div>} />
                     <Route path="/ViewRequest/:id" exact element={<div className={styles.main}><ViewVVForm /></div>} />

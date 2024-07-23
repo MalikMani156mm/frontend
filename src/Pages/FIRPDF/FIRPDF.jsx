@@ -26,7 +26,7 @@ function FIRPDF() {
   }, [firData]);
   const { data: psData, error: psError, isLoading: psLoading } = useGetPoliceStationByIdQuery(policeStationId, {
     skip: !policeStationId,
-  });
+  }); 
   const { data: cData, error: cError, isLoading: cLoading } = useGetCategoryByIdQuery(categoryId, {
       skip: !categoryId,
   });
@@ -38,14 +38,7 @@ function FIRPDF() {
     return parts[2];
   };
 
-  if (firError || psError || cError || oError) {
-    return <Navigate to={'*'} replace={true} />
-}
-
-if (firLoading || (!policeStationId && psLoading) || (!categoryId && cLoading) || (!offenceId && oLoading)) {
-    return <div><LoadingSpinner/></div>;
-}
-
+  
   const complaintNumber = firData?.FIRs?.ComplaintNumber;
   const extractedNumber = complaintNumber ? extractNumber(complaintNumber) : null;
   const getCurrentDateLocal = () => {
@@ -57,7 +50,19 @@ if (firLoading || (!policeStationId && psLoading) || (!categoryId && cLoading) |
   };
   
   const date= getCurrentDateLocal();
+  
+  const PoliceStation = (psName) => {
+    const parts = psName.split(" ");
+    return parts.slice(2).join(" ");
+  };
+  
+  if (firError || psError || cError || oError) {
+    return <Navigate to={'*'} replace={true} />
+}
 
+if (firLoading || (!policeStationId && psLoading) || (!categoryId && cLoading) || (!offenceId && oLoading)) {
+    return <div><LoadingSpinner/></div>;
+}
   return (
     <>
       <div className={styles.Body}>
@@ -92,7 +97,7 @@ if (firLoading || (!policeStationId && psLoading) || (!categoryId && cLoading) |
               <div className={styles.formGroup}>
               </div>
               <div><p>Police Station:</p></div>
-              <div><p>{psData ? psData.PSs.PSName : null}</p></div>
+              <div><p>{psData ? PoliceStation(psData.PSs.PSName) : null}</p></div>
             </div>
             <div className={styles.formGroup}>
               <div><p>District:</p></div>

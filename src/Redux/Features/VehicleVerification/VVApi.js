@@ -42,6 +42,14 @@ export const VVApi = createApi({
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'VV' }],
     }),
+    ChangeRequestRating: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/updateRequestRating/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['VV']
+    }),
     addNewRequest: builder.mutation({
       query: (data) => ({
         url : `/new/Request`,
@@ -53,4 +61,4 @@ export const VVApi = createApi({
   }),
 })
 
-export const { useAddNewRequestMutation, useGetCitizensRequestsQuery, useGetPoliceStationRequestsQuery, useGetRequestByIdQuery,useDeleteRequestMutation, useChangeRequestStatusMutation,useUpdateRequestMutation} = VVApi
+export const { useAddNewRequestMutation, useGetCitizensRequestsQuery, useGetPoliceStationRequestsQuery, useGetRequestByIdQuery,useDeleteRequestMutation, useChangeRequestStatusMutation,useChangeRequestRatingMutation, useUpdateRequestMutation} = VVApi

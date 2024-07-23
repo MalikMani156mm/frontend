@@ -59,6 +59,40 @@
     padding-right: 40px;
 }
 
+.fileOption{
+    padding: 9px 30px;
+    padding-right: 50px;
+    margin: 4px;
+    outline: none;
+    background-color: gainsboro;
+    width: 400px;
+    height: 50px;
+    color: rgba(0, 0, 0, 0.484);
+    border: 1px solid white;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+.fileOption::-webkit-file-upload-button {
+    visibility: hidden;
+    display: none;
+  }
+
+.fileOption::before {
+    content: 'Choose file';
+    display: inline-block;
+    background: #ffffffb3; /* Background color */
+    color: #212529; /* Text color */
+    border: 1px solid #ced4da; /* Border color */
+    border-radius: 0.3rem; /* Border radius */
+    padding: 2px 12px; /* Padding */
+    outline: none;
+    white-space: nowrap;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 1rem;
+  }
+
 .login {
     margin-top: 20px;
     color: rgb(1, 1, 179);

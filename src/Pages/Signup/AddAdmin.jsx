@@ -48,11 +48,12 @@ function AddAdmin() {
             password: yup.string().min(8).max(20).matches(passwordPattern, { message: errorMessage }).required('Password is Required'),
             confirmpassword: yup.string().oneOf([yup.ref('password')], 'passwords must match').required('Confirm Password is Required'),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values,{ resetForm }) => {
             delete values.confirmpassword;
             console.log(values);
             const user = await register(values);
             if (user.data.success) {
+                resetForm();
                 toast.success(user.data.message);
             }
             else {
@@ -80,7 +81,7 @@ function AddAdmin() {
 
                     <Textinput
                         type="text"
-                        values={values.name}
+                        value={values.name}
                         name="name"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -90,7 +91,8 @@ function AddAdmin() {
 
                     <select className={styles.SelectOption} name="PoliceStation"
                         onChange={handleChange}
-                        onBlur={handleBlur}>
+                        onBlur={handleBlur}
+                        value={values.PoliceStation}>
                         <option value="0">Assign Police Station</option>
                         {
                             data && data.map(PS => (
@@ -101,7 +103,7 @@ function AddAdmin() {
 
                     <Textinput
                         type="text"
-                        values={values.email}
+                        value={values.email}
                         name="email"
                         onBlur={handleBlur}
                         onChange={handleChange}
@@ -111,7 +113,7 @@ function AddAdmin() {
                     <div className={styles.inputContainer}>
                         <Textinput
                             type={showPassword ? 'text' : 'password'}
-                            values={values.password}
+                            value={values.password}
                             name="password"
                             onBlur={handleBlur}
                             onChange={handleChange}
@@ -125,7 +127,7 @@ function AddAdmin() {
                     <div className={styles.inputContainer}>
                         <Textinput
                             type={showCPassword ? 'text' : 'password'}
-                            values={values.confirmpassword}
+                            value={values.confirmpassword}
                             name="confirmpassword"
                             onBlur={handleBlur}
                             onChange={handleChange}

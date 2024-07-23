@@ -38,6 +38,7 @@ function Signup() {
             email: '',
             phonenumber: '',
             cnic: '',
+            image:'',
             password: '',
             confirmpassword: '',
             Location: currentLocation,
@@ -130,6 +131,22 @@ function Signup() {
                         placeholder="Enter CNIC (without dashes)"
                     />
                     <p className="help-block text-danger">{errors.cnic && touched.cnic ? errors.cnic : null}</p>
+                    <input className={styles.fileOption}
+                        type="file"
+                        values={values.image}
+                        name="image"
+                        onBlur={handleBlur}
+                        onChange={(event) => {
+                            let reader = new FileReader();
+                            reader.onloadend = () => {
+                              if (reader.readyState === 2) {
+                                setFieldValue("image", reader.result);
+                              }
+                            }
+                            reader.readAsDataURL(event.currentTarget.files[0]);
+                          }}
+                    />
+                    <p className="help-block text-danger">{errors.image && touched.image ? errors.image : null}</p>
                     <div className={styles.inputContainer}>
                         <Textinput
                             type={showPassword ? 'text' : 'password'}

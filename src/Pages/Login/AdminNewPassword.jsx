@@ -48,11 +48,12 @@ function AdminNewPassword() {
             password: yup.string().min(8).max(20).matches(passwordPattern, { message: errorMessage }).required('Password is Required'),
             confirmpassword: yup.string().oneOf([yup.ref('password')], 'passwords must match').required('Confirm Password is Required'),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values,{ resetForm }) => {
             delete values.confirmpassword;
             console.log(values);
             const res = await changeAdminPassword({ id, data: values }).unwrap();
             if (res.success) {
+                resetForm();
                 toast.success(res.message);
                 dispatch(setPasswordConfirmed(false));
             }

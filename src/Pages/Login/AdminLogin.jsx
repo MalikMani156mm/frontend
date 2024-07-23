@@ -82,6 +82,7 @@ function AdminLogin() {
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={100} width={100} /></Link>
                     <br />
                     <div className={styles.LoginHeader}>E-FIR System</div>
+                    <div className={styles.LoginHeader}>Admin Login</div>
 
                     <Textinput
                         type="email"

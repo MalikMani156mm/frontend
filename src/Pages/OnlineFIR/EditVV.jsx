@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useSelector } from "react-redux";
-import {  useGetRequestByIdQuery, useUpdateRequestMutation } from "../../Redux/Features/VehicleVerification/VVApi";
+import { useGetRequestByIdQuery, useUpdateRequestMutation } from "../../Redux/Features/VehicleVerification/VVApi";
 import LoadingSpinner from "../../Components/Loading/Loading";
 
 
@@ -18,13 +18,20 @@ function EditVVForm() {
   const role = "Admin";
   const Role = "SuperAdmin";
   const { id } = useParams();
-  const { data, error:iError, isLoading:iLoading } = useGetRequestByIdQuery(id);
-  console.log(data);
+  const { data, error: iError, isLoading: iLoading, refetch } = useGetRequestByIdQuery(id);
 
   const [state, setState] = useState(true);
   const [selectedValue, setSelectedValue] = useState(null);
   const [selectedValue2, setSelectedValue2] = useState(null);
   const [selectedValue3, setSelectedValue3] = useState(null);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      refetch();
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [refetch]);
 
   useEffect(() => {
     if (role === user.role || Role === user.role) {
@@ -64,40 +71,40 @@ function EditVVForm() {
   // eslint-disable-next-line
   const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
     initialValues: {
-      EntryDate: data.VVs.EntryDate,
+      EntryDate: data?.VVs.EntryDate,
       SourceOfRequest: 'Online',
-      RequestNumber: data.VVs.RequestNumber,
-      RequestTo: data.VVs.RequestTo,
-      CNIC: data.VVs.CNIC,
-      Name: data.VVs.Name,
-      relation: data.VVs.relation,
-      GuardianName: data.VVs.GuardianName,
-      Gender: data.VVs.Gender,
-      ContactNumber: data.VVs.ContactNumber,
-      PermanentAddress: data.VVs.PermanentAddress,
-      OCNIC: data.VVs.OCNIC,
-      OCNICPic: data.VVs.OCNICPic,
-      OName: data.VVs.OName,
-      Orelation: data.VVs.Orelation,
-      OGuardianName: data.VVs.OGuardianName,
-      OGender: data.VVs.OGender,
-      OContactNumber: data.VVs.OContactNumber,
-      OPermanentAddress: data.VVs.OPermanentAddress,
-      RegistrationNumber: data.VVs.RegistrationNumber,
-      Make: data.VVs.Make,
-      Model: data.VVs.Model,
-      YearOfManufacture: data.VVs.YearOfManufacture,
-      Color: data.VVs.Color,
-      EngineNumber: data.VVs.EngineNumber,
-      ChassisNumber: data.VVs.ChassisNumber,
-      BuyIt: data.VVs.BuyIt,
-      Reason: data.VVs.Reason,
-      CNICFront: data.VVs.CNICFront,
-      CNICBack: data.VVs.CNICBack,
-      ApplicantPic: data.VVs.ApplicantPic,
-      RegistrationBookPic: data.VVs.RegistrationBookPic,
-      ChassisNumberPic: data.VVs.ChassisNumberPic,
-      EngineNumberPic: data.VVs.EngineNumberPic
+      RequestNumber: data?.VVs.RequestNumber,
+      RequestTo: data?.VVs.RequestTo,
+      CNIC: data?.VVs.CNIC,
+      Name: data?.VVs.Name,
+      relation: data?.VVs.relation,
+      GuardianName: data?.VVs.GuardianName,
+      Gender: data?.VVs.Gender,
+      ContactNumber: data?.VVs.ContactNumber,
+      PermanentAddress: data?.VVs.PermanentAddress,
+      OCNIC: data?.VVs.OCNIC,
+      OCNICPic: data?.VVs.OCNICPic,
+      OName: data?.VVs.OName,
+      Orelation: data?.VVs.Orelation,
+      OGuardianName: data?.VVs.OGuardianName,
+      OGender: data?.VVs.OGender,
+      OContactNumber: data?.VVs.OContactNumber,
+      OPermanentAddress: data?.VVs.OPermanentAddress,
+      RegistrationNumber: data?.VVs.RegistrationNumber,
+      Make: data?.VVs.Make,
+      Model: data?.VVs.Model,
+      YearOfManufacture: data?.VVs.YearOfManufacture,
+      Color: data?.VVs.Color,
+      EngineNumber: data?.VVs.EngineNumber,
+      ChassisNumber: data?.VVs.ChassisNumber,
+      BuyIt: data?.VVs.BuyIt,
+      Reason: data?.VVs.Reason,
+      CNICFront: data?.VVs.CNICFront,
+      CNICBack: data?.VVs.CNICBack,
+      ApplicantPic: data?.VVs.ApplicantPic,
+      RegistrationBookPic: data?.VVs.RegistrationBookPic,
+      ChassisNumberPic: data?.VVs.ChassisNumberPic,
+      EngineNumberPic: data?.VVs.EngineNumberPic
     },
     validationSchema: yup.object().shape({
       EntryDate: yup.date().required('Required'),
@@ -132,22 +139,22 @@ function EditVVForm() {
     }),
     onSubmit: async (values) => {
       console.log(values);
-    //   const res = await updateRequest(values).unwrap();
-    //   if (res.success) {
-    //     toast.success(res.message);
-    //   }
-    //   else {
-    //     toast.error(res.message || res.data.error);
-    //   }
+      const res = await updateRequest({ id, data: values }).unwrap();
+      if (res.success) {
+        toast.success(res.message);
+      }
+      else {
+        toast.error(res.message || res.data.error);
+      }
 
     }
   });
 
   if (iLoading) {
     return <div><LoadingSpinner /></div>;
-}
+  }
 
-  if (error|| iError) {
+  if (error || iError) {
     return (<>
       <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
       <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
@@ -182,7 +189,7 @@ function EditVVForm() {
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
-                  <input type="number" name="RequestNumber" className="form-control" onChange={handleChange} placeholder={"It will Allocated Automatically"}
+                  <input type="number" name="RequestNumber" className="form-control" onChange={handleChange} placeholder={values.RequestNumber}
                     onBlur={handleBlur} disabled={true} />
                 </div>
                 <p className="help-block text-danger">{errors.RequestNumber && touched.RequestNumber ? errors.RequestNumber : null}</p>
@@ -191,12 +198,12 @@ function EditVVForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12 "><p>Request Deliver to</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input className="form-control" name="RequestTo" disabled/>
+                <input className="form-control" name="RequestTo" disabled placeholder="15/Car Cell" />
                 <p className="help-block text-danger">{errors.RequestTo && touched.RequestTo ? errors.RequestTo : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC (without dashes)</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange} disabled={state}
+                <input type="number" name="CNIC" value={values.CNIC} className="form-control" onChange={handleChange} disabled={state}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
@@ -206,7 +213,7 @@ function EditVVForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange} disabled={state}
+                <input type="text" name="Name" value={values.Name} className="form-control" onChange={handleChange} disabled={state}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
@@ -239,6 +246,7 @@ function EditVVForm() {
                   type="text"
                   name="GuardianName"
                   className="form-control"
+                  value={values.GuardianName}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -248,7 +256,7 @@ function EditVVForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <select className="form-control" name="Gender" onChange={handleChange}
+                <select className="form-control" name="Gender" onChange={handleChange} value={values.Gender}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
                   <option value="Male">Male</option>
@@ -262,7 +270,7 @@ function EditVVForm() {
                 <input
                   type="number"
                   name="ContactNumber"
-                  placeholder={user.phonenumber ? `0${user.phonenumber}`: null}
+                  placeholder={user.phonenumber ? `0${user.phonenumber}` : null}
                   disabled={state}
                   className="form-control"
                   onChange={handleChange}
@@ -279,6 +287,7 @@ function EditVVForm() {
                 <textarea
                   type="text"
                   name="PermanentAddress"
+                  value={values.PermanentAddress}
                   rows={3}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -298,7 +307,7 @@ function EditVVForm() {
               <div className="col-lg-3 col-md-12 col-sm-12"><p>CNIC (without dashes)</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="number" name="OCNIC" className="form-control" onChange={handleChange}
-                  onBlur={handleBlur} />
+                  onBlur={handleBlur} value={values.OCNIC} />
                 <p className="help-block text-danger">{errors.OCNIC && touched.OCNIC ? errors.OCNIC : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC Picture </p></div>
@@ -320,7 +329,7 @@ function EditVVForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="OName" className="form-control" onChange={handleChange}
+                <input type="text" name="OName" value={values.OName} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.OName && touched.OName ? errors.OName : null}</p>
               </div>
@@ -352,6 +361,7 @@ function EditVVForm() {
                 <input
                   type="text"
                   name="OGuardianName"
+                  value={values.OGuardianName}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -363,7 +373,7 @@ function EditVVForm() {
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="OGender" onChange={handleChange}
-                  onBlur={handleBlur}>
+                  onBlur={handleBlur} value={values.OGender}>
                   <option value="0">Select</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -376,6 +386,7 @@ function EditVVForm() {
                 <input
                   type="number"
                   name="OContactNumber"
+                  value={`0${values.OContactNumber}`}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -392,6 +403,7 @@ function EditVVForm() {
                   type="text"
                   name="OPermanentAddress"
                   rows={3}
+                  value={values.OPermanentAddress}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className={styles.formControl}
@@ -409,13 +421,13 @@ function EditVVForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Registration Number</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="RegistrationNumber" className="form-control" onChange={handleChange}
+                <input type="text" name="RegistrationNumber" value={values.RegistrationNumber} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.RegistrationNumber && touched.RegistrationNumber ? errors.RegistrationNumber : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Make</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="Make" className="form-control" onChange={handleChange}
+                <input type="text" name="Make" className="form-control" value={values.Make} onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Make && touched.Make ? errors.Make : null}</p>
               </div>
@@ -423,13 +435,13 @@ function EditVVForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Model</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="Model" className="form-control" onChange={handleChange}
+                <input type="text" name="Model" className="form-control" value={values.Model} onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Model && touched.Model ? errors.Model : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Year of Manufacture</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="number" name="YearOfManufacture" className="form-control" onChange={handleChange}
+                <input type="number" name="YearOfManufacture" value={values.YearOfManufacture} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.YearOfManufacture && touched.YearOfManufacture ? errors.YearOfManufacture : null}</p>
               </div>
@@ -437,13 +449,13 @@ function EditVVForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Color</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="Color" className="form-control" onChange={handleChange}
+                <input type="text" name="Color" className="form-control" value={values.Color} onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Color && touched.Color ? errors.Color : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Chassis Number</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="ChassisNumber" className="form-control" onChange={handleChange}
+                <input type="text" name="ChassisNumber" value={values.ChassisNumber} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.ChassisNumber && touched.ChassisNumber ? errors.ChassisNumber : null}</p>
               </div>
@@ -451,7 +463,7 @@ function EditVVForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12 "><p>Engine Number</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="EngineNumber" className="form-control" onChange={handleChange}
+                <input type="text" name="EngineNumber" value={values.EngineNumber} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.EngineNumber && touched.EngineNumber ? errors.EngineNumber : null}</p>
               </div>
@@ -482,6 +494,7 @@ function EditVVForm() {
                   type="text"
                   rows={3}
                   name="Reason"
+                  value={values.Reason}
                   className={styles.formControl}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -601,8 +614,8 @@ function EditVVForm() {
           </div>
         </div>
         <div className={styles.buttonsalignment}>
-          <button className={styles.CancelButton} type='reset' onClick={()=>navigate(-1)}>
-              Cancel
+          <button className={styles.CancelButton} type='reset' onClick={() => navigate(-1)}>
+            Cancel
           </button>
           <button className={styles.SubmitButton} type='submit' >
             {isLoading ? "Loading..." : "Submit"}

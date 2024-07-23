@@ -157,11 +157,15 @@ function VehicleVerificationForm() {
       ChassisNumberPic: yup.string().required('Required'),
       EngineNumberPic: yup.string().required('Required'),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       console.log(values);
       values.RequestNumber = SerialNumberGenerator();
       const res = await addRequest(values).unwrap();
       if (res.success) {
+        resetForm();
+        setSelectedValue(null);
+        setSelectedValue2(null);
+        setSelectedValue3(null);
         toast.success(res.message);
       }
       else {
@@ -206,7 +210,7 @@ function VehicleVerificationForm() {
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 " >
                 <div >
-                  <input type="number" name="RequestNumber" className="form-control" onChange={handleChange} placeholder={"It will Allocated Automatically"}
+                  <input type="number" name="RequestNumber" className="form-control" onChange={handleChange} placeholder={"Allocated Automatically"}
                     onBlur={handleBlur} disabled={true} />
                 </div>
                 <p className="help-block text-danger">{errors.RequestNumber && touched.RequestNumber ? errors.RequestNumber : null}</p>
@@ -215,7 +219,7 @@ function VehicleVerificationForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12 "><p>Request Deliver to</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <select className="form-control" name="RequestTo"
+                <select className="form-control" name="RequestTo" value={values.RequestTo}
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -225,7 +229,7 @@ function VehicleVerificationForm() {
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC (without dashes)</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange} disabled={state}
+                <input type="number" name="CNIC" value={values.CNIC} className="form-control" onChange={handleChange} disabled={state}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
@@ -235,7 +239,7 @@ function VehicleVerificationForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange} disabled={state}
+                <input type="text" name="Name" value={values.Name} placeholder={user.name} className="form-control" onChange={handleChange} disabled={state}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
@@ -267,6 +271,7 @@ function VehicleVerificationForm() {
                 <input
                   type="text"
                   name="GuardianName"
+                  value={values.GuardianName}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -277,7 +282,7 @@ function VehicleVerificationForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <select className="form-control" name="Gender" onChange={handleChange}
+                <select className="form-control" name="Gender" onChange={handleChange} value={values.Gender}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
                   <option value="Male">Male</option>
@@ -291,7 +296,7 @@ function VehicleVerificationForm() {
                 <input
                   type="number"
                   name="ContactNumber"
-                  placeholder={user.phonenumber ? `0${user.phonenumber}`: null}
+                  placeholder={user.phonenumber ? `0${user.phonenumber}` : null}
                   disabled={state}
                   className="form-control"
                   onChange={handleChange}
@@ -308,6 +313,7 @@ function VehicleVerificationForm() {
                 <textarea
                   type="text"
                   name="PermanentAddress"
+                  value={values.PermanentAddress}
                   rows={3}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -327,7 +333,7 @@ function VehicleVerificationForm() {
               <div className="col-lg-3 col-md-12 col-sm-12"><p>CNIC (without dashes)</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="number" name="OCNIC" className="form-control" onChange={handleChange}
-                  onBlur={handleBlur} />
+                  onBlur={handleBlur} value={values.OCNIC} />
                 <p className="help-block text-danger">{errors.OCNIC && touched.OCNIC ? errors.OCNIC : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC Picture </p></div>
@@ -349,7 +355,7 @@ function VehicleVerificationForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="OName" className="form-control" onChange={handleChange}
+                <input type="text" name="OName" value={values.OName} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.OName && touched.OName ? errors.OName : null}</p>
               </div>
@@ -381,6 +387,7 @@ function VehicleVerificationForm() {
                 <input
                   type="text"
                   name="OGuardianName"
+                  value={values.OGuardianName}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -392,7 +399,7 @@ function VehicleVerificationForm() {
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <select className="form-control" name="OGender" onChange={handleChange}
-                  onBlur={handleBlur}>
+                  onBlur={handleBlur} value={values.OGender}>
                   <option value="0">Select</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
@@ -405,6 +412,7 @@ function VehicleVerificationForm() {
                 <input
                   type="number"
                   name="OContactNumber"
+                  value={`0${values.OContactNumber}`}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -421,6 +429,7 @@ function VehicleVerificationForm() {
                   type="text"
                   name="OPermanentAddress"
                   rows={3}
+                  value={values.OPermanentAddress}
                   onChange={handleChange}
                   onBlur={handleBlur}
                   className={styles.formControl}
@@ -439,12 +448,12 @@ function VehicleVerificationForm() {
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Registration Number</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="RegistrationNumber" className="form-control" onChange={handleChange}
-                  onBlur={handleBlur} />
+                  onBlur={handleBlur} value={values.RegistrationNumber} />
                 <p className="help-block text-danger">{errors.RegistrationNumber && touched.RegistrationNumber ? errors.RegistrationNumber : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Make</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="Make" className="form-control" onChange={handleChange}
+                <input type="text" name="Make" value={values.Make} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Make && touched.Make ? errors.Make : null}</p>
               </div>
@@ -452,13 +461,13 @@ function VehicleVerificationForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Model</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="Model" className="form-control" onChange={handleChange}
+                <input type="text" name="Model" value={values.Model} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Model && touched.Model ? errors.Model : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Year of Manufacture</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="number" name="YearOfManufacture" className="form-control" onChange={handleChange}
+                <input type="number" value={values.YearOfManufacture} name="YearOfManufacture" className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.YearOfManufacture && touched.YearOfManufacture ? errors.YearOfManufacture : null}</p>
               </div>
@@ -466,14 +475,14 @@ function VehicleVerificationForm() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Color</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="Color" className="form-control" onChange={handleChange}
+                <input type="text" name="Color" value={values.Color} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} />
                 <p className="help-block text-danger">{errors.Color && touched.Color ? errors.Color : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Chassis Number</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="ChassisNumber" className="form-control" onChange={handleChange}
-                  onBlur={handleBlur} />
+                  onBlur={handleBlur} value={values.ChassisNumber} />
                 <p className="help-block text-danger">{errors.ChassisNumber && touched.ChassisNumber ? errors.ChassisNumber : null}</p>
               </div>
             </div>
@@ -481,7 +490,7 @@ function VehicleVerificationForm() {
               <div className="col-lg-3 col-md-12 col-sm-12 "><p>Engine Number</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="EngineNumber" className="form-control" onChange={handleChange}
-                  onBlur={handleBlur} />
+                  onBlur={handleBlur} value={values.EngineNumber} />
                 <p className="help-block text-danger">{errors.EngineNumber && touched.EngineNumber ? errors.EngineNumber : null}</p>
               </div>
               <div className="col-lg-4 col-md-4 col-sm-4 mx-2">
@@ -511,6 +520,7 @@ function VehicleVerificationForm() {
                   type="text"
                   rows={3}
                   name="Reason"
+                  value={values.Reason}
                   className={styles.formControl}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -630,8 +640,8 @@ function VehicleVerificationForm() {
           </div>
         </div>
         <div className={styles.buttonsalignment}>
-          <button className={styles.CancelButton} type='reset' onClick={()=>navigate(-1)}>
-              Cancel
+          <button className={styles.CancelButton} type='reset' onClick={() => navigate(-1)}>
+            Cancel
           </button>
           <button className={styles.SubmitButton} type='submit' >
             {isLoading ? "Loading..." : "Submit"}

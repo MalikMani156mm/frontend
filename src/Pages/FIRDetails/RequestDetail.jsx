@@ -1,7 +1,6 @@
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import styles from '../MyApplications/MyApplications.module.css';
-import { useChangeFIRRatingMutation, useDeleteFIRMutation, useGetFIRByIdQuery } from "../../Redux/Features/FIR/FIRApi";
 import CustomAlert from "../../Components/CustomAlert/CustomAlert";
 import LoadingSpinner from "../../Components/Loading/Loading";
 import RatingAlert from "../../Components/CustomAlert/RatingAlert";
@@ -12,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // import QR from "../../images/QR.jpg"
 import Stars from "../../Components/Stars/Stars";
 import { useSelector } from "react-redux";
-import { useDeleteRequestMutation, useGetRequestByIdQuery } from "../../Redux/Features/VehicleVerification/VVApi";
+import { useChangeRequestRatingMutation, useDeleteRequestMutation, useGetRequestByIdQuery } from "../../Redux/Features/VehicleVerification/VVApi";
 
 
 function RequestDetail() {
@@ -21,9 +20,8 @@ function RequestDetail() {
     const { user } = useSelector(state => state.auth)
     const { id } = useParams();
     const { data: Data, error: Error, isLoading: Loading, refetch } = useGetRequestByIdQuery(id);
-    const isApproved = Data?.VVs?.Status === "approved" || Data?.VVs?.Status === "completed";
-    const isCompleted = Data?.VVs?.Status === "completed";
-    const isFiled = Data?.VVs?.Status === "filed";
+    const isApproved = Data?.VVs?.Status === "verified";
+    const isFiled = Data?.VVs?.Status === "defected";
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -35,7 +33,7 @@ function RequestDetail() {
 
     // eslint-disable-next-line 
     const [deleteRequest, { isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteRequestMutation();
-    const [updateRating, { error }] = useChangeFIRRatingMutation();
+    const [updateRating, { error }] = useChangeRequestRatingMutation();
     //const [loader, setLoader] = useState(false);
     //const [dynamic, setDynamic] = useState(false);
     const [deletionError, setDeletionError] = useState(null);
@@ -44,7 +42,7 @@ function RequestDetail() {
     const [showRating, setShowRating] = useState(false);
 
     useEffect(() => {
-        if (Data && Data.VVs && Data.VVs.Status === "completed" && Data.VVs.Rating === 0) {
+        if (Data && Data.VVs && Data.VVs.Status === "verified" && Data.VVs.Rating === 0) {
             setShowRating(true);
         }
     }, [Data]);
@@ -91,11 +89,11 @@ function RequestDetail() {
         return <Navigate to={'/MyApplications'} replace={true} />
     }
 
-    if (Error || deletionError  || error ) {
+    if (Error || deletionError || error) {
         return <Navigate to={'*'} replace={true} />
     }
 
-    if (Loading ) {
+    if (Loading) {
         return <div><LoadingSpinner /></div>;
     }
 
@@ -108,7 +106,7 @@ function RequestDetail() {
 
         <>
             <div className={styles.body}>
-                <h1>FIR Details</h1>
+                <h1>Vehicle Verification Details</h1>
                 <div className={styles.container4}>
                     <div className={styles.table}>
                         <div className={`${styles.row4} ${styles.resprow}`}>
@@ -137,19 +135,19 @@ function RequestDetail() {
                         <div className={styles.row6}>
                             <div className={styles.row7}>
                                 <button className="btn btn-primary mx-3 my-2" disabled={isFiled} onClick={() => { navigate(`/ViewRequest/${Data.VVs._id}`) }}>View Only</button>
-                                <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={() => { navigate(`/FIRPDF/${Data.VVs._id}`) }}>View PDF</button>
                             </div>
                             <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={!isApproved } >Download PDF</button>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={() => { navigate(`/EditRequest/${Data.VVs._id}`) }}>Edit FIR</button>
+                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={() => { navigate(`/EditRequest/${Data.VVs._id}`) }}>Edit Request</button>
                             </div>
                             <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={handleDelete}>Delete FIR</button>
-                                <button className="btn btn-primary mx-3 my-2" disabled={!isCompleted} onClick={handleRating}>Give Rating</button>
+                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={handleDelete}>Delete Request</button>
+                            </div>
+                            <div className={styles.row7}>
+                                <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={handleRating}>Give Rating</button>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             {showConfirmation && (

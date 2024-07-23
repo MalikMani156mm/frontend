@@ -72,20 +72,26 @@ display: none;
   background-size: cover;
 }
 
-.avatarCitizen {
-  background-image: url(../../images/cavatar.png);
-  width: 200px;
-  height: 200px;
-  background-size: cover;
-  border-radius: 100px;
-}
-
 .avatarIG{
   background-image: url(../../images/covers_ali.png);
   width: 200px;
   height: 200px;
   background-size: cover;
   border-radius: 100px;
+}
+
+.avatarCitizen {
+  width: 200px;
+  height: 250px;
+  overflow: hidden; 
+  border-radius: 50%; 
+}
+
+.avatarCitizen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  border-radius: 50%; 
 }
 
 .container,

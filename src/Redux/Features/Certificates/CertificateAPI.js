@@ -50,6 +50,14 @@ export const CertificateApi = createApi({
       }),
       invalidatesTags: ['Certificates']
     }),
+    ChangeCertificateRating: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/updateCertificateRating/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Certificates']
+    }),
     addNewCertificate: builder.mutation({
       query: (data) => ({
         url : `/new/Certificate`,
@@ -61,4 +69,4 @@ export const CertificateApi = createApi({
   }),
 })
 
-export const { useAddNewCertificateMutation,useGetPoliceStationCertificatesQuery,useGetCitizensCertificatesQuery,useDeleteCertificateMutation,useChangeCertificateStatusMutation,useGetCertificateByIdQuery,useChangeCertificatePoliceStationMutation,useUpdateCertificateMutation} = CertificateApi
+export const { useAddNewCertificateMutation,useGetPoliceStationCertificatesQuery,useGetCitizensCertificatesQuery,useDeleteCertificateMutation,useChangeCertificateStatusMutation,useGetCertificateByIdQuery,useChangeCertificatePoliceStationMutation,useChangeCertificateRatingMutation,useUpdateCertificateMutation} = CertificateApi

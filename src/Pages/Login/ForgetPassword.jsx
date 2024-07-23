@@ -22,10 +22,11 @@ function ForgetPassword() {
         validationSchema: yup.object().shape({
             cnic: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('CNIC is Required'),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values,{ resetForm }) => {
             console.log(values);
             const responce = await UserCNIC(values).unwrap();
             if (responce.success) {
+                resetForm();
                 toast.success(responce.message);
             } else {
                 toast.error(responce.message);
@@ -57,7 +58,7 @@ function ForgetPassword() {
                     <div className={styles.LoginHeader}>CNIC Verification</div>
                     <Textinputs
                         type="number"
-                        values={values.cnic}
+                        value={values.cnic}
                         name="cnic"
                         onBlur={handleBlur}
                         onChange={handleChange}

@@ -2,7 +2,7 @@ import styles from "./MyApplications.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTh, faRightLeft, faHandshake, faFlag, faPrint, faRemove, faArrowDownAZ, faArrowDown19, faArrowUpZA, faArrowUp91 } from "@fortawesome/free-solid-svg-icons";
+import { faTh, faRightLeft, faHandshake, faFlag, faPrint, faRemove, faArrowDownAZ, faArrowDown19, faArrowUpZA, faArrowUp91, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { Tooltip } from 'react-tooltip';
 import { useGetAllFIRsQuery, useGetCitizensFIRsQuery, useGetPoliceStationFIRsQuery, useGetAllFIRcountQuery, useGetCitizensFIRcountQuery, useGetPoliceStationFIRcountQuery, useChangeFIRStatusMutation, useChangeFIRPoliceStationMutation } from "../../Redux/Features/FIR/FIRApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,9 +15,9 @@ import Stars from "../../Components/Stars/Stars";
 import TransferAlert from "../../Components/CustomAlert/TransferAlert";
 import MeetingMessageBox from "../../Components/CustomAlert/MeetingMessageBox";
 import { useSendMeetingMessageMutation } from "../../Redux/Features/Admin/adminApi";
-import { useGetCitizensCertificatesQuery, useGetPoliceStationCertificatesQuery } from "../../Redux/Features/Certificates/CertificateAPI";
-import { useGetCitizensRequestsQuery, useGetPoliceStationRequestsQuery } from "../../Redux/Features/VehicleVerification/VVApi";
-
+import { useChangeCertificatePoliceStationMutation, useChangeCertificateStatusMutation, useGetCitizensCertificatesQuery, useGetPoliceStationCertificatesQuery } from "../../Redux/Features/Certificates/CertificateAPI";
+import { useChangeRequestStatusMutation, useGetCitizensRequestsQuery, useGetPoliceStationRequestsQuery } from "../../Redux/Features/VehicleVerification/VVApi";
+import { useSendCertificateMeetingMessageMutation, useSendRequestMeetingMessageMutation } from "../../Redux/Features/ContactMessage/ContactMessage.Api"
 
 function formatNumberWithCommas(number) {
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -40,13 +40,15 @@ function MyApplications() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [showTransferBox, setShowTransferBox] = useState(false);
+  const [showCTransferBox, setShowCTransferBox] = useState(false);
   const [showMeetingBox, setShowMeetingBox] = useState(false);
+  const [showCMeetingBox, setShowCMeetingBox] = useState(false);
+  const [showRMeetingBox, setShowRMeetingBox] = useState(false);
   const [policeStation, setPoliceStation] = useState("");
   const [message, setMessage] = useState("");
   const [id, setId] = useState("");
   const [categories, setCategories] = useState([]);
   const [offences, setOffences] = useState([]);
-  const [isFIR, setIsFIR] = useState(true);
   let url = `?sort=${sort.sort},${sort.order}&page=${page}&search=${debouncedSearch}&limit=${limit}`;
   let pUrl = `?sort=${sort.sort},${sort.order}&page=${page}&search=${debouncedSearch}&limit=${limit}&policeStation=${Id}`;
   let cUrl = `?sort=${sort.sort},${sort.order}&page=${page}&search=${debouncedSearch}&limit=${limit}&cnic=${user.cnic}`;
@@ -64,9 +66,18 @@ function MyApplications() {
   const { isLoading: cLoading, data: cData, error: cError, refetch: CRefetch } = useGetCitizensFIRsQuery(cUrl);
   const { isLoading: ccLoading, data: ccData, error: ccError, refetch: CCRefetch } = useGetCitizensFIRcountQuery(ccUrl);
   const [updateStatus, { error: csError }] = useChangeFIRStatusMutation();
+  const [updateCerStatus, { error: ccsError }] = useChangeCertificateStatusMutation();
+  const [updateReqStatus, { error: crsError }] = useChangeRequestStatusMutation();
   const [updatePoliceStation, { error: upsError }] = useChangeFIRPoliceStationMutation();
+  const [updateCPoliceStation, { error: ucpsError }] = useChangeCertificatePoliceStationMutation();
   const [sendMeetingMessage, { error: messageError }] = useSendMeetingMessageMutation();
-
+  const [sendCMeetingMessage, { error: cmessageError }] = useSendCertificateMeetingMessageMutation();
+  const [sendRMeetingMessage, { error: rmessageError }] = useSendRequestMeetingMessageMutation();
+  // console.log(data,dData,pData,cerData,ccerData,vvData,cvvData,pcData,cData,ccData);
+  const [isFIR, setIsFIR] = useState(() => {
+    const storedState = localStorage.getItem("isFIR");
+    return storedState ? JSON.parse(storedState) : {};
+  });
   const [showIcon, setShowIcon] = useState(() => {
     const storedState = localStorage.getItem("showIcon");
     return storedState ? JSON.parse(storedState) : {};
@@ -148,7 +159,28 @@ function MyApplications() {
     else {
       toast.error(res.message);
     }
+  }
 
+  const SetCertificateStatusHandler = async (id, value) => {
+    const res = await updateCerStatus({ id, data: { Status: value } }).unwrap();
+    console.log(res);
+    if (res.success) {
+      toast.success(res.message);
+    }
+    else {
+      toast.error(res.message);
+    }
+  }
+
+  const SetRequestStatusHandler = async (id, value) => {
+    const res = await updateReqStatus({ id, data: { Status: value } }).unwrap();
+    console.log(res);
+    if (res.success) {
+      toast.success(res.message);
+    }
+    else {
+      toast.error(res.message);
+    }
   }
 
   const handleTransferBox = async (id) => {
@@ -172,6 +204,27 @@ function MyApplications() {
     setShowTransferBox(false);
   };
 
+  const handleCTransferBox = async (id) => {
+    setId(id);
+    setShowCTransferBox(true);
+  };
+
+  const handleConfirmCTransferBox = async () => {
+    console.log(id);
+    const res = await updateCPoliceStation({ id, data: { PoliceStation: policeStation } }).unwrap();
+    setShowCTransferBox(false);
+    if (res.success) {
+      toast.success(res.message);
+    }
+    else {
+      toast.error(res.message);
+    }
+  };
+
+  const handleCancelCTransferBox = () => {
+    setShowCTransferBox(false);
+  };
+
   const handleMeetingBox = async (id) => {
     setId(id);
     setShowMeetingBox(true);
@@ -190,6 +243,46 @@ function MyApplications() {
   };
   const handleCancelMeetingBox = () => {
     setShowMeetingBox(false);
+  };
+
+  const handleCMeetingBox = async (id) => {
+    setId(id);
+    setShowCMeetingBox(true);
+  };
+
+  const handleConfirmCMeetingBox = async () => {
+    console.log(id);
+    const res = await sendCMeetingMessage({ id, data: { message: message } }).unwrap();
+    setShowCMeetingBox(false);
+    if (res.success) {
+      toast.success(res.message);
+    }
+    else {
+      toast.error(res.message);
+    }
+  };
+  const handleCancelCMeetingBox = () => {
+    setShowCMeetingBox(false);
+  };
+
+  const handleRMeetingBox = async (id) => {
+    setId(id);
+    setShowRMeetingBox(true);
+  };
+
+  const handleConfirmRMeetingBox = async () => {
+    console.log(id);
+    const res = await sendRMeetingMessage({ id, data: { message: message } }).unwrap();
+    setShowRMeetingBox(false);
+    if (res.success) {
+      toast.success(res.message);
+    }
+    else {
+      toast.error(res.message);
+    }
+  };
+  const handleCancelRMeetingBox = () => {
+    setShowRMeetingBox(false);
   };
 
   const [count1, setCount1] = useState(0);
@@ -352,6 +445,10 @@ function MyApplications() {
     localStorage.setItem("showIcon", JSON.stringify(showIcon));
   }, [showIcon]);
 
+  useEffect(() => {
+    localStorage.setItem("isFIR", JSON.stringify(isFIR));
+  }, [isFIR]);
+
   const handleCart = (FIRData) => {
     dispatch(addToCart(FIRData));
     setShowIcon((prevShowIcon) => ({
@@ -366,16 +463,16 @@ function MyApplications() {
       [FIRData._id]: !prevShowIcon[FIRData._id],
     }));
   }
-
+  
   const toggler = () => {
-    setIsFIR(prevIsFIR => !prevIsFIR);
+    setIsFIR((prevIsFIR) => !prevIsFIR);
   };
 
   const handlePageChange = (e) => {
     setPage(e.selected + 1);
   };
 
-  if (error || cError || pError || dError || ccError || pcError || csError || upsError || messageError || cerError || vvError || cvvError || ccerError) {
+  if (error || cError || pError || dError || ccError || pcError || csError || upsError || rmessageError || cmessageError || messageError || cerError || vvError || cvvError || ccerError || ucpsError || ccsError || crsError) {
     return (<>
       <h1 style={{ textAlign: 'center' }}>Something Wrong Happened</h1>
       <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
@@ -424,7 +521,10 @@ function MyApplications() {
           <div className={styles.infoRow}>
             {(user && Role === user.role) ?
               <div className={styles.avatarIG}></div>
-              : (role === user.role) ? <div className={styles.avatarPolice}></div> : <div className={styles.avatarCitizen}></div>}
+              : (role === user.role) ? <div className={styles.avatarPolice}></div> : <div className={styles.avatarCitizen}><img
+              src={user.image}
+              alt="User dp"
+          /></div>}
             <div className={styles.infoColumn}>
               {(user && (role === user.role || Role === user.role)) ?
                 <div className={styles.name}>Welcome, {user.name}</div> :
@@ -492,9 +592,9 @@ function MyApplications() {
                   <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
                     <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
                     <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
-                  <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
-                    <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
-                    <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+                  <div className={styles.cell}>Officer Name {sort.sort === 'OfficerName' && sort.order === 'asc' ?
+                    <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("OfficerName")} /> :
+                    <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("OfficerName")} />} </div>
                   <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
                     <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
                     <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
@@ -522,9 +622,9 @@ function MyApplications() {
                         <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
                           <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
                           <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
-                        <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
-                          <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
-                          <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+                        <div className={styles.cell}>Officer Name {sort.sort === 'OfficerName' && sort.order === 'asc' ?
+                          <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("OfficerName")} /> :
+                          <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("OfficerName")} />} </div>
                         <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
                           <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
                           <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
@@ -543,7 +643,7 @@ function MyApplications() {
                         <div className={styles.cell}>{firs.ComplaintNumber}</div>
                         <div className={styles.cell}>{firs.Name}</div>
                         <div className={styles.cell}>{`0${firs.ContactNumber}`}</div>
-                        <div className={styles.cell}>{firs.CNIC}</div>
+                        <div className={styles.cell}>{firs.OfficerName}</div>
                         <div className={styles.cell}>{getCategoryNameById(firs.Category)}</div>
                         <div className={styles.cell}>{getOffenceNameById(firs.Offence)}</div>
                         <div className={styles.cell}>{firs.EntryDate}</div>
@@ -560,6 +660,7 @@ function MyApplications() {
                           <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
                           <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
                           <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
+                          <FontAwesomeIcon icon={faEdit} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
                           {showIcon[firs._id] ? <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
                             : <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
                           }
@@ -574,7 +675,7 @@ function MyApplications() {
               breakLabel={"..."} // break Label
               nextLabel={"next"} // Next Page Button & label
               previousLabel={"previous"} // Previous Page Button & label
-              pageCount={data.pageCount} // Sets Page Counts
+              pageCount={data?.pagecount} // Sets Page Counts
               marginPagesDisplayed={1} // Sets Ending pages range
               pageRangeDisplayed={5} // Sets Starting pages range
               onPageChange={(e) => handlePageChange(e)}
@@ -607,7 +708,7 @@ function MyApplications() {
           </div>
           {isFIR ?
             <>
-              {pData && pData?.PoliceStaionFIRs.length === 0 ? <h2>No FIR Registered Yet</h2> :
+              {pData && pData?.PoliceStaionFIRs?.length === 0 ? <h2>No FIR Registered Yet</h2> :
                 <div className={styles.container0}>
                   <div className={`${styles.row4} ${styles.fullrow}`}>
                     <div className={styles.cell}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
@@ -619,9 +720,9 @@ function MyApplications() {
                     <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
                       <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
                       <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
-                    <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
-                      <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
-                      <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+                    <div className={styles.cell}>Officer Name {sort.sort === 'OfficerName' && sort.order === 'asc' ?
+                      <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("OfficerName")} /> :
+                      <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("OfficerName")} />} </div>
                     <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
                       <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
                       <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
@@ -649,9 +750,9 @@ function MyApplications() {
                           <div className={styles.cell}>Mobile No {sort.sort === 'ContactNumber' && sort.order === 'asc' ?
                             <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("ContactNumber")} /> :
                             <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("ContactNumber")} />} </div>
-                          <div className={styles.cell}>CNIC {sort.sort === 'CNIC' && sort.order === 'asc' ?
-                            <FontAwesomeIcon icon={faArrowUp91} onClick={() => handleSort("CNIC")} /> :
-                            <FontAwesomeIcon icon={faArrowDown19} onClick={() => handleSort("CNIC")} />} </div>
+                          <div className={styles.cell}>Officer Name {sort.sort === 'OfficerName' && sort.order === 'asc' ?
+                            <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("OfficerName")} /> :
+                            <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("OfficerName")} />} </div>
                           <div className={styles.cell}>Category {sort.sort === 'Category' && sort.order === 'asc' ?
                             <FontAwesomeIcon icon={faArrowUpZA} onClick={() => handleSort("Category")} /> :
                             <FontAwesomeIcon icon={faArrowDownAZ} onClick={() => handleSort("Category")} />} </div>
@@ -670,7 +771,7 @@ function MyApplications() {
                           <div className={styles.cell}>{firs.ComplaintNumber}</div>
                           <div className={styles.cell}>{firs.Name}</div>
                           <div className={styles.cell}>{`0${firs.ContactNumber}`}</div>
-                          <div className={styles.cell}>{firs.CNIC}</div>
+                          <div className={styles.cell}>{firs.OfficerName}</div>
                           <div className={styles.cell}>{getCategoryNameById(firs.Category)}</div>
                           <div className={styles.cell}>{getOffenceNameById(firs.Offence)}</div>
                           <div className={styles.cell}>{firs.EntryDate}</div>
@@ -686,6 +787,7 @@ function MyApplications() {
                             <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewFIR/${firs._id}`) }} />
                             <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
                             <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
+                            <FontAwesomeIcon icon={faEdit} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditFIR/${firs._id}`) }} />
                             <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
                             {showIcon[firs._id] ? <FontAwesomeIcon icon={faRemove} data-tooltip-id="Tooltip" data-tooltip-content="Remove From Priority" onClick={() => handleRemove(firs)} />
                               : <FontAwesomeIcon icon={faFlag} onClick={() => handleCart(firs)} data-tooltip-id="Tooltip" data-tooltip-content="Add to Priority" />
@@ -696,7 +798,7 @@ function MyApplications() {
                       </div>))
                   }
                 </div>}</> : user.email === "15CarCell@gmail.com" ?
-              <> {vvData && vvData?.Requests.length === 0 ? <h2>No Vehicle Verification Request found!</h2> :
+              <> {vvData && vvData?.Requests?.length === 0 ? <h2>No Vehicle Verification Request found!</h2> :
                 <div className={styles.container0}>
                   <div className={`${styles.row4} ${styles.fullrow}`}>
                     <div className={styles.cell}>Request No {sort.sort === 'RequestNumber' && sort.order === 'asc' ?
@@ -764,23 +866,23 @@ function MyApplications() {
                           <div className={styles.cell}>{firs.Make}</div>
                           <div className={styles.cell}>{firs.EntryDate}</div>
                           <div className={styles.cell}>
-                            <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetStatusHandler(firs._id, e.target.value)}>
+                            <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetRequestStatusHandler(firs._id, e.target.value)}>
                               <option value="pending">Pending</option>
                               <option value="verified">Verified</option>
-                              <option value="stolen">Stolen</option>
+                              <option value="defected">Defected</option>
                             </select>
                           </div>
                           <div className={`${styles.cell} ${styles.icon}`}>
                             <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewRequest/${firs._id}`) }} />
-                            <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
-                            <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
+                            <FontAwesomeIcon icon={faEdit} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditRequest/${firs._id}`) }} />
+                            <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleRMeetingBox(firs._id)} />
                             <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
                           </div>
                         </div>
                       </div>))
                   }
                 </div>}</> :
-              <>{cerData && cerData?.PoliceStaionCertificates.length === 0 ? <h2>No Certificate and Vehicle Verification Request found!</h2> :
+              <>{cerData && cerData?.PoliceStaionCertificates?.length === 0 ? <h2>No Certificate and Vehicle Verification Request found!</h2> :
                 <div className={styles.container0}>
                   <div className={`${styles.row4} ${styles.fullrow}`}>
                     <div className={styles.cell}>Application No {sort.sort === 'ApplicationtNumber' && sort.order === 'asc' ?
@@ -848,17 +950,18 @@ function MyApplications() {
                           <div className={styles.cell}>{firs.District}</div>
                           <div className={styles.cell}>{firs.EntryDate}</div>
                           <div className={styles.cell}>
-                            <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetStatusHandler(firs._id, e.target.value)}>
+                            <select name="status" id="status" className={`form-control ${styles.select}`} defaultValue={firs.Status} onChange={(e) => SetCertificateStatusHandler(firs._id, e.target.value)}>
                               <option value="pending">Pending</option>
                               <option value="approved">Approved</option>
-                              <option value="filed">Rejected</option>
+                              <option value="rejected">Rejected</option>
                             </select>
                           </div>
                           <div className={`${styles.cell} ${styles.icon}`}>
                             <FontAwesomeIcon icon={faTh} data-tooltip-id="Tooltip" data-tooltip-content="View" onClick={() => { navigate(`/ViewCertificate/${firs._id}`) }} />
-                            <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/DownloadFIRPDF/${firs._id}`) }} />
-                            <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleMeetingBox(firs._id)} />
-                            <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleTransferBox(firs._id)} />
+                            <FontAwesomeIcon icon={faPrint} data-tooltip-id="Tooltip" data-tooltip-content="Print" onClick={() => { navigate(`/CCPDF/${firs._id}`) }} />
+                            <FontAwesomeIcon icon={faEdit} data-tooltip-id="Tooltip" data-tooltip-content="Edit" onClick={() => { navigate(`/EditCertificate/${firs._id}`) }} />
+                            <FontAwesomeIcon icon={faHandshake} data-tooltip-id="Tooltip" data-tooltip-content="Meeting Notification" onClick={() => handleCMeetingBox(firs._id)} />
+                            <FontAwesomeIcon icon={faRightLeft} data-tooltip-id="Tooltip" data-tooltip-content="Trasfer" onClick={() => handleCTransferBox(firs._id)} />
                             <Tooltip id="Tooltip" place="top" type="dark" effect="solid" />
                           </div>
                         </div>
@@ -901,7 +1004,7 @@ function MyApplications() {
           </div>
           {isFIR ?
             <>
-              {cData && cData?.CitizenFIRs.length === 0 ? <h2>No FIR Registered Yet</h2> :
+              {cData && cData?.CitizenFIRs?.length === 0 ? <h2>No FIR Registered Yet</h2> :
                 <div className={styles.container4}>
                   <div className={`${styles.row4} ${styles.fullrow}`}>
                     <div className={styles.cell1}>Complaint No {sort.sort === 'ComplaintNumber' && sort.order === 'asc' ?
@@ -1080,7 +1183,7 @@ function MyApplications() {
             breakLabel={"..."} // break Label
             nextLabel={"next"} // Next Page Button & label
             previousLabel={"previous"} // Previous Page Button & label
-            pageCount={(cData?.CitizenFIRspageCount)||(ccerData?.CitizenCertificatespageCount)||(cvvData?.CitizenRequestspageCount) } // Sets Page Counts
+            pageCount={(cData?.CitizenFIRspageCount) || (ccerData?.CitizenCertificatespageCount) || (cvvData?.CitizenRequestspageCount)} // Sets Page Counts
             marginPagesDisplayed={1} // Sets Ending pages range
             pageRangeDisplayed={5} // Sets Starting pages range
             onPageChange={(e) => handlePageChange(e)}
@@ -1105,10 +1208,31 @@ function MyApplications() {
           setPoliceStation={setPoliceStation}
         />
       )}
+      {showCTransferBox && (
+        <TransferAlert
+          onConfirm={handleConfirmCTransferBox}
+          onCancel={handleCancelCTransferBox}
+          setPoliceStation={setPoliceStation}
+        />
+      )}
       {showMeetingBox && (
         <MeetingMessageBox
           onConfirm={handleConfirmMeetingBox}
           onCancel={handleCancelMeetingBox}
+          setMessage={setMessage}
+        />
+      )}
+      {showCMeetingBox && (
+        <MeetingMessageBox
+          onConfirm={handleConfirmCMeetingBox}
+          onCancel={handleCancelCMeetingBox}
+          setMessage={setMessage}
+        />
+      )}
+      {showRMeetingBox && (
+        <MeetingMessageBox
+          onConfirm={handleConfirmRMeetingBox}
+          onCancel={handleCancelRMeetingBox}
           setMessage={setMessage}
         />
       )}

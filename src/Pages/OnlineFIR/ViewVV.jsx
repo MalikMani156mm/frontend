@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useGetRequestByIdQuery } from "../../Redux/Features/VehicleVerification/VVApi";
 import LoadingSpinner from "../../Components/Loading/Loading";
+import { Carousel } from "react-bootstrap";
+import Stars from "../../Components/Stars/Stars";
 
 
 function ViewVVForm() {
@@ -13,12 +15,20 @@ function ViewVVForm() {
     const role = "Admin";
     const Role = "SuperAdmin";
     const { id } = useParams();
-    const { data, error, isLoading } = useGetRequestByIdQuery(id);
+    const { data, error, isLoading,refetch } = useGetRequestByIdQuery(id);
     const [isApproved, setIsApproved] = useState(false);
 
     useEffect(() => {
+        const intervalId = setInterval(() => {
+            refetch();
+        }, 2000);
+    
+        return () => clearInterval(intervalId);
+      }, [refetch]);
+
+    useEffect(() => {
         if (user.role === "Citizen") {
-            if (data && data.VVs && (data.VVs.Status === "completed" || data.VVs.Status === "filed" || data.VVs.Status === "approved")) {
+            if (data && data.VVs && (data.VVs.Status === "verified" || data.VVs.Status === "defected")) {
                 setIsApproved(true);
             }
         }
@@ -52,7 +62,7 @@ function ViewVVForm() {
                             <div className="col-lg-3 col-md-12 col-sm-12 "><p>Date of Apply</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12 ">
                                 <input
-                                    type="datetime-local"
+                                    type="text"
                                     id="datetime"
                                     name="EntryDate"
                                     className="form-control"
@@ -142,7 +152,7 @@ function ViewVVForm() {
                             </div>
                             <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC Picture </p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
-                                <p>Show Below</p>
+                                <input type="number" name="OCNIC" className="form-control" placeholder={"Show Below"} disabled />
                             </div>
                         </div>
 
@@ -234,11 +244,11 @@ function ViewVVForm() {
                             <div className="col-lg-3 col-md-12 col-sm-12">
                                 <input type="text" name="EngineNumber" className="form-control" placeholder={data.VVs.EngineNumber} disabled />
                             </div>
-                            <div className="col-lg-4 col-md-4 col-sm-4 mx-2">
+                            <div className="col-lg-3 col-md-12 col-sm-112 mx-2">
                                 <p>You buy it?</p>
                             </div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
-                                <p>{data.VVs.BuyIt}</p>
+                                <input type="text" name="BuyIt" className="form-control" placeholder={data.VVs.BuyIt} disabled />
                             </div>
                         </div>
 
@@ -262,8 +272,66 @@ function ViewVVForm() {
                                 <div className="col-lg-3 col-md-12 col-sm-12">
                                     <input type="text" name="IOName" className="form-control" placeholder={data.VVs.IOName} disabled />
                                 </div>
+                                <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Rating</p></div>
+                                <div className="col-lg-3 col-md-12 col-sm-12">
+                                    <Stars rating={data.VVs.Rating}/>
+                                </div>
                             </div></> : null}
-
+                        <div className={styles.picContent}>
+                            <div className={styles.picture}>
+                                <Carousel>
+                                    <Carousel.Item className={styles.carouselItem}>
+                                        <img
+                                            className={styles.slide}
+                                            src={data && data?.VVs?.ApplicantPic}
+                                            alt="Applicant"
+                                        />
+                                    </Carousel.Item>
+                                    <Carousel.Item className={styles.carouselItem}>
+                                        <img
+                                            className={styles.slide}
+                                            src={data && data?.VVs?.CNICFront}
+                                            alt="CNIC Front side"
+                                        />
+                                    </Carousel.Item>
+                                    <Carousel.Item className={styles.carouselItem}>
+                                        <img
+                                            className={styles.slide}
+                                            src={data && data?.VVs?.CNICBack}
+                                            alt="CNIC Back side"
+                                        />
+                                    </Carousel.Item>
+                                    <Carousel.Item className={styles.carouselItem}>
+                                        <img
+                                            className={styles.slide}
+                                            src={data && data?.VVs?.OCNICPic}
+                                            alt="Owner CNIC"
+                                        />
+                                    </Carousel.Item>
+                                    <Carousel.Item className={styles.carouselItem}>
+                                        <img
+                                            className={styles.slide}
+                                            src={data && data?.VVs?.RegistrationBookPic}
+                                            alt="Registration Book"
+                                        />
+                                    </Carousel.Item>
+                                    <Carousel.Item className={styles.carouselItem}>
+                                        <img
+                                            className={styles.slide}
+                                            src={data && data?.VVs?.ChassisNumberPic}
+                                            alt=" Chassis Number"
+                                        />
+                                    </Carousel.Item>
+                                    <Carousel.Item className={styles.carouselItem}>
+                                        <img
+                                            className={styles.slide}
+                                            src={data && data?.VVs?.EngineNumberPic}
+                                            alt="Engine Number"
+                                        />
+                                    </Carousel.Item>
+                                </Carousel>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className={styles.buttonsalignment}>

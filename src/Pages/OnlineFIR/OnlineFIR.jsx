@@ -149,13 +149,16 @@ function OnlineFIR() {
       Category: yup.string().required('Required'),
       Offence: yup.string().required('Required'),
       IncidentDetails: yup.string().max(2000).required('Required'),
-      file: yup.string().required('Required'),
+      file: yup.string().required('CNIC pic is required'),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values,{ resetForm }) => {
       values.ComplaintNumber = SerialNumberGenerator(values.Circle);
       console.log(values);
       const res = await addFIR(values).unwrap();
       if (res.success) {
+        resetForm();
+        setSelectedValue(null); 
+        setSelectedValue2(null); 
         toast.success(res.message);
       }
       else {
@@ -206,6 +209,7 @@ function OnlineFIR() {
                   type="datetime-local"
                   id="datetime"
                   name="EntryDate"
+                  value={values.EntryDate}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -223,7 +227,7 @@ function OnlineFIR() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>District</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <select className="form-control" name="District"
+                <select className="form-control" name="District" value={values.District}
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -233,7 +237,7 @@ function OnlineFIR() {
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Division</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <select className="form-control" name="Division"
+                <select className="form-control" name="Division" value={values.Division}
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -249,7 +253,7 @@ function OnlineFIR() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Circle</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <select className="form-control" name="Circle"
+                <select className="form-control" name="Circle" value={values.Circle}
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -286,7 +290,7 @@ function OnlineFIR() {
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Police Station</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <select className="form-control" name="PoliceStation"
+                <select className="form-control" name="PoliceStation" value={values.PoliceStation}
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -302,7 +306,7 @@ function OnlineFIR() {
               <div className={styles.alignment}>
                 <div className="col-lg-3 col-md-12 col-sm-12"><p>Beat/Moza No.</p></div>
                 <div className="col-lg-3 col-md-12 col-sm-12">
-                  <select className="form-control" name="BeatMoza"
+                  <select className="form-control" name="BeatMoza" value={values.BeatMoza}
                     onChange={handleChange}
                     onBlur={handleBlur}>
                     <option value="0">Select</option>
@@ -323,13 +327,13 @@ function OnlineFIR() {
                 <p>Compliant Number</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" name="CompliantNumber" placeholder={"This will allocated automatically"} className="form-control" onChange={handleChange}
+                <input type="text" name="CompliantNumber" placeholder={"Allocated automatically"} className="form-control" onChange={handleChange}
                   onBlur={handleBlur} disabled={true} />
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>CNIC (without dashes)</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange} disabled={state}
-                  onBlur={handleBlur} />
+                  onBlur={handleBlur}  value={values.CNIC}/>
                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
               </div>
             </div>
@@ -338,7 +342,7 @@ function OnlineFIR() {
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange}
-                  disabled={state} onBlur={handleBlur}  />
+                  disabled={state} onBlur={handleBlur}   value={values.Name}/>
                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
@@ -370,6 +374,7 @@ function OnlineFIR() {
                   type="text"
                   name="GuardianName"
                   className="form-control"
+                  value={values.GuardianName}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -379,7 +384,7 @@ function OnlineFIR() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-                <select className="form-control" name="Gender" onChange={handleChange}
+                <select className="form-control" name="Gender" onChange={handleChange} value={values.Gender}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
                   <option value="Male">Male</option>
@@ -410,6 +415,7 @@ function OnlineFIR() {
                 <textarea
                   type="text"
                   name="PermanentAddress"
+                  value={values.PermanentAddress}
                   rows={3}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -433,6 +439,7 @@ function OnlineFIR() {
                 <input
                   type="text"
                   name="placeOfOccurance"
+                  value={values.placeOfOccurance}
                   className="form-control"
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -444,6 +451,7 @@ function OnlineFIR() {
                 <input
                   type="datetime-local"
                   id="datetime"
+                  value={values.IncidentDate}
                   name="IncidentDate"
                   className="form-control"
                   onChange={handleChange}
@@ -455,7 +463,7 @@ function OnlineFIR() {
             <div className={styles.alignment}>
               <div className="col-lg-3 col-md-12 col-sm-12 "><p>Category</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-              <select className="form-control" name="Category"
+              <select className="form-control" name="Category" value={values.Category}
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -468,7 +476,7 @@ function OnlineFIR() {
               </div>
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Offence</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
-              <select className="form-control" name="Offence"
+              <select className="form-control" name="Offence" value={values.Offence}
                   onChange={handleChange}
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
@@ -487,18 +495,18 @@ function OnlineFIR() {
                   <p>Offence Subcategory</p>
                 </div>
                 <div className="col-lg-3 col-md-12 col-sm-12">
-                  <select className="form-control" name="OffenceSubcategory" onChange={handleChange}
+                  <select className="form-control" name="OffenceSubcategory" onChange={handleChange} value={values.OffenceSubcategory}
                     onBlur={handleBlur}>
                     <option value="0">Select</option>
-                    <option value="1">Sub Category</option>
+                    <option value="Sub Category">Sub Category</option>
                   </select>
                 </div>
                 <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Assigned To</p></div>
                 <div className="col-lg-3 col-md-12 col-sm-12">
-                  <select className="form-control" name="AssignedTo" onChange={handleChange}
+                  <select className="form-control" name="AssignedTo" onChange={handleChange} value={values.AssignedTo}
                     onBlur={handleBlur} >
-                    <option value="3">Beat Committee</option>
-                    <option value="2">Police Officer</option>
+                    <option value="Beat Committee">Beat Committee</option>
+                    <option value="Police Officer">Police Officer</option>
                   </select>
                 </div>
               </div>
@@ -508,6 +516,7 @@ function OnlineFIR() {
                   <input
                     type="text"
                     name="OfficerName"
+                    value={values.OfficerName}
                     className="form-control"
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -532,6 +541,7 @@ function OnlineFIR() {
                   type="text"
                   rows={3}
                   name="IncidentDetails"
+                  value={values.IncidentDetails}
                   className={styles.formControl}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -571,12 +581,12 @@ function OnlineFIR() {
                 <div className="col-lg-3 col-md-12 col-sm-12"><p>IO Name</p></div>
                 <div className="col-lg-3 col-md-12 col-sm-12">
                   <input type="text" name="IOName" className="form-control" onChange={handleChange}
-                    onBlur={handleBlur} />
+                    onBlur={handleBlur}  value={values.IOName}/>
                 </div>
                 <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Rank</p></div>
                 <div className="col-lg-3 col-md-12 col-sm-12">
                   <input type="text" name="Rank" className="form-control" onChange={handleChange}
-                    onBlur={handleBlur} />
+                    onBlur={handleBlur}  value={values.Rank}/>
                 </div>
               </div>
             </> : null}

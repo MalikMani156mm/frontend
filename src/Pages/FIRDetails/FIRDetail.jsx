@@ -109,6 +109,11 @@ function FIRDetail() {
         setShowRating(false);
     };
 
+    const PoliceStation = (psName) => {
+        const parts = psName.split(" ");
+        return parts.slice(2).join(" ");
+      };
+
     if (user.role !== "Citizen") {
         return <Navigate to={'/MyApplications'} replace={true} />
     }
@@ -263,7 +268,7 @@ function FIRDetail() {
                             <div className={style.formGroup}>
                             </div>
                             <div><p>Police Station:</p></div>
-                            <div><p>{psData ? psData.PSs.PSName : null}</p></div>
+                            <div><p>{psData ? PoliceStation(psData.PSs.PSName) : null}</p></div>
                         </div>
                         <div className={style.formGroup}>
                             <div><p>District:</p></div>

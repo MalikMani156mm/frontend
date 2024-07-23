@@ -21,11 +21,19 @@ function EditCCForm() {
     const role = "Admin";
     const Role = "SuperAdmin";
     const { id } = useParams();
-    const { data: iData, error: iError, isLoading: iLoading } = useGetCertificateByIdQuery(id);
+    const { data: iData, error: iError, isLoading: iLoading, refetch } = useGetCertificateByIdQuery(id);
 
     const [state, setState] = useState(true);
     const [selectedValue, setSelectedValue] = useState(null);
     const [selectedValue2, setSelectedValue2] = useState(null);
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            refetch();
+        }, 2000);
+
+        return () => clearInterval(intervalId);
+    }, [refetch]);
 
     useEffect(() => {
         if (role === user.role || Role === user.role) {
@@ -58,34 +66,34 @@ function EditCCForm() {
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, handleSubmit, errors, setFieldValue } = useFormik({
         initialValues: {
-            EntryDate: iData.CCs.EntryDate,
+            EntryDate: iData?.CCs.EntryDate,
             SourceOfApplication: 'Online',
-            ApplicationtNumber: iData.CCs.ApplicationtNumber,
-            District: iData.CCs.District,
-            Division: iData.CCs.Division,
-            Circle: iData.CCs.Circle,
-            PoliceStation: iData.CCs.PoliceStation,
-            CNIC: iData.CCs.CNIC,
-            PassportNumber: iData.CCs.PassportNumber,
-            Name: iData.CCs.Name,
-            relation: iData.CCs.relation,
-            GuardianName: iData.CCs.GuardianName,
-            Gender: iData.CCs.Gender,
-            ContactNumber: iData.CCs.ContactNumber,
-            PermanentAddress: iData.CCs.PermanentAddress,
-            Category: iData.CCs.Category,
-            SubmitByApplicant: iData.CCs.SubmitByApplicant,
-            SubmitterName: iData.CCs.SubmitterName,
-            RelationWithApplicant: iData.CCs.RelationWithApplicant,
-            Reason: iData.CCs.Reason,
-            CNICFront: iData.CCs.CNICFront,
-            CNICBack: iData.CCs.CNICBack,
-            PassportInfoPic: iData.CCs.PassportInfoPic,
-            PassportLastPic: iData.CCs.PassportLastPic,
-            ApplicantPic: iData.CCs.ApplicantPic,
-            AffidavitPic: iData.CCs.AffidavitPic,
-            AuthorityLetterPic: iData.CCs.AuthorityLetterPic,
-            AffidavitPicture: iData.CCs.AffidavitPicture
+            ApplicationtNumber: iData?.CCs.ApplicationtNumber,
+            District: iData?.CCs.District,
+            Division: iData?.CCs.Division,
+            Circle: iData?.CCs.Circle,
+            PoliceStation: iData?.CCs.PoliceStation,
+            CNIC: iData?.CCs.CNIC,
+            PassportNumber: iData?.CCs.PassportNumber,
+            Name: iData?.CCs.Name,
+            relation: iData?.CCs.relation,
+            GuardianName: iData?.CCs.GuardianName,
+            Gender: iData?.CCs.Gender,
+            ContactNumber: iData?.CCs.ContactNumber,
+            PermanentAddress: iData?.CCs.PermanentAddress,
+            Category: iData?.CCs.Category,
+            SubmitByApplicant: iData?.CCs.SubmitByApplicant,
+            SubmitterName: iData?.CCs.SubmitterName,
+            RelationWithApplicant: iData?.CCs.RelationWithApplicant,
+            Reason: iData?.CCs.Reason,
+            CNICFront: iData?.CCs.CNICFront,
+            CNICBack: iData?.CCs.CNICBack,
+            PassportInfoPic: iData?.CCs.PassportInfoPic,
+            PassportLastPic: iData?.CCs.PassportLastPic,
+            ApplicantPic: iData?.CCs.ApplicantPic,
+            AffidavitPic: iData?.CCs.AffidavitPic,
+            AuthorityLetterPic: iData?.CCs.AuthorityLetterPic,
+            AffidavitPicture: iData?.CCs.AffidavitPicture
         },
         validationSchema: yup.object().shape({
             EntryDate: yup.date().required('Required'),
@@ -113,13 +121,14 @@ function EditCCForm() {
         }),
         onSubmit: async (values) => {
             console.log(values);
-            // const res = await updateCertificate(values).unwrap();
-            // if (res.success) {
-            //     toast.success(res.message);
-            // }
-            // else {
-            //     toast.error(res.message || res.data.error);
-            // }
+            const res = await updateCertificate({ id, data: values }).unwrap();
+            console.log(res);
+            if (res.success) {
+                toast.success(res?.message);
+            }
+            else {
+                toast.error(res?.message || res.data.error);
+            }
 
         }
     });
@@ -130,7 +139,7 @@ function EditCCForm() {
 
     if (error || iError) {
         return (<>
-            <h1 style={{ textAlign: 'center' }}>{error.message || "Something Wrong Happened"}</h1>
+            <h1 style={{ textAlign: 'center' }}>{ "Something Wrong Happened"}</h1>
             <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
             <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
         </>)
@@ -168,7 +177,7 @@ function EditCCForm() {
                         <div className={styles.alignment}>
                             <div className="col-lg-3 col-md-12 col-sm-12"><p>District</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
-                                <select className="form-control" name="District"
+                                <select className="form-control" name="District" value={values.District}
                                     onChange={handleChange}
                                     onBlur={handleBlur}>
                                     <option value="0">Select</option>
@@ -178,7 +187,7 @@ function EditCCForm() {
                             </div>
                             <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Division</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
-                                <select className="form-control" name="Division"
+                                <select className="form-control" name="Division" value={values.Division}
                                     onChange={handleChange}
                                     onBlur={handleBlur}>
                                     <option value="0">Select</option>
@@ -194,7 +203,7 @@ function EditCCForm() {
                         <div className={styles.alignment}>
                             <div className="col-lg-3 col-md-12 col-sm-12"><p>Circle</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
-                                <select className="form-control" name="Circle"
+                                <select className="form-control" name="Circle" value={values.Circle}
                                     onChange={handleChange}
                                     onBlur={handleBlur}>
                                     <option value="0">Select</option>
@@ -231,7 +240,7 @@ function EditCCForm() {
                             <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Police Station</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
                                 <select className="form-control" name="PoliceStation"
-                                    onChange={handleChange}
+                                    onChange={handleChange} value={values.PoliceStation}
                                     onBlur={handleBlur}>
                                     <option value="0">Select</option>
                                     {
@@ -252,7 +261,7 @@ function EditCCForm() {
                         <div className={styles.alignment}>
                             <div className="col-lg-3 col-md-12 col-sm-12"><p>CNIC (without dashes)</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
-                                <input type="number" name="CNIC" placeholder={user.cnic} className="form-control" onChange={handleChange} disabled={state}
+                                <input type="number" name="CNIC" value={values.CNIC} className="form-control" onChange={handleChange} disabled={state}
                                     onBlur={handleBlur} />
                                 <p className="help-block text-danger">{errors.CNIC && touched.CNIC ? errors.CNIC : null}</p>
                             </div>
@@ -262,7 +271,7 @@ function EditCCForm() {
                             <div className="col-lg-3 col-md-12 col-sm-12 " >
                                 <div >
                                     <input type="text" name="PassportNumber" className="form-control" onChange={handleChange}
-                                        onBlur={handleBlur} />
+                                        onBlur={handleBlur} value={values.PassportNumber} />
                                 </div>
                                 <p className="help-block text-danger">{errors.PassportNumber && touched.PassportNumber ? errors.PassportNumber : null}</p>
                             </div>
@@ -271,7 +280,7 @@ function EditCCForm() {
                         <div className={styles.alignment}>
                             <div className="col-lg-3 col-md-12 col-sm-12"><p>Name</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
-                                <input type="text" name="Name" placeholder={user.name} className="form-control" onChange={handleChange} disabled={state}
+                                <input type="text" name="Name" value={values.Name} className="form-control" onChange={handleChange} disabled={state}
                                     onBlur={handleBlur} />
                                 <p className="help-block text-danger">{errors.Name && touched.Name ? errors.Name : null}</p>
                             </div>
@@ -303,6 +312,7 @@ function EditCCForm() {
                                 <input
                                     type="text"
                                     name="GuardianName"
+                                    value={values.GuardianName}
                                     className="form-control"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -314,7 +324,7 @@ function EditCCForm() {
                             <div className="col-lg-3 col-md-12 col-sm-12"><p>Gender</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
                                 <select className="form-control" name="Gender" onChange={handleChange}
-                                    onBlur={handleBlur}>
+                                    onBlur={handleBlur} value={values.Gender}>
                                     <option value="0">Select</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
@@ -345,6 +355,7 @@ function EditCCForm() {
                                     type="text"
                                     name="PermanentAddress"
                                     rows={3}
+                                    value={values.PermanentAddress}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                     className={styles.formControl}
@@ -363,7 +374,7 @@ function EditCCForm() {
                             <div className="col-lg-3 col-md-12 col-sm-12 "><p>Category</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
                                 <select className="form-control" name="Category"
-                                    onChange={handleChange}
+                                    onChange={handleChange} value={values.Category}
                                     onBlur={handleBlur}>
                                     <option value="0">Select</option>
                                     <option value="Character Certificate">Character Certificate</option>
@@ -402,6 +413,7 @@ function EditCCForm() {
                                 <input
                                     type="text"
                                     name="SubmitterName"
+                                    value={values.SubmitterName}
                                     className="form-control"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -410,7 +422,7 @@ function EditCCForm() {
                             <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Relation with Applicant</p></div>
                             <div className="col-lg-3 col-md-12 col-sm-12">
                                 <select className="form-control" name="RelationWithApplicant"
-                                    onChange={handleChange}
+                                    onChange={handleChange} value={values.RelationWithApplicant}
                                     onBlur={handleBlur}>
                                     <option value="0">Select</option>
                                     <option value="Father">Father</option>
@@ -430,6 +442,7 @@ function EditCCForm() {
                                     type="text"
                                     rows={3}
                                     name="Reason"
+                                    value={values.Reason}
                                     className={styles.formControl}
                                     onChange={handleChange}
                                     onBlur={handleBlur}

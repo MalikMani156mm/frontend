@@ -11,6 +11,20 @@ export const ContactMessageApi = createApi({
       query: () => `/ContactMessage/get`,
       providesTags:['ContactMessage']
     }),
+    SendCertificateMeetingMessage: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/meetingCertificateNotification/send/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    SendRequestMeetingMessage: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/meetingRequestNotification/send/${id}`,
+        method: 'POST',
+        body: data,
+      }),
+    }),
     addNewContactMessage: builder.mutation({
       query: (data) => ({
         url : `/ContactMessage/send`,
@@ -22,4 +36,4 @@ export const ContactMessageApi = createApi({
   }),
 })
 
-export const { useGetAllContactMessageQuery, useAddNewContactMessageMutation } = ContactMessageApi
+export const { useGetAllContactMessageQuery, useAddNewContactMessageMutation,useSendCertificateMeetingMessageMutation,useSendRequestMeetingMessageMutation } = ContactMessageApi

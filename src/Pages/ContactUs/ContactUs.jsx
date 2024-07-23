@@ -24,11 +24,12 @@ function ContactUs() {
       email: yup.string().email('Enter a valid Email').required('Email is Required'),
       message: yup.string().min(1).max(1000).required('Message is Required'),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values,{ resetForm }) => {
       console.log(values);
       const resp = await newContactMessage(values).unwrap();
 
       if (resp.success) {
+        resetForm();
         toast.success(resp.message);
       }
       else {
@@ -61,17 +62,17 @@ function ContactUs() {
           <form onSubmit={handleSubmit}>
             <div>
               <label htmlFor="name">Name:</label>
-              <input type="text" id="name" name="name" onChange={handleChange} onBlur={handleBlur} />
+              <input type="text" id="name" name="name" onChange={handleChange} onBlur={handleBlur} value={values.name}/>
               <p className="help-block text-danger">{errors.name && touched.name ? errors.name : null}</p>
             </div>
             <div>
               <label htmlFor="email">Email:</label>
-              <input type="email" id="email" name="email" onChange={handleChange} onBlur={handleBlur} />
+              <input type="email" id="email" name="email" onChange={handleChange} onBlur={handleBlur}value={values.email} />
               <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
             </div>
             <div>
               <label htmlFor="message">Message:</label>
-              <textarea id="message" name="message" rows="4" onChange={handleChange} onBlur={handleBlur}></textarea>
+              <textarea id="message" name="message" rows="4" onChange={handleChange} onBlur={handleBlur} value={values.message}></textarea>
               <p className="help-block text-danger">{errors.message && touched.message ? errors.message : null}</p>
             </div>
             <button type="submit" disabled={isLoading}>{isLoading ? "Loading..." : "Submit"}</button>

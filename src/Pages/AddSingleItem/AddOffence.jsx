@@ -21,10 +21,11 @@ function AddOffence() {
         validationSchema: yup.object().shape({
             Offence: yup.string().required('Offence is required'),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values,{ resetForm }) => {
             console.log(values);
             const res = await addOffence(values).unwrap();
             if (res.success) {
+                resetForm();
                 toast.success(res.message);
             } else {
                 toast.error(res.message );
@@ -50,6 +51,7 @@ function AddOffence() {
                     <Textinputs
                         type="text"
                         name='Offence'
+                        value={values.Offence}
                         onBlur={handleBlur}
                         onChange={handleChange}
                         placeholder="Enter Offence Name"

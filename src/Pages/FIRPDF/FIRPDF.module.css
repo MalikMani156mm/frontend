@@ -1,23 +1,66 @@
-.Body{
+.Body {
     padding: 5px;
     margin: 10px;
     display: flex;
     justify-content: center;
 }
-.topBarBody{
+
+.topBarBody {
     padding: 0;
     margin: 0;
-  }
-p{
-    font-size: medium;
 }
-  .topBar{
+
+p {
+    font-size: medium;
+    font-weight: 550;
+    color: black;
+}
+
+.topBar {
     width: 98%;
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-  }
-.document{
+}
+
+.underLine,
+.underLineText {
+    text-decoration: underline;
+    color: black;
+}
+
+.underLineText {
+    text-decoration: underline;
+    color: black;
+}
+
+.topDiv {
+    display: flex;
+    padding: 5px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.midHead {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.infoDiv {
+    display: flex;
+    width: 90%;
+}
+
+.infoData {
+    width: 80%;
+    align-items: flex-start;
+}
+
+.document {
     background-color: white;
     width: 60%;
     height: auto;
@@ -26,21 +69,25 @@ p{
     flex-direction: column;
     align-items: center;
 }
-.topHeader{
+
+.topHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 5px;
 }
-.topLine{
+
+.topLine {
     display: flex;
     text-align: center;
 }
-.detail{
+
+.detail {
     display: flex;
     text-align: right;
 }
-.Section{
+
+.Section {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -48,68 +95,212 @@ p{
     width: 100%;
     margin-bottom: 5px;
 }
-.formGroup{
+
+.formGroup {
     display: flex;
     flex-direction: row;
     gap: 2px;
 }
+
 .Section img {
     align-self: center;
 }
-.tableRow{
+
+.tableRow {
     display: flex;
     flex-direction: row;
     width: 100%;
 }
+
 .serialNumber,
 .rowLabel,
 .rowData,
 .serialNumber1,
 .rowLabel1,
 .rowData1,
-.rowData2{
-  border: 0.5px ridge grey;
-  width: 47.5%;
-  height: auto;
-  background-color: white;
-  text-align: center;
+.rowData2 {
+    border: 0.5px ridge grey;
+    width: 47.5%;
+    height: auto;
+    background-color: white;
+    text-align: center;
 }
-.serialNumber{
+
+.serialNumber {
     width: 5%;
 }
+
 .serialNumber1,
 .rowLabel1,
 .rowData1,
-.rowData2{
-  width: 23.5%;
+.rowData2 {
+    width: 23.5%;
 }
-.serialNumber1{
+
+.serialNumber1 {
     width: 5.5%;
 }
-.rowData2{
+
+.rowData2 {
     width: 29%;
+}
+
+.dateRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.AddressDiv,
+.PSDiv,
+.StayDiv,
+.dateDiv,
+.DateDiv,
+.addressDiv,
+.pSDiv {
+    border: 0.5px ridge grey;
+    height: auto;
+    background-color: white;
+    text-align: center;
+}
+
+.AddressDiv {
+    width: 50%;
+    padding: 12px;
+}
+
+.addressDiv {
+    width: 50%;
+}
+
+.PSDiv {
+    width: 25%;
+    padding: 12px;
+}
+
+.pSDiv {
+    width: 25%;
+    padding: 12px 0;
+}
+
+.lastDiv {
+    width: 25%;
+}
+
+.dateDiv {
+    width: 50%;
+}
+
+.DateDiv {
+    width: 12.5%;
+}
+
+.separator {
+    height: 1px;
+    width: 100%;
+    margin: 5px;
+    margin-top: 5px;
+    background: linear-gradient(to right, transparent, black, transparent);
+}
+
+.text {
+    font-size: x-small;
+}
+
+.sign {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.signDiv {
+    display: flex;
+    width: 90%;
+    justify-content: flex-end;
+}
+
+.instruction {
+    display: flex;
+    padding: 10px;
+    width: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.Datetext {
+    padding: 12px 0;
+    font-size: small;
+}
+
+@media (max-width: 1024px) {
+
+    .StayDiv,
+    .dateDiv {
+        height: 67%;
+    }
+
+    .StayDiv {
+        padding: 12px;
+    }
+    
 }
 
 @media (max-width: 768px) {
     .document {
-        width: 80%;
+        width: 90%;
     }
-    p{
+
+    p {
         font-size: small;
     }
-    .Section img {
-        display: none;
+
+    .StayDiv,
+    .dateDiv {
+        height: 67%;
     }
+
+    .StayDiv {
+        padding: 8px;
+    }
+
+
+    /* .Section img {
+        display: none;
+    } */
 }
 
 @media (max-width: 499px) {
     .document {
         width: 100%;
     }
-    .Section{
+
+    .StayDiv,
+    .dateDiv {
+        height: 67%;
+    }
+
+    .StayDiv {
+        padding: 8px;
+    }
+
+    .Section {
         display: flex;
-        flex-direction: column;}
-        p{
-            font-size: small;
-        }
+        flex-direction: column;
+    }
+
+    p {
+        font-size: small;
+    }
+
+    .underLineText {
+        font-size: smaller;
+    }
+
+    .certificateHeading {
+        font-size: 15px;
+    }
+
+    .underLine {
+        font-size: 13px;
+    }
 }

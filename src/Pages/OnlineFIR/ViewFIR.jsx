@@ -7,6 +7,8 @@ import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStation
 import LoadingSpinner from "../../Components/Loading/Loading";
 import { useGetCategoryByIdQuery } from "../../Redux/Features/Category/CategoryApi";
 import { useGetOffenceByIdQuery } from "../../Redux/Features/Offence/OffenceApi";
+import { Carousel } from "react-bootstrap";
+import Stars from "../../Components/Stars/Stars";
 
 
 function ViewFIR() {
@@ -16,8 +18,8 @@ function ViewFIR() {
     const role = "Admin";
     const Role = "SuperAdmin";
     const { id } = useParams();
-    const { data, error, isLoading } = useGetFIRByIdQuery(id);
-    const [isApproved,setIsApproved] = useState(false);
+    const { data, error, isLoading ,refetch} = useGetFIRByIdQuery(id);
+    const [isApproved, setIsApproved] = useState(false);
     const [policeStationId, setPoliceStationId] = useState(null);
     const [categoryId, setCategoryId] = useState(null);
     const [offenceId, setOffenceId] = useState(null);
@@ -39,19 +41,27 @@ function ViewFIR() {
     });
 
     useEffect(() => {
-        if(user.role === "Citizen"){
-           if (data && data.FIRs && (data.FIRs.Status === "completed" || data.FIRs.Status === "filed" || data.FIRs.Status === "approved") ) {
-            setIsApproved(true);
-        } 
-        } 
-    }, [data,user.role]);
+        const intervalId = setInterval(() => {
+            refetch();
+        }, 2000);
+    
+        return () => clearInterval(intervalId);
+      }, [refetch]);
+
+    useEffect(() => {
+        if (user.role === "Citizen") {
+            if (data && data.FIRs && (data.FIRs.Status === "completed" || data.FIRs.Status === "filed" || data.FIRs.Status === "approved")) {
+                setIsApproved(true);
+            }
+        }
+    }, [data, user.role]);
 
     if (error || psError || cError || oError) {
         return <Navigate to={'*'} replace={true} />
     }
 
     if (isLoading || (!policeStationId && psLoading) || (!categoryId && cLoading) || (!offenceId && oLoading)) {
-        return <div><LoadingSpinner/></div>;
+        return <div><LoadingSpinner /></div>;
     }
 
     if (!data || !data.FIRs) {
@@ -117,7 +127,7 @@ function ViewFIR() {
                                     disabled={true} />
                             </div>
                         </div>
-                        {(user && (role=== user.role || Role === user.role)) ? <>
+                        {(user && (role === user.role || Role === user.role)) ? <>
                             <div className={styles.alignment}>
                                 <div className="col-lg-3 col-md-12 col-sm-12"><p>Beat/Moza No.</p></div>
                                 <div className="col-lg-3 col-md-12 col-sm-12">
@@ -241,7 +251,7 @@ function ViewFIR() {
                                     disabled={true} />
                             </div>
                         </div>
-                        {(user && (role=== user.role || Role === user.role)) ? <>
+                        {(user && (role === user.role || Role === user.role)) ? <>
 
                             <div className={styles.alignment}>
                                 <div className="col-lg-3 col-md-12 col-sm-12">
@@ -307,17 +317,44 @@ function ViewFIR() {
                                     disabled={true} />
                             </div>
                         </div>
-                        {(user && (role=== user.role || Role === user.role)) ? <>
+                        {(user && (role === user.role || Role === user.role)) ? <>
 
                             <div className={styles.alignment}>
                                 <div className="col-lg-3 col-md-12 col-sm-12"><p>IO Name</p></div>
                                 <div className="col-lg-3 col-md-12 col-sm-12">
-                                    <input type="text" name="IOName" className="form-control" placeholder={data.FIRs.IOName}
-                                        disabled={true} />
+                                    <input type="text" name="IOName" className="form-control" placeholder={data.FIRs.IOName} disabled/>
+                                </div>
+                                <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Rank</p></div>
+                                <div className="col-lg-3 col-md-12 col-sm-12">
+                                    <input type="text" name="Rank" className="form-control" placeholder={data.FIRs.Rank} disabled
+                                    />
+                                </div>
+                            </div>
+                            <div className={styles.alignment}>
+                                <div className="col-lg-3 col-md-12 col-sm-12"><p>Status</p></div>
+                                <div className="col-lg-3 col-md-12 col-sm-12">
+                                    <input name="Status" className="form-control" placeholder={data.FIRs.Status} disabled/>
+                                </div>
+                                <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Rating</p></div>
+                                <div className="col-lg-3 col-md-12 col-sm-12">
+                                    <Stars rating={data.FIRs.Rating}/>
                                 </div>
                             </div>
                         </> : null}
+                        <div className={styles.picContent}>
+                            <div className={styles.picture}>
+                                <Carousel>
+                                    <Carousel.Item className={styles.carouselItem}>
+                                        <img
+                                            className={styles.slide}
+                                            src={data && data?.FIRs?.file}
+                                            alt="loading error"
+                                        />
+                                    </Carousel.Item>
 
+                                </Carousel>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className={styles.buttonsalignment}>

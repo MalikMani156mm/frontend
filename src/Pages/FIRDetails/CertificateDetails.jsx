@@ -1,7 +1,6 @@
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import styles from '../MyApplications/MyApplications.module.css';
-import { useChangeFIRRatingMutation, useDeleteFIRMutation, useGetFIRByIdQuery } from "../../Redux/Features/FIR/FIRApi";
 import CustomAlert from "../../Components/CustomAlert/CustomAlert";
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import LoadingSpinner from "../../Components/Loading/Loading";
@@ -13,7 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 // import QR from "../../images/QR.jpg"
 import Stars from "../../Components/Stars/Stars";
 import { useSelector } from "react-redux";
-import { useDeleteCertificateMutation, useGetCertificateByIdQuery } from "../../Redux/Features/Certificates/CertificateAPI";
+import { useChangeCertificateRatingMutation, useDeleteCertificateMutation, useGetCertificateByIdQuery } from "../../Redux/Features/Certificates/CertificateAPI";
 
 
 function CertificateDetails() {
@@ -44,7 +43,7 @@ function CertificateDetails() {
     });
     // eslint-disable-next-line 
     const [deleteCertificate, { isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteCertificateMutation();
-    const [updateRating, { error }] = useChangeFIRRatingMutation();
+    const [updateRating, { error }] = useChangeCertificateRatingMutation();
     //const [loader, setLoader] = useState(false);
     //const [dynamic, setDynamic] = useState(false);
     const [deletionError, setDeletionError] = useState(null);
@@ -53,7 +52,7 @@ function CertificateDetails() {
     const [showRating, setShowRating] = useState(false);
 
     useEffect(() => {
-        if (Data && Data.CCs && Data.CCs.Status === "completed" && Data.CCs.Rating === 0) {
+        if (Data && Data.CCs && Data.CCs.Status === "approved" && Data.CCs.Rating === 0) {
             setShowRating(true);
         }
     }, [Data]);
@@ -145,14 +144,13 @@ function CertificateDetails() {
                         <div className={styles.row6}>
                             <div className={styles.row7}>
                                 <button className="btn btn-primary mx-3 my-2" disabled={isRejected} onClick={() => { navigate(`/ViewCertificate/${Data.CCs._id}`) }}>View Only</button>
-                                <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={() => { navigate(`/FIRPDF/${Data.CCs._id}`) }}>View PDF</button>
+                                <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={() => { navigate(`/CCPDF/${Data.CCs._id}`) }}>View PDF</button>
                             </div>
                             <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={!isApproved } >Download PDF</button>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isRejected || isApproved} onClick={() => { navigate(`/EditCertificate/${Data.CCs._id}`) }}>Edit FIR</button>
+                                <button className="btn btn-primary mx-3 my-2" disabled={isRejected || isApproved} onClick={() => { navigate(`/EditCertificate/${Data.CCs._id}`) }}>Edit Certificate</button>
                             </div>
                             <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isRejected || isApproved} onClick={handleDelete}>Delete FIR</button>
+                                <button className="btn btn-primary mx-3 my-2" disabled={isRejected || isApproved} onClick={handleDelete}>Delete Certificate</button>
                                 <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={handleRating}>Give Rating</button>
                             </div>
                         </div>

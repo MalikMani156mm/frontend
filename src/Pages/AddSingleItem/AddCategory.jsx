@@ -21,10 +21,11 @@ function AddCategory() {
         validationSchema: yup.object().shape({
             Category: yup.string().required('Category is required'),
         }),
-        onSubmit: async (values) => {
+        onSubmit: async (values,{ resetForm }) => {
             console.log(values);
             const res = await addCategory(values).unwrap();
             if (res.success) {
+                resetForm();
                 toast.success(res.message);
             } else {
                 toast.error(res.message);
@@ -51,6 +52,7 @@ function AddCategory() {
                     <Textinputs
                         type="text"
                         name='Category'
+                        value={values.Category}
                         onBlur={handleBlur}
                         onChange={handleChange}
                         placeholder="Enter Category Name"
