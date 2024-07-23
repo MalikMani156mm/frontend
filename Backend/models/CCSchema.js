@@ -75,6 +75,14 @@ const CCSchema = new Schema(
             require: [true, 'Please provide the PermanentAddress'],
             max: [300, 'Maximum limit of 200 words']
         },
+        DOB: {
+            type: String,
+            require: [true, 'Please provide the Date of birth']
+        },
+        DOS: {
+            type: String,
+            require: [true, 'Please provide the Date of Stay']
+        },
         Category: {
             type: String,
             require: [true, 'Please provide the Category']

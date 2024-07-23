@@ -14,6 +14,8 @@ import {otpValidator} from '../Utils/otpValidator.js';
 const accountSSID = process.env.TWILIO_AUTH_SSID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioClient = new twilio(accountSSID, authToken);
+import { imageUploading } from "../Utils/Utils.js";
+
 
 export const RegisterNewUser = async function (req, res, next) {
     
@@ -53,6 +55,13 @@ export const RegisterNewUser = async function (req, res, next) {
 
         newUser.password = await bcrypt.hash(newUser.password, 10);
 
+        const imageURL = await imageUploading({
+            folder: 'FIRs',
+            image: newUser.image,
+        })
+
+        newUser.image = imageURL;
+console.log(newUser.image);
         const currentDate = new Date();
 
         const userPromise = OTP.findOneAndUpdate(
@@ -63,6 +72,7 @@ export const RegisterNewUser = async function (req, res, next) {
                 token: randomString,
                 name: newUser.name,
                 email: newUser.email,
+                image:newUser.image,
                 phonenumber: newUser.phonenumber,
                 cnic: newUser.cnic,
                 password: newUser.password,
@@ -111,6 +121,7 @@ export const VerifySignUp = async function (req, res, next) {
                const name=userData.name;
                const email=userData.email;
                const cnic=userData.cnic;
+               const image=userData.image;
                const phonenumber=userData.phonenumber;
                const password=userData.password;
                const role = userData.role;
@@ -120,6 +131,7 @@ export const VerifySignUp = async function (req, res, next) {
                 name,
                 email,
                 cnic,
+                image,
                 phonenumber,
                 password,
                 role,
@@ -190,7 +202,7 @@ export const LoginUser = async function (req, res, next) {
 
         const currentDate = new Date();
         const htmlTemplate = LoginHtmlTemplate(user.name,currentDate)
-        // sendMail(user.email, "WelcomeBack to E-FIR System", "", htmlTemplate)
+        sendMail(user.email, "Welcome Back to E-FIR System", "", htmlTemplate)
 
         const token = await jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' })
 

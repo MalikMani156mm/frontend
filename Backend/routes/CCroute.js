@@ -7,7 +7,8 @@ import {
     getCitizenCertificates,
     getPoliceStationCertificates,
     changeCertificateStatus,
-    changeCertificatePoliceStation
+    changeCertificatePoliceStation,
+    updateCertificateRating
 } from '../controllers/CCcontroller.js';
 import { isAuthenticatedUser, isAuthorizedUser } from '../middleware/authMiddleware.js';
 const router = express.Router()
@@ -16,6 +17,7 @@ router.route('/CitizenCertificates').get(getCitizenCertificates);
 router.route('/PoliceStationCertificates').get(getPoliceStationCertificates);
 router.route('/updateCertificateStatus/:id').post(isAuthenticatedUser,isAuthorizedUser('SuperAdmin','Admin'), changeCertificateStatus);
 router.route('/updateCertificatePoliceStation/:id').post(isAuthenticatedUser,isAuthorizedUser('SuperAdmin','Admin'), changeCertificatePoliceStation);
+router.route('/updateCertificateRating/:id').post(isAuthenticatedUser,isAuthorizedUser('Citizen'), updateCertificateRating);
 router.route('/Certificate/:id').get(getCertificateById);
 router.route('/new/Certificate').post(createNewCertificate);
 router.route('/updateCertificate/:id').put( updateCertificate);

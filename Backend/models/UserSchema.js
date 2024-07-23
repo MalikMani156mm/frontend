@@ -25,6 +25,9 @@ const UserSchema = new Schema(
             type: Number,
             require:[true, 'Please provide the CNIC'],
         },
+        image:{
+            type:String
+        },
         password: {
             type: String,
             require:[true, 'Please provide the Password'],

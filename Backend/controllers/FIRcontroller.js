@@ -6,6 +6,7 @@ import { FIRStatusHtmlTemplate, FIRSubmitHtmlTemplate } from '../Utils/htmlTempl
 import { sendMail } from '../middleware/sendEmail.js';
 
 
+
 export const getAllFIRs = async function (req, res, next) {
 
     const page = parseInt(req.query.page) - 1 || 0;
@@ -26,7 +27,6 @@ export const getAllFIRs = async function (req, res, next) {
         let FIRs = await FIR.aggregate([
             {
                 $addFields: {
-                    CNICStr: { $toString: "$CNIC" },
                     ContactNumberStr: { $toString: "$ContactNumber" }
                 }
             },
@@ -35,7 +35,7 @@ export const getAllFIRs = async function (req, res, next) {
                     "$or": [
                         { ComplaintNumber: { $regex: search, $options: "i" } },
                         { Name: { $regex: search, $options: "i" } },
-                        { CNICStr: { $regex: search } },
+                        { OfficerName: { $regex: search } },
                         { ContactNumberStr: { $regex: search } },
                         { Category: { $regex: search, $options: "i" } },
                         { Offence: { $regex: search, $options: "i" } },
@@ -53,7 +53,6 @@ export const getAllFIRs = async function (req, res, next) {
         let totalResult = await FIR.aggregate([
             {
                 $addFields: {
-                    CNICStr: { $toString: "$CNIC" },
                     ContactNumberStr: { $toString: "$ContactNumber" }
                 }
             },
@@ -62,7 +61,7 @@ export const getAllFIRs = async function (req, res, next) {
                     "$or": [
                         { ComplaintNumber: { $regex: search, $options: "i" } },
                         { Name: { $regex: search, $options: "i" } },
-                        { CNICStr: { $regex: search } },
+                        { OfficerName: { $regex: search } },
                         { ContactNumberStr: { $regex: search } },
                         { Category: { $regex: search, $options: "i" } },
                         { Offence: { $regex: search, $options: "i" } },
@@ -75,12 +74,11 @@ export const getAllFIRs = async function (req, res, next) {
         ]);
 
         let total = totalResult.length > 0 ? totalResult[0].total : 0;
-        let pageCount = Math.ceil(total / limit);
-
+        let pagecount = Math.ceil(total / limit);
         res.json({
             FIRs,
             total,
-            pageCount,
+            pagecount,
             page: page + 1,
             limit
         });
@@ -114,7 +112,6 @@ export const getPoliceStationFIRs = async function (req, res, next) {
         let totalPoliceStaionFIRsResult = await FIR.aggregate([
             {
                 $addFields: {
-                    CNICStr: { $toString: "$CNIC" },
                     ContactNumberStr: { $toString: "$ContactNumber" }
                 }
             },
@@ -126,7 +123,7 @@ export const getPoliceStationFIRs = async function (req, res, next) {
                             "$or": [
                                 { ComplaintNumber: { $regex: search, $options: "i" } },
                                 { Name: { $regex: search, $options: "i" } },
-                                { CNICStr: { $regex: search } },
+                                { OfficerName: { $regex: search } },
                                 { ContactNumberStr: { $regex: search } },
                                 { Category: { $regex: search, $options: "i" } },
                                 { Offence: { $regex: search, $options: "i" } },
@@ -145,7 +142,6 @@ export const getPoliceStationFIRs = async function (req, res, next) {
         let PoliceStaionFIRs = await FIR.aggregate([
             {
                 $addFields: {
-                    CNICStr: { $toString: "$CNIC" },
                     ContactNumberStr: { $toString: "$ContactNumber" }
                 }
             },
@@ -157,7 +153,7 @@ export const getPoliceStationFIRs = async function (req, res, next) {
                             "$or": [
                                 { ComplaintNumber: { $regex: search, $options: "i" } },
                                 { Name: { $regex: search, $options: "i" } },
-                                { CNICStr: { $regex: search } },
+                                { OfficerName: { $regex: search } },
                                 { ContactNumberStr: { $regex: search } },
                                 { Category: { $regex: search, $options: "i" } },
                                 { Offence: { $regex: search, $options: "i" } },
@@ -415,7 +411,6 @@ export const getAllFIRCount = async function (req, res, next) {
         ]);
 
         let totalCompleted = totalcompleted.length > 0 ? totalcompleted[0].totalcompleted : 0;
-
         res.json({
             total,
             totalPending,
@@ -649,7 +644,7 @@ export const createNewFIR = async function (req, res, next) {
         const newFIRS = [...policeStation.FIRs, FIRId.toString()]
         policeStation.FIRs = newFIRS;
         const updatePoliceStation = await PoliceStaion.findByIdAndUpdate(PSId, policeStation);
-        const htmlTemplate = FIRSubmitHtmlTemplate(newFIR.Name,newFIR.ComplaintNumber,newFIR.Circle)
+        const htmlTemplate = FIRSubmitHtmlTemplate(newFIR.Name, newFIR.ComplaintNumber, newFIR.Circle)
         sendMail(newFIR.email, `FIR Submitted Successfully!!!`, "", htmlTemplate)
         res.json({
             FIR: r,
@@ -663,7 +658,7 @@ export const createNewFIR = async function (req, res, next) {
 
 export const changeFIRStatus = async function (req, res, next) {
     const { id } = req.params;
-    const { Status }  = req.body;
+    const { Status } = req.body;
     try {
         const changeStatus = await FIR.findOneAndUpdate({ _id: id }, { Status }, { new: true });
         if (!changeStatus) {
@@ -672,7 +667,7 @@ export const changeFIRStatus = async function (req, res, next) {
                 success: false
             });
         }
-        const htmlTemplate = FIRStatusHtmlTemplate(changeStatus.Name,changeStatus.ComplaintNumber,changeStatus.Circle,Status)
+        const htmlTemplate = FIRStatusHtmlTemplate(changeStatus.Name, changeStatus.ComplaintNumber, changeStatus.Circle, Status)
         sendMail(changeStatus.email, `FIR Status Updated!!!`, "", htmlTemplate)
         res.json({
             changeStatus,
@@ -687,7 +682,7 @@ export const changeFIRStatus = async function (req, res, next) {
 
 export const updateFIRRating = async function (req, res, next) {
     const { id } = req.params;
-    const { Rating }  = req.body;
+    const { Rating } = req.body;
     try {
         const changeRating = await FIR.findOneAndUpdate({ _id: id }, { Rating }, { new: true });
         if (!changeRating) {
@@ -709,7 +704,7 @@ export const updateFIRRating = async function (req, res, next) {
 
 export const changeFIRPoliceStation = async function (req, res, next) {
     const { id } = req.params;
-    const { PoliceStation }  = req.body;
+    const { PoliceStation } = req.body;
     try {
         const changePoliceStation = await FIR.findOneAndUpdate({ _id: id }, { PoliceStation }, { new: true });
         if (!changePoliceStation) {

@@ -157,7 +157,7 @@ const VVSchema = new Schema(
         Status: {
             type: String,
             default: 'pending',
-            enum: ['pending', 'verified', 'stolen']
+            enum: ['pending', 'verified', 'defected']
         },
         Rating: {
             type: Number,

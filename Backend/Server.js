@@ -13,15 +13,21 @@ import cookieParser from "cookie-parser";
 import { connectDB , cloudinaryConfig } from "./config/config.js";
 import { errors } from './middleware/errors.js';
 import cors from "cors";
+import path from 'path';
+import { fileURLToPath } from 'url';
 import 'dotenv/config'
 import {app, server} from "./socket/socket.js";
 connectDB();
 cloudinaryConfig();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(bodyParser.json({limit:'50mb'}))
 app.use(cookieParser())
 
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.use('/api', FIRRoutes, AuthRoutes, CCRoutes, VVRoutes, PoliceStationRoutes, AdminRoutes, OffenceRoutes, CategoryRoutes, messageRoutes )
 

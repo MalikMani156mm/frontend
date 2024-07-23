@@ -225,6 +225,28 @@ export const changeRequestStatus = async function (req, res, next) {
     }
 }
 
+export const updateRequestRating = async function (req, res, next) {
+    const { id } = req.params;
+    const { Rating } = req.body;
+    try {
+        const changeRating = await VV.findOneAndUpdate({ _id: id }, { Rating }, { new: true });
+        if (!changeRating) {
+            return res.json({
+                message: 'Request not found',
+                success: false
+            });
+        }
+        res.json({
+            changeRating,
+            message: 'Rating is updated successfully',
+            success: true
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const createNewRequest = async function (req, res, next) {
     const newRequest = req.body;
 

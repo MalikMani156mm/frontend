@@ -43,6 +43,9 @@ const OTPSchema = new Schema(
             type:String,
             default:'',
         },
+        image:{
+            type:String
+        },
         otpExpiration:{
             type:Date,
             default:Date.now,
