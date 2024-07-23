@@ -421,7 +421,7 @@ function CharacterCertificateForm() {
                   onBlur={handleBlur}>
                   <option value="0">Select</option>
                   <option value="Character Certificate">Character Certificate</option>
-                  <option value="Police Verification">Police Character Verification</option>
+                  <option value="Police Character Verification">Police Character Verification</option>
                   <option value="Servent Registration">Servent Registration</option>
                   <option value="Tenant Registration">Tenant Registration</option>
                   <option value="Volunteer Registration">Volunteer Registration</option>

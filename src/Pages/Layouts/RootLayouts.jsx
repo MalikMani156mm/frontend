@@ -18,7 +18,7 @@ function RootLayouts() {
             <Navbar />
             <ScrollToTop />
             <Outlet />
-            {(user && (role=== user.role || Role === user.role) && location.pathname !== '/ChatPage') ? <PriorBar /> : null}
+            {(user && (role=== user.role || Role === user.role) && (location.pathname !== '/ChatPage' && location.pathname !== '/AddAdmin')) ? <PriorBar /> : null}
             <Footer />
         </div>
     );

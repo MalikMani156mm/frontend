@@ -71,11 +71,14 @@ function AddAdmin() {
     }
 
     return (
-        <>
-            <form action='post' name="SignUpForm" onSubmit={handleSubmit} >
+        <><div className={styles.rowFlex}>
+        <div className={styles.bgPic}></div>
+        <div className={styles.form}>
                 <div className={styles.SignupWrapper}>
+            <form action='post' name="SignUpForm" onSubmit={handleSubmit} >
+            <div className={styles.displayCenter}>
                     <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={50} width={50} /></Link>
-                    {/* <br /> */}
+                    </div>
                     <div className={styles.SignupHeader}>E-FIR System</div>
                     {/* <div className={styles.SignupHeader}>Create an Admin</div> */}
 
@@ -138,11 +141,15 @@ function AddAdmin() {
                         </span>
                     </div>
                     <p className="help-block text-danger">{errors.confirmpassword && touched.confirmpassword ? errors.confirmpassword : null}</p>
+                    <div className={styles.displayCenter}>
                     <button className={styles.SignupButton} type='submit' disabled={isLoading}>
                         {isLoading ? "Loading..." : "Register"}
                     </button>
-                </div>
+                    </div>
             </form>
+                </div>
+                </div>
+                </div>
             <ToastContainer />
         </>
     );
