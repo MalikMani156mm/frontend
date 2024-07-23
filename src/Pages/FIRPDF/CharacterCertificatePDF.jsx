@@ -5,14 +5,17 @@ import Logo from "../../images/Logo.png";
 import Sign from "../../images/Sign.jpeg";
 import html2canvas from "html2canvas"
 import jspdf from "jspdf";
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useGetCertificateByIdQuery } from '../../Redux/Features/Certificates/CertificateAPI';
 import LoadingSpinner from '../../Components/Loading/Loading';
 import { useGetPoliceStationByIdQuery } from '../../Redux/Features/PoliceStationInfo/PoliceStationApi';
+import { useSelector } from 'react-redux';
 
 export const CharacterCertificatePDF = () => {
 
     const { id } = useParams();
+    const navigate = useNavigate();
+    const { user } = useSelector(state => state.auth)
     const [policeStationId, setPoliceStationId] = useState(null);
     const [loader, setLoader] = useState(false);
     const { data, error: Error, isLoading } = useGetCertificateByIdQuery(id);
@@ -30,8 +33,14 @@ export const CharacterCertificatePDF = () => {
     const { data: psData, error: psError, isLoading: psLoading } = useGetPoliceStationByIdQuery(policeStationId, {
         skip: !policeStationId,
     });
-    console.log(data?.CCs.DOB);
-    //console result:2012-01-01
+
+    useEffect(() => {
+        if (user.role === "Citizen") {
+            if (data && data.CCs && (data.CCs.Status === "rejected" || data.CCs.Status === "pending")) {
+                navigate("/MyApplications");
+            }
+        }
+    }, [data, user.role, navigate]);
 
     const complaintNumber = data?.CCs?.ApplicationtNumber;
     const extractedNumber = complaintNumber ? extractNumber(complaintNumber) : null;

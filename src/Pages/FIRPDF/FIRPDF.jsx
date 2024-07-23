@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
 import styles from "./FIRPDF.module.css";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useGetFIRByIdQuery } from "../../Redux/Features/FIR/FIRApi";
 import QR from "../../images/QR.jpg"
 import { useGetPoliceStationByIdQuery } from "../../Redux/Features/PoliceStationInfo/PoliceStationApi";
 import LoadingSpinner from "../../Components/Loading/Loading";
 import { useGetOffenceByIdQuery } from "../../Redux/Features/Offence/OffenceApi";
 import { useGetCategoryByIdQuery } from "../../Redux/Features/Category/CategoryApi";
+import { useSelector } from "react-redux";
 
 
 
 function FIRPDF() {
 
+  const { user } = useSelector(state => state.auth)
   const { id } = useParams();
+  const navigate = useNavigate();
   const [policeStationId, setPoliceStationId] = useState(null);
   const [categoryId, setCategoryId] = useState(null);
   const [offenceId, setOffenceId] = useState(null);
@@ -33,6 +36,15 @@ function FIRPDF() {
   const { data: oData, error: oError, isLoading: oLoading } = useGetOffenceByIdQuery(offenceId, {
       skip: !offenceId,
   });
+
+  useEffect(() => {
+    if (user.role === "Citizen") {
+        if (firData && firData.FIRs && (firData.FIRs.Status === "pending" || firData.FIRs.Status === "filed")) {
+          navigate("/MyApplications");
+        }
+    }
+}, [firData, user.role,navigate]);
+
   const extractNumber = (complaintNumber) => {
     const parts = complaintNumber.split("-");
     return parts[2];

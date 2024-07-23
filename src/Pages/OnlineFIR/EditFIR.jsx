@@ -37,18 +37,25 @@ function EditFIR() {
 
     return () => clearInterval(intervalId);
   }, [refetch]);
+
   useEffect(() => {
       if (role === user.role || Role === user.role) {
         setState(false);
       }
     }, [Role, role, user.role]);
+
+    useEffect(() => {
+    if (user.role === "Citizen") {
+        if (firData && firData.FIRs && (firData.FIRs.Status === "completed" || firData.FIRs.Status === "filed" || firData.FIRs.Status === "approved")) {
+          navigate("/MyApplications");
+        }
+    }
+}, [firData, user.role,navigate]);
  
   const addMoreFile = () => {
     const newId = fileInputs[fileInputs.length - 1].id + 1;
     setFileInputs([...fileInputs, { id: newId }]);
   };
-
-
 
   const handleRadioClick = (value) => {
     if (selectedValue === value) {

@@ -38,6 +38,13 @@ function EditVVForm() {
       setState(false);
     }
   }, [Role, role, user.role]);
+  useEffect(() => {
+    if (user.role === "Citizen") {
+        if (data && data.VVs && (data.VVs.Status === "verified" || data.VVs.Status === "defected")) {
+          navigate("/MyApplications");
+        }
+    }
+}, [data, user.role, navigate]);
   const handleRadioClick = (value) => {
     if (selectedValue === value) {
       setSelectedValue(null);

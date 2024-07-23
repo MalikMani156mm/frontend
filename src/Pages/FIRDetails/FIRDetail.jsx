@@ -198,7 +198,7 @@ function FIRDetail() {
                     <div className={styles.buttonBody}>
                         <div className={styles.row6}>
                             <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled} onClick={() => { navigate(`/ViewFIR/${firData.FIRs._id}`) }}>View Only</button>
+                                <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/ViewFIR/${firData.FIRs._id}`) }}>View Only</button>
                                 <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={() => { navigate(`/FIRPDF/${firData.FIRs._id}`) }}>View PDF</button>
                             </div>
                             <div className={styles.row7}>

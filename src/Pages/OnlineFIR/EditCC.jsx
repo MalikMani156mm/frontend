@@ -41,6 +41,14 @@ function EditCCForm() {
         }
     }, [Role, role, user.role]);
 
+    useEffect(() => {
+        if (user.role === "Citizen") {
+            if (iData && iData.CCs && (iData.CCs.Status === "rejected" || iData.CCs.Status === "approved")) {
+                navigate("/MyApplications");
+            }
+        }
+    }, [iData, user.role,navigate]);
+
     const handleRadioClick = (value) => {
         if (selectedValue === value) {
             setSelectedValue(null);

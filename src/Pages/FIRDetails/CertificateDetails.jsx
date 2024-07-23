@@ -22,13 +22,14 @@ function CertificateDetails() {
     const { id } = useParams();
     const [policeStationId, setPoliceStationId] = useState(null);
     const { data: Data, error: Error, isLoading: Loading, refetch } = useGetCertificateByIdQuery(id);
+    console.log(Data?.CCs?.Status);
     const isApproved = Data?.CCs?.Status === "approved" ;
     const isRejected = Data?.CCs?.Status === "rejected";
 
     useEffect(() => {
         const intervalId = setInterval(() => {
             refetch();
-        }, 1000);
+        }, 2000);
 
         return () => clearInterval(intervalId);
     }, [refetch]);
@@ -143,7 +144,7 @@ function CertificateDetails() {
                     <div className={styles.buttonBody}>
                         <div className={styles.row6}>
                             <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isRejected} onClick={() => { navigate(`/ViewCertificate/${Data.CCs._id}`) }}>View Only</button>
+                                <button className="btn btn-primary mx-3 my-2"  onClick={() => { navigate(`/ViewCertificate/${Data.CCs._id}`) }}>View Only</button>
                                 <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={() => { navigate(`/CCPDF/${Data.CCs._id}`) }}>View PDF</button>
                             </div>
                             <div className={styles.row7}>

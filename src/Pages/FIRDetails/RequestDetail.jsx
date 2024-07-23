@@ -134,7 +134,7 @@ function RequestDetail() {
                     <div className={styles.buttonBody}>
                         <div className={styles.row6}>
                             <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled} onClick={() => { navigate(`/ViewRequest/${Data.VVs._id}`) }}>View Only</button>
+                                <button className="btn btn-primary mx-3 my-2"  onClick={() => { navigate(`/ViewRequest/${Data.VVs._id}`) }}>View Only</button>
                             </div>
                             <div className={styles.row7}>
                                 <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={() => { navigate(`/EditRequest/${Data.VVs._id}`) }}>Edit Request</button>
