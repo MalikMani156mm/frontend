@@ -38,7 +38,7 @@ function Signup() {
             email: '',
             phonenumber: '',
             cnic: '',
-            image:'',
+            image: '',
             password: '',
             confirmpassword: '',
             Location: currentLocation,
@@ -88,99 +88,109 @@ function Signup() {
 
     return (
         <>
-            <form action='post' name="SignUpForm" onSubmit={handleSubmit} >
+            <div className={styles.rowFlex}>
+                <div className={styles.bgPic}></div>
+                <div className={styles.form}>
                 <div className={styles.SignupWrapper}>
-                    <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={50} width={50} /></Link>
-                    {/* <br /> */}
-                    <div className={styles.SignupHeader}>E-FIR System</div>
-                    {/* <div className={styles.SignupHeader}>Create an Account</div> */}
+                    <form action='post' name="SignUpForm" onSubmit={handleSubmit} >
+                        <div className={styles.displayCenter}>
+                            <Link to="/" className={styles.logo} ><img src={logo} alt="Logo unload" height={50} width={50} /></Link>
+                        </div>
+                        <div className={styles.SignupHeader}>E-FIR System</div>
+                        {/* <div className={styles.SignupHeader}>Create an Account</div> */}
 
-                    <Textinput
-                        type="text"
-                        values={values.name}
-                        name="name"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        placeholder="Enter Name"
-                    />
-                    <p className="help-block text-danger">{errors.name && touched.name ? errors.name : null}</p>
-                    <Textinput
-                        type="text"
-                        values={values.email}
-                        name="email"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        placeholder="Enter Email"
-                    />
-                    <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
-                    <Textinput
-                        type="number"
-                        values={values.phonenumber}
-                        name="phonenumber"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        placeholder="Enter Phone Number"
-                    />
-                    <p className="help-block text-danger">{errors.phonenumber && touched.phonenumber ? errors.phonenumber : null}</p>
-                    <Textinput
-                        type="number"
-                        values={values.cnic}
-                        name="cnic"
-                        onBlur={handleBlur}
-                        onChange={handleChange}
-                        placeholder="Enter CNIC (without dashes)"
-                    />
-                    <p className="help-block text-danger">{errors.cnic && touched.cnic ? errors.cnic : null}</p>
-                    <input className={styles.fileOption}
-                        type="file"
-                        values={values.image}
-                        name="image"
-                        onBlur={handleBlur}
-                        onChange={(event) => {
-                            let reader = new FileReader();
-                            reader.onloadend = () => {
-                              if (reader.readyState === 2) {
-                                setFieldValue("image", reader.result);
-                              }
-                            }
-                            reader.readAsDataURL(event.currentTarget.files[0]);
-                          }}
-                    />
-                    <p className="help-block text-danger">{errors.image && touched.image ? errors.image : null}</p>
-                    <div className={styles.inputContainer}>
                         <Textinput
-                            type={showPassword ? 'text' : 'password'}
-                            values={values.password}
-                            name="password"
+                            type="text"
+                            values={values.name}
+                            name="name"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            placeholder="Enter password"
+                            placeholder="Enter Name"
                         />
-                        <span className={styles.eye} onClick={toggleShowPassword}>
-                            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-                        </span>
-                    </div>
-                    <p className="help-block text-danger">{errors.password && touched.password ? errors.password : null}</p>
-                    <div className={styles.inputContainer}>
+                        <p className="help-block text-danger">{errors.name && touched.name ? errors.name : null}</p>
                         <Textinput
-                            type={showCPassword ? 'text' : 'password'}
-                            values={values.confirmpassword}
-                            name="confirmpassword"
+                            type="text"
+                            values={values.email}
+                            name="email"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            placeholder="Confirm password"
+                            placeholder="Enter Email"
                         />
-                        <span className={styles.eye} onClick={toggleShowCPassword}>
-                            <FontAwesomeIcon icon={showCPassword ? faEyeSlash : faEye} />
-                        </span>
-                    </div>
-                    <p className="help-block text-danger">{errors.confirmpassword && touched.confirmpassword ? errors.confirmpassword : null}</p>
-                    <button className={styles.SignupButton} type='submit' disabled={isLoading}>
-                        {isLoading ? "Loading..." : "Sign Up"}</button>
-                    <span>Already have an account? <Link to="/LogIn" className={styles.login}>Log In</Link></span>
+                        <p className="help-block text-danger">{errors.email && touched.email ? errors.email : null}</p>
+                        <Textinput
+                            type="number"
+                            values={values.phonenumber}
+                            name="phonenumber"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            placeholder="Enter Phone Number"
+                        />
+                        <p className="help-block text-danger">{errors.phonenumber && touched.phonenumber ? errors.phonenumber : null}</p>
+                        <Textinput
+                            type="number"
+                            values={values.cnic}
+                            name="cnic"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            placeholder="Enter CNIC (without dashes)"
+                        />
+                        <p className="help-block text-danger">{errors.cnic && touched.cnic ? errors.cnic : null}</p>
+                        <input className={styles.fileOption}
+                            type="file"
+                            values={values.image}
+                            name="image"
+                            onBlur={handleBlur}
+                            onChange={(event) => {
+                                let reader = new FileReader();
+                                reader.onloadend = () => {
+                                    if (reader.readyState === 2) {
+                                        setFieldValue("image", reader.result);
+                                    }
+                                }
+                                reader.readAsDataURL(event.currentTarget.files[0]);
+                            }}
+                        />
+                        <p className="help-block text-danger">{errors.image && touched.image ? errors.image : null}</p>
+                        <div className={styles.inputContainer}>
+                            <Textinput
+                                type={showPassword ? 'text' : 'password'}
+                                values={values.password}
+                                name="password"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                placeholder="Enter password"
+                            />
+                            <span className={styles.eye} onClick={toggleShowPassword}>
+                                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                            </span>
+                        </div>
+                        <p className="help-block text-danger">{errors.password && touched.password ? errors.password : null}</p>
+                        <div className={styles.inputContainer}>
+                            <Textinput
+                                type={showCPassword ? 'text' : 'password'}
+                                values={values.confirmpassword}
+                                name="confirmpassword"
+                                onBlur={handleBlur}
+                                onChange={handleChange}
+                                placeholder="Confirm password"
+                            />
+                            <span className={styles.eye} onClick={toggleShowCPassword}>
+                                <FontAwesomeIcon icon={showCPassword ? faEyeSlash : faEye} />
+                            </span>
+                        </div>
+                        <p className="help-block text-danger">{errors.confirmpassword && touched.confirmpassword ? errors.confirmpassword : null}</p>
+                        <div className={styles.displayCenter}>
+                            <button className={styles.SignupButton} type='submit' disabled={isLoading}>
+                                {isLoading ? "Loading..." : "Sign Up"}</button>
+                        </div>
+                        <div className={styles.displayCenter}>
+                            <span>Already have an account? <Link to="/LogIn" className={styles.login}>Log In</Link></span>
+                        </div>
+                    </form>
                 </div>
-            </form>
-            <ToastContainer />
+                </div>
+                <ToastContainer />
+            </div>
         </>
     );
 
