@@ -202,7 +202,7 @@ function FIRDetail() {
                                 {(!isApproved) ? null :
                                     <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={() => { navigate(`/DownloadFIRPDF/${firData.FIRs._id}`) }}>View PDF</button>
                                 }
-                                {(!isApproved || loader) ? null :
+                                {(!isApproved) ? null :
                                     <button className="btn btn-primary mx-3 my-2" disabled={!isApproved || loader} onClick={DownloadPDF}>Download PDF</button>
                                 }
                                 {(isFiled || isApproved) ? null :
