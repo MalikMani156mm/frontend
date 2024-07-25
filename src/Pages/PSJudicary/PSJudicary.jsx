@@ -9,6 +9,7 @@ function PSJudicary() {
   const navigate = useNavigate();
 
   const { data, error, isLoading } = useGetAllPoliceStationsQuery();
+  console.log(data);
 
   if (isLoading) {
     return <div><LoadingSpinner/></div>
