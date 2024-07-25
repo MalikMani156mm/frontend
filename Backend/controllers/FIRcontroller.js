@@ -630,6 +630,28 @@ export const createNewFIR = async function (req, res, next) {
     //   });
 
     try {
+
+        const existFIR = await FIR.findOne({
+            "$and": [
+                { CNIC: newFIR.CNIC },
+                { PoliceStation: newFIR.PoliceStation },
+                { Category: newFIR.Category },
+                { Offence: newFIR.Offence }
+            ]
+        })
+
+        if (existFIR) {
+            const currentDate = new Date().toISOString().split('T')[0];
+            const existFIRDate = new Date(existFIR.EntryDate).toISOString().split('T')[0];
+
+            if (existFIRDate === currentDate) {
+                return res.json({
+                    message: "FIR already submitted",
+                    success: false
+                });
+            }
+        }
+
         const imageURL = await imageUploading({
             folder: 'FIRs',
             image: newFIR.file,

@@ -10,7 +10,7 @@ import mobileOtpGenerator from "otp-generator";
 import twilio from "twilio";
 import randomstring from 'randomstring';
 import { generateOtpHtmlTemplate, LoginHtmlTemplate, sendResetPasswordLinkHtmlTemplate } from '../Utils/htmlTemplate.js'
-import {otpValidator} from '../Utils/otpValidator.js';
+import { otpValidator } from '../Utils/otpValidator.js';
 const accountSSID = process.env.TWILIO_AUTH_SSID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const twilioClient = new twilio(accountSSID, authToken);
@@ -18,7 +18,7 @@ import { imageUploading } from "../Utils/Utils.js";
 
 
 export const RegisterNewUser = async function (req, res, next) {
-    
+
     try {
         const randomString = randomstring.generate();
         const mobileOTP = mobileOtpGenerator.generate(4, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
@@ -61,7 +61,7 @@ export const RegisterNewUser = async function (req, res, next) {
         })
 
         newUser.image = imageURL;
-console.log(newUser.image);
+        console.log(newUser.image);
         const currentDate = new Date();
 
         const userPromise = OTP.findOneAndUpdate(
@@ -72,11 +72,11 @@ console.log(newUser.image);
                 token: randomString,
                 name: newUser.name,
                 email: newUser.email,
-                image:newUser.image,
+                image: newUser.image,
                 phonenumber: newUser.phonenumber,
                 cnic: newUser.cnic,
                 password: newUser.password,
-                Location:newUser.Location
+                Location: newUser.Location
             },
             {
                 upsert: true,
@@ -114,38 +114,38 @@ export const VerifySignUp = async function (req, res, next) {
             return next(new Error("You are using fabricated link. Please check it again!"));
         } else {
             if (mobileOTP === userData.otp) {
-               const isOTPExpired = await otpValidator(userData.otpExpiration);
-               if (isOTPExpired) {
-                return next(new Error("Your OTP has been expired!"));
-               }
-               const name=userData.name;
-               const email=userData.email;
-               const cnic=userData.cnic;
-               const image=userData.image;
-               const phonenumber=userData.phonenumber;
-               const password=userData.password;
-               const role = userData.role;
-               const Location = userData.Location;
+                const isOTPExpired = await otpValidator(userData.otpExpiration);
+                if (isOTPExpired) {
+                    return next(new Error("Your OTP has been expired!"));
+                }
+                const name = userData.name;
+                const email = userData.email;
+                const cnic = userData.cnic;
+                const image = userData.image;
+                const phonenumber = userData.phonenumber;
+                const password = userData.password;
+                const role = userData.role;
+                const Location = userData.Location;
 
-            const user = new User({
-                name,
-                email,
-                cnic,
-                image,
-                phonenumber,
-                password,
-                role,
-                Location
-            }) ;
+                const user = new User({
+                    name,
+                    email,
+                    cnic,
+                    image,
+                    phonenumber,
+                    password,
+                    role,
+                    Location
+                });
                 await user.save();
                 await OTP.findByIdAndDelete(userData._id)
-               const token = jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' });
-               res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV !== "development" }).status(200).json({
-                user,
-                token,
-                success: true,
-                message: 'Your OTP is right!!!'
-            })
+                const token = jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' });
+                res.cookie("token", token, { expires: new Date(Date.now() + 86400000), httpOnly: true, sameSite: "strict", secure: process.env.NODE_ENV !== "development" }).status(200).json({
+                    user,
+                    token,
+                    success: true,
+                    message: 'Your OTP is right!!!'
+                })
             } else {
                 return next(new Error("Ooops!!! You enter wrong OTP."));
             }
@@ -201,7 +201,7 @@ export const LoginUser = async function (req, res, next) {
         }
 
         const currentDate = new Date();
-        const htmlTemplate = LoginHtmlTemplate(user.name,currentDate)
+        const htmlTemplate = LoginHtmlTemplate(user.name, currentDate)
         sendMail(user.email, "Welcome Back to E-FIR System", "", htmlTemplate)
 
         const token = await jwt.sign({ payload: user }, process.env.JWT_SECRET, { expiresIn: '24h' })
@@ -329,6 +329,7 @@ export const ChangePassword = async function (req, res, next) {
 export const ChangeUsername = async function (req, res, next) {
     try {
         const { id } = req.params;
+        const token = req.cookies.token;
         const data = req.body;
         const UpdateUsername = await User.findByIdAndUpdate(id, data, { new: true });
         if (!UpdateUsername) {
@@ -338,9 +339,10 @@ export const ChangeUsername = async function (req, res, next) {
             });
         }
         res.json({
-            uu: UpdateUsername,
+            user: UpdateUsername,
+            token,
             message: 'Username is Change',
-            success: true
+            success: true,
         })
 
     } catch (error) {

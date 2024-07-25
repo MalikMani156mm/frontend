@@ -174,6 +174,7 @@ export const ChangeAdminName = async function (req, res, next) {
     try {
         const { id } = req.params;
         const data = req.body;
+        const token = req.cookies.token;
         const UpdateName = await Admin.findByIdAndUpdate(id, data, { new: true });
         if (!UpdateName) {
             return res.json({
@@ -182,7 +183,8 @@ export const ChangeAdminName = async function (req, res, next) {
             });
         }
         res.json({
-            uu: UpdateName,
+            user: UpdateName,
+            token,
             message: 'Name is Changed',
             success: true
         })
