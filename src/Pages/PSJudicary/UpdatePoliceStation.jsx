@@ -11,7 +11,7 @@ import LoadingSpinner from "../../Components/Loading/Loading";
 function UpdatePoliceStation() {
 
     const { id } = useParams();
-    const { data, error: psError, isLoading:psLoading} = useGetPoliceStationByIdQuery(id);
+    const { data, error: psError, isLoading: psLoading } = useGetPoliceStationByIdQuery(id);
 
     const [updatePoliceStation, { isLoading, error }] = useUpdatePoliceStationMutation();
 
@@ -19,21 +19,21 @@ function UpdatePoliceStation() {
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, errors, handleSubmit, setFieldValue } = useFormik({
         initialValues: {
-            PSName: data.PSs.PSName,
-            PSLandlineNumber: data.PSs.PSLandlineNumber,
-            DPOName: data.PSs.DPOName,
-            DPOMobileNumber: data.PSs.DPOMobileNumber,
-            DPOLandlineNumber: data.PSs.DPOLandlineNumber,
-            DPOReaderName: data.PSs.DPOReaderName,
-            ReaderMobileNumber: data.PSs.ReaderMobileNumber,
-            CircleOfficerName: data.PSs.CircleOfficerName,
-            CircleOfficerMobileNumber: data.PSs.CircleOfficerMobileNumber,
-            CircleOfficerLandlineNumber: data.PSs.CircleOfficerLandlineNumber,
-            SHOName: data.PSs.SHOName,
-            SHOMobileNumber: data.PSs.SHOMobileNumber,
-            Division: data.PSs.Division,
-            Circle: data.PSs.Circle,
-            Location: data.PSs.Location,
+            PSName: data?.PSs.PSName,
+            PSLandlineNumber: data?.PSs.PSLandlineNumber,
+            DPOName: data?.PSs.DPOName,
+            DPOMobileNumber: data?.PSs.DPOMobileNumber,
+            DPOLandlineNumber: data?.PSs.DPOLandlineNumber,
+            DPOReaderName: data?.PSs.DPOReaderName,
+            ReaderMobileNumber: data?.PSs.ReaderMobileNumber,
+            CircleOfficerName: data?.PSs.CircleOfficerName,
+            CircleOfficerMobileNumber: data?.PSs.CircleOfficerMobileNumber,
+            CircleOfficerLandlineNumber: data?.PSs.CircleOfficerLandlineNumber,
+            SHOName: data?.PSs.SHOName,
+            SHOMobileNumber: data?.PSs.SHOMobileNumber,
+            Division: data?.PSs.Division,
+            Circle: data?.PSs.Circle,
+            Location: data?.PSs.Location,
         },
         validationSchema: yup.object().shape({
             PSName: yup.string().required('Police Station is Required'),
@@ -73,7 +73,7 @@ function UpdatePoliceStation() {
                         <div className={styles.column}>
                             <div className={styles.label} >Police Station Name</div>
                             <div>
-                                <input type="text" name="PSName" placeholder={data.PSs.PSName} className={styles.formControl} onBlur={handleBlur}
+                                <input type="text" name="PSName" value={values.PSName} className={styles.formControl} onBlur={handleBlur}
                                     onChange={handleChange} />
                             </div>
                             <p className="help-block text-danger">{errors.PSName && touched.PSName ? errors.PSName : null}</p>
@@ -87,15 +87,19 @@ function UpdatePoliceStation() {
                                     className={styles.formControl}
                                     onBlur={handleBlur}
                                     onChange={handleChange}
-                                    placeholder={`0${data.PSs.PSLandlineNumber}`}
+                                    value={`0${values.PSLandlineNumber}`}
                                 />
                             </div>
                         </div>
                         <div className={styles.column}>
                             <div className={styles.label}>DPO Name</div>
                             <div>
-                                <input type="text" name="DPOName" placeholder={data.PSs.DPOName} className={styles.formControl} onBlur={handleBlur}
-                                    onChange={handleChange} />
+                                <input type="text" 
+                                name="DPOName" 
+                                value={values.DPOName} 
+                                className={styles.formControl} 
+                                onBlur={handleBlur}
+                                onChange={handleChange} />
                             </div>
                         </div>
                         <div className={styles.column}>
@@ -105,8 +109,8 @@ function UpdatePoliceStation() {
                                     type="number"
                                     name="DPOMobileNumber"
                                     className={styles.formControl}
+                                    value={`0${values.DPOMobileNumber}`}
                                     onBlur={handleBlur}
-                                    placeholder={`0${data.PSs.DPOMobileNumber}`}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -114,15 +118,18 @@ function UpdatePoliceStation() {
                         <div className={styles.column}>
                             <div className={styles.label}>DPO Landline Number</div>
                             <div>
-                                <input type="number" name="DPOLandlineNumber" className={styles.formControl} onBlur={handleBlur}
-                                    placeholder={`0${data.PSs.DPOLandlineNumber}`}
+                                <input type="number"
+                                    name="DPOLandlineNumber"
+                                    className={styles.formControl}
+                                    onBlur={handleBlur}
+                                    value={`0${values.DPOLandlineNumber}`}
                                     onChange={handleChange} />
                             </div>
                         </div>
                         <div className={styles.column}>
                             <div className={styles.label}>DPO Reader Name</div>
                             <div>
-                                <input type="text" name="DPOReaderName" placeholder={data.PSs.DPOReaderName} className={styles.formControl} onBlur={handleBlur}
+                                <input type="text" name="DPOReaderName" value={values.DPOReaderName} className={styles.formControl} onBlur={handleBlur}
                                     onChange={handleChange} />
                             </div>
                         </div>
@@ -130,7 +137,7 @@ function UpdatePoliceStation() {
                             <div className={styles.label} >DPO Reader Mobile Number</div>
                             <div>
                                 <input type="number" name="ReaderMobileNumber" className={styles.formControl} onBlur={handleBlur}
-                                    placeholder={`0${data.PSs.ReaderMobileNumber}`}
+                                    value={`0${values.ReaderMobileNumber}`}
                                     onChange={handleChange} />
                             </div>
                         </div>
@@ -140,7 +147,7 @@ function UpdatePoliceStation() {
                                 <input
                                     type="text"
                                     name="CircleOfficerName"
-                                    placeholder={data.PSs.CircleOfficerName}
+                                    value={values.CircleOfficerName}
                                     className={styles.formControl}
                                     onBlur={handleBlur}
                                     onChange={handleChange}
@@ -155,7 +162,7 @@ function UpdatePoliceStation() {
                                     name="CircleOfficerMobileNumber"
                                     className={styles.formControl}
                                     onBlur={handleBlur}
-                                    placeholder={`0${data.PSs.CircleOfficerMobileNumber}`}
+                                    value={`0${values.CircleOfficerMobileNumber}`}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -164,14 +171,14 @@ function UpdatePoliceStation() {
                             <div className={styles.label}>Circle Officer Landline Number</div>
                             <div>
                                 <input type="number" name="CircleOfficerLandlineNumber" className={styles.formControl} onBlur={handleBlur}
-                                    placeholder={`0${data.PSs.CircleOfficerLandlineNumber}`}
+                                    value={`0${values.CircleOfficerLandlineNumber}`}
                                     onChange={handleChange} />
                             </div>
                         </div>
                         <div className={styles.column}>
                             <div className={styles.label}>SHO Name</div>
                             <div>
-                                <input type="text" name="SHOName" placeholder={data.PSs.SHOName} className={styles.formControl} onBlur={handleBlur}
+                                <input type="text" name="SHOName" value={values.SHOName} className={styles.formControl} onBlur={handleBlur}
                                     onChange={handleChange} />
                             </div>
                         </div>
@@ -179,14 +186,14 @@ function UpdatePoliceStation() {
                             <div className={styles.label}>SHO Mobile Number</div>
                             <div>
                                 <input type="number" name="SHOMobileNumber" className={styles.formControl} onBlur={handleBlur}
-                                    placeholder={`0${data.PSs.SHOMobileNumber}`}
+                                    value={`0${values.SHOMobileNumber}`}
                                     onChange={handleChange} />
                             </div>
                         </div>
                         <div className={styles.column}>
                             <div className={styles.label}>Division</div>
                             <div>
-                                <select name="Division" className={styles.formControl} onBlur={handleBlur}
+                                <select name="Division" className={styles.formControl} value={values.Division} onBlur={handleBlur}
                                     onChange={handleChange}>
                                     <option value="0">Select</option>
                                     <option value="City">City</option>
@@ -200,7 +207,7 @@ function UpdatePoliceStation() {
                         <div className={styles.column}>
                             <div className={styles.label}>Circle</div>
                             <div>
-                                <select name="Circle" className={styles.formControl} onBlur={handleBlur}
+                                <select name="Circle" className={styles.formControl} value={values.Circle} onBlur={handleBlur}
                                     onChange={handleChange}>
                                     <option value="0">Select</option>
                                     <option value="Sabzi Mandi">Sabzi Mandi</option>
@@ -222,7 +229,7 @@ function UpdatePoliceStation() {
                             <div className={styles.label}>Google Map Location</div>
                             <div>
                                 <input type="text" name="Location" className={styles.formControl} onBlur={handleBlur}
-                                    placeholder={data.PSs.Location}
+                                    value={values.Location}
                                     onChange={handleChange} />
                             </div>
                         </div>

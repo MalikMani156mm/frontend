@@ -3,21 +3,19 @@ import { useFormik } from "formik";
 import * as yup from 'yup';
 import { Link } from "react-router-dom";
 import logo from "../../images/Logo.png";
-import {  useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useChangeUsernameMutation } from "../../Redux/Features/Auth/AuthApi";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Textinputs from "../../Components/Textinput/Textinputs";
-
+import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 
 function ChangeUsername() {
 
     const { user } = useSelector(state => state.auth);
+    const dispatch = useDispatch();
     const id = user._id;
     const [changeUsername, { isLoading, error }] = useChangeUsernameMutation();
-
-
-
 
     // eslint-disable-next-line
     const { values, touched, handleBlur, handleChange, errors, handleSubmit, setFieldValue } = useFormik({
@@ -33,13 +31,14 @@ function ChangeUsername() {
         }),
         onSubmit: async (values) => {
             console.log(values);
-            const res = await changeUsername({ id, data: values }).unwrap();
-            console.log(res.uu);
-            if (res.success) {
-                toast.success(res.message);
+            const User = await changeUsername({ id, data: values }).unwrap();
+            console.log(user);
+            if (User.success) {
+                toast.success(User.message);
+                dispatch(setUserInfo(User));
             }
             else {
-                toast.error(res.message || res.data.error);
+                toast.error(User.message);
             }
         }
     })

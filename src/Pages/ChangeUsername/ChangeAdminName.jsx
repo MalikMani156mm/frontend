@@ -3,11 +3,12 @@ import { useFormik } from "formik";
 import * as yup from 'yup';
 import { Link } from "react-router-dom";
 import logo from "../../images/Logo.png";
-import {  useSelector } from "react-redux";
+import {  useDispatch, useSelector } from "react-redux";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Textinputs from "../../Components/Textinput/Textinputs";
 import { useChangeAdminNameMutation } from "../../Redux/Features/Admin/adminApi";
+import { setUserInfo } from "../../Redux/Features/Auth/AuthSlice";
 
 
 function ChangeAdminName() {
@@ -15,7 +16,7 @@ function ChangeAdminName() {
     const { user } = useSelector(state => state.auth);
     const id = user._id;
     const [changeName, { isLoading, error }] = useChangeAdminNameMutation();
-
+    const dispatch = useDispatch();
 
 
 
@@ -32,13 +33,13 @@ function ChangeAdminName() {
         }),
         onSubmit: async (values) => {
             console.log(values);
-            const res = await changeName({ id, data: values }).unwrap();
-            console.log(res.uu);
-            if (res.success) {
-                toast.success(res.message);
+            const User = await changeName({ id, data: values }).unwrap();
+            if (User.success) {
+                toast.success(User.message);
+                dispatch(setUserInfo(User));
             }
             else {
-                toast.error(res.message || res.data.error);
+                toast.error(User.message);
             }
         }
     })

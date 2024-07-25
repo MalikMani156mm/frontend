@@ -47,7 +47,7 @@ function EditCCForm() {
                 navigate("/MyApplications");
             }
         }
-    }, [iData, user.role,navigate]);
+    }, [iData, user.role, navigate]);
 
     const handleRadioClick = (value) => {
         if (selectedValue === value) {
@@ -89,6 +89,8 @@ function EditCCForm() {
             Gender: iData?.CCs.Gender,
             ContactNumber: iData?.CCs.ContactNumber,
             PermanentAddress: iData?.CCs.PermanentAddress,
+            DOB: iData?.CCs.DOB,
+            DOS: iData?.CCs.DOS,
             Category: iData?.CCs.Category,
             SubmitByApplicant: iData?.CCs.SubmitByApplicant,
             SubmitterName: iData?.CCs.SubmitterName,
@@ -116,6 +118,8 @@ function EditCCForm() {
             GuardianName: yup.string().min(5).max(30).required('Required'),
             Gender: yup.string().required('Required'),
             ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
+            DOB: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
+            DOS: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
             PermanentAddress: yup.string().max(200).required('Required'),
             Category: yup.string().required('Required'),
             Reason: yup.string().max(200).required('Required'),
@@ -147,7 +151,7 @@ function EditCCForm() {
 
     if (error || iError) {
         return (<>
-            <h1 style={{ textAlign: 'center' }}>{ "Something Wrong Happened"}</h1>
+            <h1 style={{ textAlign: 'center' }}>{"Something Wrong Happened"}</h1>
             <h3 style={{ textAlign: 'center' }}>May be Server is down</h3>
             <h3 style={{ textAlign: 'center' }}>Go back to <Link to="/" className={styles.homelink}>Home</Link></h3>
         </>)
@@ -369,6 +373,24 @@ function EditCCForm() {
                                     className={styles.formControl}
                                 />
                                 <p className="help-block text-danger">{errors.PermanentAddress && touched.PermanentAddress ? errors.PermanentAddress : null}</p>
+                            </div>
+                        </div>
+                        <div className={styles.alignment}>
+                            <div className="col-lg-3 col-md-12 col-sm-12"><p>Date of Stay</p></div>
+                            <div className="col-lg-3 col-md-12 col-sm-12">
+                                <input type="date" value={values.DOS} name="DOS" className="form-control" onChange={handleChange}
+                                    onBlur={handleBlur} />
+                                <p className="help-block text-danger">{errors.DOS && touched.DOS ? errors.DOS : null}</p>
+                            </div>
+                            <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
+                                <p>Date of Birth</p>
+                            </div>
+                            <div className="col-lg-3 col-md-12 col-sm-12 " >
+                                <div >
+                                    <input type="date" value={values.DOB} name="DOB" className="form-control" onChange={handleChange}
+                                        onBlur={handleBlur} />
+                                </div>
+                                <p className="help-block text-danger">{errors.DOB && touched.DOB ? errors.DOB : null}</p>
                             </div>
                         </div>
                     </div>

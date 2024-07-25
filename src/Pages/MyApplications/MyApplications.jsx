@@ -107,7 +107,7 @@ function MyApplications() {
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
-    }, 500); // 500ms debounce delay
+    }, 1000);
 
     return () => {
       clearTimeout(handler);
@@ -231,7 +231,9 @@ function MyApplications() {
   };
 
   const handleConfirmMeetingBox = async () => {
-    console.log(id);
+    if (message === '') {
+      return
+    }
     const res = await sendMeetingMessage({ id, data: { message: message } }).unwrap();
     setShowMeetingBox(false);
     if (res.success) {
@@ -251,7 +253,9 @@ function MyApplications() {
   };
 
   const handleConfirmCMeetingBox = async () => {
-    console.log(id);
+    if (message === '') {
+      return
+    }
     const res = await sendCMeetingMessage({ id, data: { message: message } }).unwrap();
     setShowCMeetingBox(false);
     if (res.success) {
@@ -271,7 +275,9 @@ function MyApplications() {
   };
 
   const handleConfirmRMeetingBox = async () => {
-    console.log(id);
+    if (message === '') {
+      return
+    }
     const res = await sendRMeetingMessage({ id, data: { message: message } }).unwrap();
     setShowRMeetingBox(false);
     if (res.success) {
@@ -402,7 +408,11 @@ function MyApplications() {
   }
 
   const handleChangeAdminName = () => {
-    navigate("/adminNewName");
+    if(user.role === role){
+      navigate("/adminNewName");
+    }else{
+      navigate("/IGNewName");
+    }
   }
 
   const handleAddPoliceStation = () => {
@@ -463,7 +473,7 @@ function MyApplications() {
       [FIRData._id]: !prevShowIcon[FIRData._id],
     }));
   }
-  
+
   const toggler = () => {
     setIsFIR((prevIsFIR) => !prevIsFIR);
   };
@@ -501,6 +511,7 @@ function MyApplications() {
                 <li><button className="dropdown-item" type="button" onClick={handleViewMessages}>View Messages</button></li>
                 <li><button className="dropdown-item" type="button" onClick={handleAddCategory}>Add Category</button></li>
                 <li><button className="dropdown-item" type="button" onClick={handleAddOffence}>Add Offence</button></li>
+                <li><button className="dropdown-item" type="button" onClick={handleChangeAdminName}>Change Username</button></li>
               </> : null}
               {(user && role === user.role) ? <>
                 <li><button className="dropdown-item" type="button" onClick={handleUpdatePoliceStation}>Update Police Station</button></li>
@@ -522,9 +533,9 @@ function MyApplications() {
             {(user && Role === user.role) ?
               <div className={styles.avatarIG}></div>
               : (role === user.role) ? <div className={styles.avatarPolice}></div> : <div className={styles.avatarCitizen}><img
-              src={user.image}
-              alt="User dp"
-          /></div>}
+                src={user.image}
+                alt="User dp"
+              /></div>}
             <div className={styles.infoColumn}>
               {(user && (role === user.role || Role === user.role)) ?
                 <div className={styles.name}>Welcome, {user.name}</div> :

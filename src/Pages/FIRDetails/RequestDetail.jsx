@@ -6,9 +6,6 @@ import LoadingSpinner from "../../Components/Loading/Loading";
 import RatingAlert from "../../Components/CustomAlert/RatingAlert";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import html2canvas from "html2canvas"
-// import jspdf from "jspdf";
-// import QR from "../../images/QR.jpg"
 import Stars from "../../Components/Stars/Stars";
 import { useSelector } from "react-redux";
 import { useChangeRequestRatingMutation, useDeleteRequestMutation, useGetRequestByIdQuery } from "../../Redux/Features/VehicleVerification/VVApi";
@@ -34,8 +31,6 @@ function RequestDetail() {
     // eslint-disable-next-line 
     const [deleteRequest, { isLoading: isDeleting, isSuccess: isDeleted }] = useDeleteRequestMutation();
     const [updateRating, { error }] = useChangeRequestRatingMutation();
-    //const [loader, setLoader] = useState(false);
-    //const [dynamic, setDynamic] = useState(false);
     const [deletionError, setDeletionError] = useState(null);
     const [rating, setRating] = useState(0);
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -134,16 +129,16 @@ function RequestDetail() {
                     <div className={styles.buttonBody}>
                         <div className={styles.row6}>
                             <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2"  onClick={() => { navigate(`/ViewRequest/${Data.VVs._id}`) }}>View Only</button>
-                            </div>
-                            <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={() => { navigate(`/EditRequest/${Data.VVs._id}`) }}>Edit Request</button>
-                            </div>
-                            <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={handleDelete}>Delete Request</button>
-                            </div>
-                            <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={handleRating}>Give Rating</button>
+                                <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/ViewRequest/${Data.VVs._id}`) }}>View Only</button>
+                                {(isApproved || isFiled) ? null :
+                                    <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={() => { navigate(`/EditRequest/${Data.VVs._id}`) }}>Edit Request</button>
+                                }
+                                {(isApproved || isFiled) ? null :
+                                    <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={handleDelete}>Delete Request</button>
+                                }
+                                {(!isApproved) ? null :
+                                    <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={handleRating}>Give Rating</button>
+                                }
                             </div>
                         </div>
                     </div>

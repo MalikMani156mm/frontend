@@ -220,8 +220,11 @@ display: none;
 
 .row7 {
   display: flex;
+  width: 80%;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  gap:20px;
 }
 
 .resprow {
@@ -558,6 +561,9 @@ display: none;
   }
   .cell,.cell1{
     font-size: small;
+  }
+  .row7{
+    flex-direction: column;
   }
 }
 

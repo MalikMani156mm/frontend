@@ -112,7 +112,7 @@ function FIRDetail() {
     const PoliceStation = (psName) => {
         const parts = psName.split(" ");
         return parts.slice(2).join(" ");
-      };
+    };
 
     if (user.role !== "Citizen") {
         return <Navigate to={'/MyApplications'} replace={true} />
@@ -199,39 +199,45 @@ function FIRDetail() {
                         <div className={styles.row6}>
                             <div className={styles.row7}>
                                 <button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/ViewFIR/${firData.FIRs._id}`) }}>View Only</button>
-                                <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={() => { navigate(`/FIRPDF/${firData.FIRs._id}`) }}>View PDF</button>
-                            </div>
-                            <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={!isApproved || loader} onClick={DownloadPDF}>Download PDF</button>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={() => { navigate(`/EditFIR/${firData.FIRs._id}`) }}>Edit FIR</button>
-                            </div>
-                            <div className={styles.row7}>
-                                <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={handleDelete}>Delete FIR</button>
-                                <button className="btn btn-primary mx-3 my-2" disabled={!isCompleted} onClick={handleRating}>Give Rating</button>
+                                {(!isApproved) ? null :
+                                    <button className="btn btn-primary mx-3 my-2" disabled={!isApproved} onClick={() => { navigate(`/DownloadFIRPDF/${firData.FIRs._id}`) }}>View PDF</button>
+                                }
+                                {(!isApproved || loader) ? null :
+                                    <button className="btn btn-primary mx-3 my-2" disabled={!isApproved || loader} onClick={DownloadPDF}>Download PDF</button>
+                                }
+                                {(isFiled || isApproved) ? null :
+                                    <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={() => { navigate(`/EditFIR/${firData.FIRs._id}`) }}>Edit FIR</button>
+                                }
+                                {(isFiled || isApproved) ? null :
+                                    <button className="btn btn-primary mx-3 my-2" disabled={isFiled || isApproved} onClick={handleDelete}>Delete FIR</button>
+                                }
+                                {(!isCompleted) ? null :
+                                    <button className="btn btn-primary mx-3 my-2" disabled={!isCompleted} onClick={handleRating}>Give Rating</button>
+                                }
                             </div>
                         </div>
                     </div>
                     <h2 className={styles.actionClass}>Police Station Information</h2>
                     <div className={styles.table}>
-                    <div className={`${styles.row4} ${styles.resprow}`}>
-                        <div className={styles.cell2}>PoliceStation  SHO Name</div>
-                        <div className={styles.cell2}>SHO Mobile Number</div>
-                        <div className={styles.cell2}>PoliceStation Name</div>
-                        <div className={styles.cell2}>PoliceStation Landline Number</div>
-                        <div className={styles.cell2}>Circle  Incharge</div>
-                        <div className={styles.cell2}>Circle Incharge Mobile Number</div>
-                        <div className={styles.cell2}>Circle Incharge Landline Number</div>
+                        <div className={`${styles.row4} ${styles.resprow}`}>
+                            <div className={styles.cell2}>PoliceStation  SHO Name</div>
+                            <div className={styles.cell2}>SHO Mobile Number</div>
+                            <div className={styles.cell2}>PoliceStation Name</div>
+                            <div className={styles.cell2}>PoliceStation Landline Number</div>
+                            <div className={styles.cell2}>Circle  Incharge</div>
+                            <div className={styles.cell2}>Circle Incharge Mobile Number</div>
+                            <div className={styles.cell2}>Circle Incharge Landline Number</div>
 
-                    </div>
-                    <div className={`${styles.row4} ${styles.datarow}`} >
-                        <div className={styles.cell2}>{psData ? psData.PSs.SHOName : null}</div>
-                        <div className={styles.cell2}>{(psData && psData.PSs.SHOMobileNumber !== null) ? `0${psData.PSs.SHOMobileNumber}` : null}</div>
-                        <div className={styles.cell2}>{psData ? psData.PSs.PSName : null}</div>
-                        <div className={styles.cell2}>{(psData && psData.PSs.PSLandlineNumber !== null) ? `0${psData.PSs.PSLandlineNumber}` : null}</div>
-                        <div className={styles.cell2}>{psData ? psData.PSs.CircleOfficerName : null}</div>
-                        <div className={styles.cell2}>{(psData && psData.PSs.CircleOfficerMobileNumber !== null) ? `0${psData.PSs.CircleOfficerMobileNumber}` : null}</div>
-                        <div className={styles.cell2}>{(psData && psData.PSs.CircleOfficerLandlineNumber !== null) ? `0${psData.PSs.CircleOfficerLandlineNumber}` : null}</div>
-                    </div >
+                        </div>
+                        <div className={`${styles.row4} ${styles.datarow}`} >
+                            <div className={styles.cell2}>{psData ? psData.PSs.SHOName : null}</div>
+                            <div className={styles.cell2}>{(psData && psData.PSs.SHOMobileNumber !== null) ? `0${psData.PSs.SHOMobileNumber}` : null}</div>
+                            <div className={styles.cell2}>{psData ? psData.PSs.PSName : null}</div>
+                            <div className={styles.cell2}>{(psData && psData.PSs.PSLandlineNumber !== null) ? `0${psData.PSs.PSLandlineNumber}` : null}</div>
+                            <div className={styles.cell2}>{psData ? psData.PSs.CircleOfficerName : null}</div>
+                            <div className={styles.cell2}>{(psData && psData.PSs.CircleOfficerMobileNumber !== null) ? `0${psData.PSs.CircleOfficerMobileNumber}` : null}</div>
+                            <div className={styles.cell2}>{(psData && psData.PSs.CircleOfficerLandlineNumber !== null) ? `0${psData.PSs.CircleOfficerLandlineNumber}` : null}</div>
+                        </div >
                     </div>
                     <div className={styles.rowButton}><button className="btn btn-primary mx-3 my-2" onClick={() => { navigate(`/PSJudicary/${psData && psData.PSs._id}`) }} >More Info</button></div>
                 </div>

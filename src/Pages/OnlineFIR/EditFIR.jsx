@@ -168,7 +168,7 @@ function EditFIR() {
   };
 
   const handleChangePlaceOfOccurance = (event) => {
-    setFieldValue('PlaceOfOccurance', event.target.value);
+    setFieldValue('placeOfOccurance', event.target.value);
   };
 
   const handleIncidentDetailsChange = (event) => {
@@ -449,7 +449,7 @@ function EditFIR() {
               <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Incident Date</p></div>
               <div className="col-lg-3 col-md-12 col-sm-12">
                 <input
-                  type="date"
+                  type="datetime-local"
                   id="datetime"
                   name="IncidentDate"
                   className="form-control"

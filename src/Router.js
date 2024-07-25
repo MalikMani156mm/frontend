@@ -126,6 +126,7 @@ export const router = createBrowserRouter(
                     <Route path="/admin/PriorityComplaint" exact element={<div className={styles.main}><PriorityComplaint /></div>} />
                     <Route path="/admin/ConfirmPassword" exact element={<div className={styles.main}>< AdminConfirmPassword /></div>} />
                     <Route path="/admin/NewPassword" exact element={<div className={styles.main}><PrivateRoute>< AdminNewPassword /></PrivateRoute></div>} />
+                    <Route path="/IGNewName" exact element={<div className={styles.main}>< ChangeAdminName /></div>} />
                 </Route>
             </Route>
             <Route path="/LogIn" exact element={<div className={styles.main}><Login /></div>} />

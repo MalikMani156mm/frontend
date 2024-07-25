@@ -127,7 +127,7 @@ function VehicleVerificationForm() {
       EngineNumberPic: ''
     },
     validationSchema: yup.object().shape({
-      EntryDate: yup.date().required('Required'),
+      EntryDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
       RequestTo: yup.string().required('Required'),
       CNIC: yup.number().min(1111111111111, "Must be atleast 13 digit").max(9999999999999, "Invalid CNIC").required('Required'),
       Name: yup.string().min(5).max(30).required('Required'),

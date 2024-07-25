@@ -120,7 +120,7 @@ function CharacterCertificateForm() {
       AffidavitPicture: ''
     },
     validationSchema: yup.object().shape({
-      EntryDate: yup.date().required('Required'),
+      EntryDate: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
       District: yup.string().required('Required'),
       Division: yup.string().required('Required'),
       Circle: yup.string().required('Required'),
@@ -133,8 +133,8 @@ function CharacterCertificateForm() {
       Gender: yup.string().required('Required'),
       ContactNumber: yup.number().min(1111111111, "Must be atleast 11 digit").max(999999999999, "Invalid Number").required('Required'),
       PermanentAddress: yup.string().max(200).required('Required'),
-      DOB: yup.date().required('Required'),
-      DOS: yup.date().required('Required'),
+      DOB: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
+      DOS: yup.date().required('Date is required').max(new Date(), 'Date must be in the past'),
       Category: yup.string().required('Required'),
       Reason: yup.string().max(200).required('Required'),
       CNICFront: yup.string().required('Required'),
