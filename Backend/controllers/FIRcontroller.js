@@ -769,9 +769,14 @@ export const updateFIR = async function (req, res, next) {
 
 export const deleteFIR = async function (req, res, next) {
     const { id } = req.params;
-    const DeleteFIR = await FIR.findByIdAndDelete(id);
+    try {
+        const DeleteFIR = await FIR.findByIdAndDelete(id);
     res.json({
         message: 'FIR is Deleted',
         success: true
     });
+    } catch (error) {
+        next(error)
+    }
+    
 }

@@ -59,9 +59,14 @@ export const updatePoliceStation = async function (req, res, next) {
 
 export const deletePoliceStation = async function (req, res, next) {
     const { id } = req.params;
-    const DeletePoliceStation = await PS.findByIdAndDelete(id);
+    try {
+        const DeletePoliceStation = await PS.findByIdAndDelete(id);
     res.json({
         message: 'PoliceStation is Deleted',
         success: true
     });
+    } catch (error) {
+        next(error)
+    }
+    
 }

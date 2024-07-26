@@ -28,6 +28,10 @@ const VVSchema = new Schema(
             // min:[13, 'without dash 13 number'],
             // max:[15, 'wit hdash 15 number']
         },
+        email: {
+            type: String,
+            require:[true, 'Please provide the Email'],
+        },
         Name: {
             type: String,
             require: [true, 'Please provide the Name'],

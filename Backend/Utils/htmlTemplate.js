@@ -1,3 +1,4 @@
+
 export function generateOtpHtmlTemplate(newUser,token) {
     return `
         <!DOCTYPE html>
@@ -388,7 +389,7 @@ export function FIRSubmitHtmlTemplate(validUser,ComplaintNumber,Circle) {
                 <div class="content">
                     <p>Dear <strong>${validUser}</strong>,</p>
                     <p>Your FIR is submitted succesfully with Complaint Number ${ComplaintNumber} in Police Station ${Circle}. </p>
-                    <p>If you don't submit this FIR then report this immediately! </p>
+                    <p>If you don't submit this FIR then report it immediately! </p>
                     <p>If you find this service helpful please give us your feedback!</p>
                     <p>Best regards,<br>Islamabad Police</p>
                 </div>

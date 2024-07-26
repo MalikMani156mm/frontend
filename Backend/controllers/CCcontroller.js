@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import { imageUploading } from "../Utils/Utils.js";
 
 
-
 export const getPoliceStationCertificates = async function (req, res, next) {
 
     const page = parseInt(req.query.page) - 1 || 0;
@@ -225,8 +224,6 @@ export const changeCertificateStatus = async function (req, res, next) {
                 success: false
             });
         }
-        // const htmlTemplate = FIRStatusHtmlTemplate(changeStatus.Name,changeStatus.ComplaintNumber,changeStatus.Circle,Status)
-        // sendMail(changeStatus.email, `FIR Status Updated!!!`, "", htmlTemplate)
         res.json({
             changeStatus,
             message: 'Status is updated successfully',
@@ -377,9 +374,14 @@ export const updateCertificate = async function (req, res, next) {
 
 export const deleteCertificate = async function (req, res, next) {
     const { id } = req.params;
-    const DeleteCertificate = await CC.findByIdAndDelete(id);
+    try {
+        const DeleteCertificate = await CC.findByIdAndDelete(id);
     res.json({
         message: 'Certificate is Deleted',
         success: true
     });
+    } catch (error) {
+        next(error)
+    }
+    
 }

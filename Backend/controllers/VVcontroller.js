@@ -212,8 +212,6 @@ export const changeRequestStatus = async function (req, res, next) {
                 success: false
             });
         }
-        // const htmlTemplate = FIRStatusHtmlTemplate(changeStatus.Name,changeStatus.ComplaintNumber,changeStatus.Circle,Status)
-        // sendMail(changeStatus.email, `FIR Status Updated!!!`, "", htmlTemplate)
         res.json({
             changeStatus,
             message: 'Status is updated successfully',
@@ -337,9 +335,14 @@ export const updateRequest = async function (req, res, next) {
 
 export const deleteRequest = async function (req, res, next) {
     const { id } = req.params;
-    const DeleteRequest = await VV.findByIdAndDelete(id);
+    try {
+        const DeleteRequest = await VV.findByIdAndDelete(id);
     res.json({
         message: 'Verification Request is Deleted',
         success: true
     });
+    } catch (error) {
+        next(error)
+    }
+    
 }

@@ -170,6 +170,7 @@ export const SendOTPAgain = async function (req, res, next) {
                 to: phoneNumber,
                 from: process.env.TWILIO_PHONE_NUMBER
             });
+            res.json("OTP send again")
         }
     } catch (error) {
         next(error)

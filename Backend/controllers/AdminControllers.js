@@ -69,6 +69,7 @@ export const LogoutAdmin = async function(req,res,next){
         Message: "logged out"
     })
 }
+
 export const ConfirmAdminPassword = async function (req, res, next) {
     try {
         let { email, password } = req.body;
@@ -101,6 +102,7 @@ export const ConfirmAdminPassword = async function (req, res, next) {
         next(error)
     }
 }
+
 export const ChangeAdminPassword = async function (req, res, next) {
     try {
         const { id } = req.params;
