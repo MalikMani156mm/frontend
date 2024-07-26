@@ -46,11 +46,6 @@
   width: 50vw;
   height: 30vh;
   overflow: hidden;
-  transition: transform 0.3s ease-in-out;
-}
-
-.carousel-item:hover {
-  transform: scale(1.1);
 }
 
 .slide {
