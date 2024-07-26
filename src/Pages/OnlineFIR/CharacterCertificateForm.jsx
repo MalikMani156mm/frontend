@@ -96,6 +96,7 @@ function CharacterCertificateForm() {
       PoliceStation: '',
       BeatMoza: '',
       CNIC: user.cnic,
+      email: user.email,
       PassportNumber: '',
       Name: user.name,
       relation: '',
