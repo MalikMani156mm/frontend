@@ -15,16 +15,16 @@ function ViewVVForm() {
     const role = "Admin";
     const Role = "SuperAdmin";
     const { id } = useParams();
-    const { data, error, isLoading,refetch } = useGetRequestByIdQuery(id);
+    const { data, error, isLoading, refetch } = useGetRequestByIdQuery(id);
     const [isApproved, setIsApproved] = useState(false);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
             refetch();
         }, 2000);
-    
+
         return () => clearInterval(intervalId);
-      }, [refetch]);
+    }, [refetch]);
 
     useEffect(() => {
         if (user.role === "Citizen") {
@@ -274,7 +274,7 @@ function ViewVVForm() {
                                 </div>
                                 <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Rating</p></div>
                                 <div className="col-lg-3 col-md-12 col-sm-12">
-                                    <Stars rating={data.VVs.Rating}/>
+                                    <Stars rating={data.VVs.Rating} />
                                 </div>
                             </div></> : null}
                         <div className={styles.picContent}>
@@ -335,9 +335,11 @@ function ViewVVForm() {
                     </div>
                 </div>
                 <div className={styles.buttonsalignment}>
-                    <button className={styles.SubmitButton} disabled={isApproved} onClick={() => { navigate(`/EditRequest/${data?.VVs?._id}`) }}>
-                        Edit
-                    </button>
+                    {isApproved ? null :
+                        <button className={styles.SubmitButton} disabled={isApproved} onClick={() => { navigate(`/EditRequest/${data?.VVs?._id}`) }}>
+                            Edit
+                        </button>
+                    }
                     <button type="reset" className={styles.CancelButton} onClick={() => { navigate(-1); }}>
                         Back
                     </button>

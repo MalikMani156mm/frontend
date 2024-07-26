@@ -18,7 +18,7 @@ function ViewFIR() {
     const role = "Admin";
     const Role = "SuperAdmin";
     const { id } = useParams();
-    const { data, error, isLoading ,refetch} = useGetFIRByIdQuery(id);
+    const { data, error, isLoading, refetch } = useGetFIRByIdQuery(id);
     const [isApproved, setIsApproved] = useState(false);
     const [policeStationId, setPoliceStationId] = useState(null);
     const [categoryId, setCategoryId] = useState(null);
@@ -44,9 +44,9 @@ function ViewFIR() {
         const intervalId = setInterval(() => {
             refetch();
         }, 2000);
-    
+
         return () => clearInterval(intervalId);
-      }, [refetch]);
+    }, [refetch]);
 
     useEffect(() => {
         if (user.role === "Citizen") {
@@ -322,7 +322,7 @@ function ViewFIR() {
                             <div className={styles.alignment}>
                                 <div className="col-lg-3 col-md-12 col-sm-12"><p>IO Name</p></div>
                                 <div className="col-lg-3 col-md-12 col-sm-12">
-                                    <input type="text" name="IOName" className="form-control" placeholder={data.FIRs.IOName} disabled/>
+                                    <input type="text" name="IOName" className="form-control" placeholder={data.FIRs.IOName} disabled />
                                 </div>
                                 <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Rank</p></div>
                                 <div className="col-lg-3 col-md-12 col-sm-12">
@@ -333,11 +333,11 @@ function ViewFIR() {
                             <div className={styles.alignment}>
                                 <div className="col-lg-3 col-md-12 col-sm-12"><p>Status</p></div>
                                 <div className="col-lg-3 col-md-12 col-sm-12">
-                                    <input name="Status" className="form-control" placeholder={data.FIRs.Status} disabled/>
+                                    <input name="Status" className="form-control" placeholder={data.FIRs.Status} disabled />
                                 </div>
                                 <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Rating</p></div>
                                 <div className="col-lg-3 col-md-12 col-sm-12">
-                                    <Stars rating={data.FIRs.Rating}/>
+                                    <Stars rating={data.FIRs.Rating} />
                                 </div>
                             </div>
                         </> : null}
@@ -358,9 +358,11 @@ function ViewFIR() {
                     </div>
                 </div>
                 <div className={styles.buttonsalignment}>
-                    <button className={styles.SubmitButton} disabled={isApproved} onClick={() => { navigate(`/EditFIR/${data.FIRs._id}`) }}>
-                        Edit
-                    </button>
+                    {isApproved ? null :
+                        <button className={styles.SubmitButton} disabled={isApproved} onClick={() => { navigate(`/EditFIR/${data.FIRs._id}`) }}>
+                            Edit
+                        </button>
+                    }
                     <button type="reset" className={styles.CancelButton} onClick={() => { navigate(-1); }}>
                         Back
                     </button>

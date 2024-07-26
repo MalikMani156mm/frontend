@@ -16,7 +16,7 @@ function ViewCCForm() {
     const role = "Admin";
     const Role = "SuperAdmin";
     const { id } = useParams();
-    const { data, error, isLoading ,refetch} = useGetCertificateByIdQuery(id);
+    const { data, error, isLoading, refetch } = useGetCertificateByIdQuery(id);
     const [isApproved, setIsApproved] = useState(false);
     const [policeStationId, setPoliceStationId] = useState(null);
     useEffect(() => {
@@ -33,9 +33,9 @@ function ViewCCForm() {
         const intervalId = setInterval(() => {
             refetch();
         }, 2000);
-    
+
         return () => clearInterval(intervalId);
-      }, [refetch]);
+    }, [refetch]);
 
     useEffect(() => {
         if (user.role === "Citizen") {
@@ -49,7 +49,7 @@ function ViewCCForm() {
         const [year, month, day] = dateString.split('-');
         return `${day}-${month}-${year}`;
     };
-    
+
     if (error || psError) {
         return <Navigate to={'*'} replace={true} />
     }
@@ -191,19 +191,19 @@ function ViewCCForm() {
                             </div>
                         </div>
                         <div className={styles.alignment}>
-              <div className="col-lg-3 col-md-12 col-sm-12"><p>Date of Stay</p></div>
-              <div className="col-lg-3 col-md-12 col-sm-12">
-                <input type="text" placeholder={formatDate(data.CCs.DOS)} name="DOS" className="form-control" disabled={true}  />
-              </div>
-              <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
-                <p>Date of Birth</p>
-              </div>
-              <div className="col-lg-3 col-md-12 col-sm-12 " >
-                <div >
-                  <input type="text" placeholder={formatDate(data.CCs.DOB)} name="DOB" className="form-control" disabled={true}  />
-                </div>
-              </div>
-            </div>
+                            <div className="col-lg-3 col-md-12 col-sm-12"><p>Date of Stay</p></div>
+                            <div className="col-lg-3 col-md-12 col-sm-12">
+                                <input type="text" placeholder={formatDate(data.CCs.DOS)} name="DOS" className="form-control" disabled={true} />
+                            </div>
+                            <div className="col-lg-3 col-md-12 col-sm-12 mx-2">
+                                <p>Date of Birth</p>
+                            </div>
+                            <div className="col-lg-3 col-md-12 col-sm-12 " >
+                                <div >
+                                    <input type="text" placeholder={formatDate(data.CCs.DOB)} name="DOB" className="form-control" disabled={true} />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className={styles.container}>
@@ -267,7 +267,7 @@ function ViewCCForm() {
                                 </div>
                                 <div className="col-lg-3 col-md-12 col-sm-12 mx-2"><p>Rating</p></div>
                                 <div className="col-lg-3 col-md-12 col-sm-12">
-                                    <Stars rating={data.CCs.Rating}/>
+                                    <Stars rating={data.CCs.Rating} />
                                 </div>
                             </div>
                         </> : null}
@@ -336,9 +336,11 @@ function ViewCCForm() {
                     </div>
                 </div>
                 <div className={styles.buttonsalignment}>
-                    <button className={styles.SubmitButton} disabled={isApproved} onClick={() => { navigate(`/EditCertificate/${data?.CCs?._id}`) }}>
-                        Edit
-                    </button>
+                    {isApproved ? null :
+                        <button className={styles.SubmitButton} disabled={isApproved} onClick={() => { navigate(`/EditCertificate/${data?.CCs?._id}`) }}>
+                            Edit
+                        </button>
+                    }
                     <button type="reset" className={styles.CancelButton} onClick={() => { navigate(-1); }}>
                         Back
                     </button>
