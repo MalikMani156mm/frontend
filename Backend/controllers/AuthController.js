@@ -61,7 +61,6 @@ export const RegisterNewUser = async function (req, res, next) {
         })
 
         newUser.image = imageURL;
-        console.log(newUser.image);
         const currentDate = new Date();
 
         const userPromise = OTP.findOneAndUpdate(
@@ -85,7 +84,7 @@ export const RegisterNewUser = async function (req, res, next) {
             }
         );
 
-        const smsPromise = twilioClient.messages.create({
+        twilioClient.messages.create({
             body: `Your mobile otp is ${mobileOTP}`,
             to: phoneNumber,
             from: process.env.TWILIO_PHONE_NUMBER
@@ -93,7 +92,7 @@ export const RegisterNewUser = async function (req, res, next) {
 
         const emailPromise = sendMail(newUser.email, "Welcome to E-FIR System", "", htmlTemplate);
 
-        const [user] = await Promise.all([userPromise, smsPromise, emailPromise]);
+        const [user] = await Promise.all([userPromise, emailPromise]);
 
         res.json({
             user,
